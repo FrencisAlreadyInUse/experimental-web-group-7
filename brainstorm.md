@@ -9,6 +9,8 @@ WebVR Bowling Game (1 Controller)
 - [ (TUTORIAL) Build Realtime Multiplayer WebVR A-Frame](https://github.com/Srushtika/realtime-multiplayer-webvr-aframe/blob/master/tutorial.md)
 - [multiplayer WebVR game](https://github.com/gladeye/block-break-vr)
 - accelerometer test: welke data verkrijgbaar van apparaat
+  - [gyroscope](https://github.com/tomgco/gyro.js)
+  - [html5 sensor interaction library for mobile](https://github.com/ehzhang/sense-js)
 - [Glossary of Bowling](https://en.wikipedia.org/wiki/Glossary_of_bowling)
 - [A-Frame physics](https://hacks.mozilla.org/2017/05/having-fun-with-physics-and-a-frame/)
 - [Wii Remote](http://johnny-five.io/examples/classic-controller/)
