@@ -3,7 +3,7 @@ WebVR Bowling Game (1 Controller)
 
 ## Research:
 - WebVR Multiplayer
-- Deepstorm
+- [Deepstream.io](https://www.sitepoint.com/deepstream-an-open-source-server-for-building-realtime-apps/)
 - [A Frame — Glitch](https://glitch.com/aframe)
 - [Realtime Multiplayer WebVR A-Frame](https://github.com/Srushtika/realtime-multiplayer-webvr-aframe)
 - [ (TUTORIAL) Build Realtime Multiplayer WebVR A-Frame](https://github.com/Srushtika/realtime-multiplayer-webvr-aframe/blob/master/tutorial.md)
