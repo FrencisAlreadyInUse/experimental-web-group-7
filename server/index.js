@@ -1,62 +1,34 @@
-const path = require(`path`);
-const log = true;
+const Path = require(`path`);
+const Hapi = require(`hapi`);
+const Inert = require(`inert`);
 
-require(`dotenv`).load({silent: true});
+const Socket = require(`./plugins/socket`);
+const Routes = require(`./plugins/routes`);
 
-const {
-  PORT = 3000,
-  URL = `http://localhost`
-} = process.env;
-
-const Server = require(`hapi`).Server;
-
-const server = new Server({
-  connections: {
-    routes: {
-      files: {
-        relativeTo: path.join(__dirname, `public`)
-      }
+const server = new Hapi.Server({
+  host: `localhost`,
+  port: 3000,
+  routes: {
+    files: {
+      relativeTo: Path.join(__dirname, `public`)
     }
   }
 });
 
-server.connection({port: PORT});
+const init = async () => {
+  //
+  await server.register(Inert);
 
-server.start(err => {
+  await server.register(Socket);
 
-  if (err) return console.error(err);
-
-  console.log(``);
-  console.log(`Server running at: ${URL}:${PORT}`);
-
-  server.register({
-
-    register: require(`hapi-devine-autoload`),
-
-    options: {
-
-      path: path.join(__dirname, `plugins`),
-      log,
-
-      plugins: [
-        `hapi-devine-routes`,
-        `inert`
-      ],
-
-      pluginOptions: {
-
-        'hapi-devine-routes': {
-          log,
-          path: path.join(__dirname, `routes`),
-          after: 'hapi-devine-mongodb'
-        },
-
-      }
-
-    }
-
-  }, error => {
-    if (error) return console.error(error);
+  await server.register({
+    plugin: Routes,
+    options: {directory: Path.join(__dirname, `routes`)}
   });
 
-});
+  await server.start();
+};
+
+init()
+  .then(() => console.log(`Server running at:`, server.info.uri))
+  .catch(console.error);

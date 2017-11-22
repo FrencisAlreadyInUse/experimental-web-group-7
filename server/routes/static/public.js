@@ -1,10 +1,7 @@
 module.exports = [
-
   {
-
     method: `GET`,
     path: `/{param*}`,
-
     handler: {
       directory: {
         path: `.`,
@@ -12,20 +9,14 @@ module.exports = [
         index: true
       }
     }
-
   },
-
   {
-
     method: `GET`,
     path: `/uploads/{param*}`,
-
     handler: {
       directory: {
         path: `../uploads`
       }
     }
-
   }
-
 ];

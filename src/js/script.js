@@ -1,9 +1,14 @@
+let socket;
 
+const handleButtonClick = () => {
+  socket.emit(`burp`);
+};
 
 const init = () => {
+  socket = io();
 
-  console.log(`Hello, aframesocket`)
-
+  const $button = document.querySelector(`button`);
+  $button.addEventListener(`click`, handleButtonClick);
 };
 
 init();

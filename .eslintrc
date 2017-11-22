@@ -1,3 +1,6 @@
 {
-  "extends": "devine"
+  "extends": "devine",
+  "globals": {
+    "io": true
+  }
 }
