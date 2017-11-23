@@ -4,11 +4,7 @@ const sequence = require(`run-sequence`);
 const Path = require(`path`);
 const chalk = require(`chalk`);
 
-const css = require(`./tasks/css`);
-const js = require(`./tasks/js`);
-const rev = require(`./tasks/rev`);
-const html = require(`./tasks/html`);
-const clean = require(`./tasks/clean`);
+const task = require(`./tasks`);
 
 const _ = strings => Path.join(__dirname, strings[0]);
 const gooi = error => gutil.log(chalk.red(`[ERROR]`), error);
@@ -37,34 +33,42 @@ const config = {
   clean: {
     remove: [_`server/public`, _`rev-manifest.json`],
     create: [_`server/public`]
+  },
+  copy: {
+    src: _`src/assets`,
+    dest: _`server/public/assets`
   }
 };
 
 gulp.task(`css`, async () => {
-  await css(config.css).catch(gooi);
+  await task.css(config.css).catch(gooi);
 });
 
 gulp.task(`js`, async () => {
-  await js(config.js).catch(gooi);
+  await task.js(config.js).catch(gooi);
 });
 
 gulp.task(`rev`, async () => {
-  await rev(config.css.rev, __dirname).catch(gooi);
-  await rev(config.js.rev, __dirname).catch(gooi);
+  await task.rev(config.css.rev, __dirname).catch(gooi);
+  await task.rev(config.js.rev, __dirname).catch(gooi);
 });
 
 gulp.task(`html`, async () => {
-  await html(config.html, __dirname).catch(gooi);
+  await task.html(config.html, __dirname).catch(gooi);
 });
 
 gulp.task(`clean`, async () => {
-  await clean(config.clean).catch(gooi);
+  await task.clean(config.clean).catch(gooi);
 });
 
-gulp.task(`production`, () => sequence(`clean`, `css`, `js`, `rev`, `html`));
+gulp.task(`copy`, async () => {
+  await task.copy(config.copy).catch(gooi);
+});
+
+gulp.task(`production`, () => sequence(`clean`, `copy`, `css`, `js`, `rev`, `html`));
 
 gulp.task(`development`, () => {
-  sequence(`clean`, `css`, `js`, `html`);
+  sequence(`clean`, `copy`, `css`, `js`, `html`);
 
   gulp.watch(`./src/css/**/*.css`, [`css`]);
   gulp.watch(`./src/js/**/*.js`, [`js`]);
