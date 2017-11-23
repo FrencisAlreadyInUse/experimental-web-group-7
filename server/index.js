@@ -1,13 +1,16 @@
 const Path = require(`path`);
 const Hapi = require(`hapi`);
 const Inert = require(`inert`);
+const dotenv = require(`dotenv`);
 
 const Socket = require(`./plugins/socket`);
 const Routes = require(`./plugins/routes`);
 
+dotenv.config();
+
 const server = new Hapi.Server({
-  host: `localhost`,
-  port: 3000,
+  host: process.env.HOST || `localhost`,
+  port: process.env.PORT || 3000,
   routes: {
     files: {
       relativeTo: Path.join(__dirname, `public`)
