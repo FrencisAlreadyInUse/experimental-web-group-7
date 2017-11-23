@@ -1,0 +1,17 @@
+- STYLE_CSS = STYLE_CSS ? STYLE_CSS : 'style.css'
+- SCRIPT_JS = SCRIPT_JS ? SCRIPT_JS : 'script.js'
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title Hellow aframesocket
+    link(rel="stylesheet" type="text/css" href="/css/"+STYLE_CSS)
+  body
+    header
+      h1 Hellow aframesocket
+    button purp to server
+
+    script(type="text/javascript" src="/socket.io/socket.io.js")
+    script(type="text/javascript" src="/js/"+SCRIPT_JS)
