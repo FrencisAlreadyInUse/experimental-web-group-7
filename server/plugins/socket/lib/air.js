@@ -7,8 +7,8 @@ module.exports = function(message, data) {
     JSON.stringify(data)
   )}`;
 
-  console.log(`\n\t${cSocket} ↑ emitted`);
+  console.log(`\n\t${cSocket} ↑ broadcasted`);
   console.log(`\t${cMessage} --> ${cData}`);
 
-  this.emit(message, data);
+  this.broadcast.emit(message, data);
 };
