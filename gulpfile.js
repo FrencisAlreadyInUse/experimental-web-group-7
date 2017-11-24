@@ -1,12 +1,12 @@
 const gulp = require(`gulp`);
 const gutil = require(`gulp-util`);
 const sequence = require(`run-sequence`);
-const Path = require(`path`);
+const path = require(`path`);
 const chalk = require(`chalk`);
 
 const task = require(`./tasks`);
 
-const _ = strings => Path.join(__dirname, strings[0]);
+const _ = strings => path.join(__dirname, strings[0]);
 const gooi = error => gutil.log(chalk.red(`[ERROR]`), error);
 
 const config = {
@@ -74,5 +74,3 @@ gulp.task(`development`, () => {
   gulp.watch(`./src/js/**/*.js`, [`js`]);
   gulp.watch(`./src/**/*.pug`, [`html`]);
 });
-
-gulp.task(`default`, [`development`]);

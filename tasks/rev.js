@@ -13,5 +13,5 @@ module.exports = (config, root) =>
       .pipe(gulp.dest(root))
 
       .on(`error`, reject)
-      .on(`end`, () => resolve(config.glob));
+      .on(`end`, resolve);
   });
