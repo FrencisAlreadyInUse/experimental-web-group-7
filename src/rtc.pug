@@ -1,0 +1,13 @@
+- RTC_CSS = RTC_CSS ? RTC_CSS : 'rtc.css'
+- RTC_JS = RTC_JS ? RTC_JS : 'rtc.js'
+
+doctype html
+html
+  head
+    title RTC Testing
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(type="text/css" href="/css/"+RTC_CSS)
+  body
+    h1 RTC Testing
+    script(type="text/javascript" src="/js/"+RTC_JS)
