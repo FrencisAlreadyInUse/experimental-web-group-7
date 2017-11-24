@@ -1,14 +1,15 @@
-let socket;
+// let socket;
 
-const handleButtonClick = () => {
-  socket.emit(`burp`);
-};
+// const handleButtonClick = () => {
+//   socket.emit(`burp`);
+// };
 
 const init = () => {
-  socket = io();
-
-  const $button = document.querySelector(`button`);
-  $button.addEventListener(`click`, handleButtonClick);
+  console.log(`[init] hi`);
+  // socket = io();
+  //
+  // const $button = document.querySelector(`button`);
+  // $button.addEventListener(`click`, handleButtonClick);
 };
 
 init();

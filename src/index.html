@@ -3,17 +3,74 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Hello, aframesocket</title>
+  <title>WebVR Bowling Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
-  <header>
+
+  <a-scene>
+    <!-- all assets -->
+    <a-assets>
+      <a-asset-item id="cone" src="/assets/collada/bowling-cone.dae"></a-asset-item>
+      <a-asset-item id="tv-screen" src="/assets/collada/tv-screen.dae"></a-asset-item>
+    </a-assets>
+
+    <!-- will be adding star roof to the sky -->
+    <a-sky color="red"></a-sky>
+
+    <!-- TV Screen -->
+    <a-collada-model position="0 3 -8" src="#tv-screen"></a-collada-model>
+
+    <!-- Bowling Cones -->
+    <a-collada-model position="-1.5 -2 -38" src="#cone"></a-collada-model>
+    <a-collada-model position="-.5 -2 -38" src="#cone"></a-collada-model>
+    <a-collada-model position=".5 -2 -38" src="#cone"></a-collada-model>
+    <a-collada-model position="1.5 -2 -38" src="#cone"></a-collada-model>
+
+    <a-collada-model position="-1 -2 -37" src="#cone"></a-collada-model>
+    <a-collada-model position="0 -2 -37" src="#cone"></a-collada-model>
+    <a-collada-model position="1 -2 -37" src="#cone"></a-collada-model>
+
+    <a-collada-model position="-.5 -2 -36" src="#cone"></a-collada-model>
+    <a-collada-model position=".5 -2 -36" src="#cone"></a-collada-model>
+
+    <a-collada-model position="0 -2 -35" src="#cone"></a-collada-model>
+
+    <!-- will add face texture to the ball -->
+    <a-sphere position="0 -1.25 -10" radius=".75" color="#EF2D5E"></a-sphere>
+
+    <!-- Ball Box -->
+    <a-box position="0 -1.6 -42" width="8" height="8" depth="1"></a-box>
+    <a-box position="0 -1.6 -41" width="6" height="6" depth="1" color="black"></a-box>
+    <!-- will be adding wooden texture to alley -->
+    <a-plane color="#6EBAA7" height="8" width="35" rotation="-90 0 90" position="0 -2 -23"></a-plane>
+
+    <!-- Cones indicator -->
+    <a-triangle color="#CCC" position="4 0.175 -3.75" rotation="0 0 180" geometry="vertexA:0 0.67 0;vertexC:0.75 -0.5 0;vertexB:-0.75 -0.5 0" scale="0.9 0.9 0.9"></a-triangle>
+    <!-- circle indicator -->
+    <a-sphere position="4.3 .40 -3.75" radius=".05" color="red"></a-sphere>
+    <a-sphere position="4.1 .40 -3.75" radius=".05" color="red"></a-sphere>
+    <a-sphere position="3.9 .40 -3.75" radius=".05" color="red"></a-sphere>
+    <a-sphere position="3.7 .40 -3.75" radius=".05" color="red"></a-sphere>
+
+    <a-sphere position="4.2 .25 -3.75" radius=".05" color="red"></a-sphere>
+    <a-sphere position="4 .25 -3.75" radius=".05" color="red"></a-sphere>
+    <a-sphere position="3.8 .25 -3.75" radius=".05" color="red"></a-sphere>
+
+    <a-sphere position="4.1 .1 -3.75" radius=".05" color="red"></a-sphere>
+    <a-sphere position="3.9 .1 -3.75" radius=".05" color="red"></a-sphere>
+
+    <a-sphere position="4 -.05 -3.75" radius=".05" color="red"></a-sphere>
+  </a-scene>
+
+  <!-- <header>
     <h1>Hello, aframesocket</h1>
   </header>
-  <button>click</button>
+  <button>click</button> -->
 
-  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/aframe/0.7.1/aframe.min.js"></script>
 </body>
 
 </html>
