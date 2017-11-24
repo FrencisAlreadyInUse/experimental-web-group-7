@@ -12,6 +12,13 @@ module.exports = [
   },
   {
     method: `GET`,
+    path: `/rtc/{param*}`,
+    handler: {
+      file: `rtc.html`
+    }
+  },
+  {
+    method: `GET`,
     path: `/uploads/{param*}`,
     handler: {
       directory: {
