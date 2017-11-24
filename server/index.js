@@ -12,27 +12,35 @@ const Routes = require(`./plugins/routes`);
 dotenv.config();
 
 const report = error => console.log(`${chalk.red(`[ ERROR ]`)}`, error);
-const done = serverUri => console.log(`Server running at:`, serverUri); /* prettier-ignore */
+const done = serverUri => console.log(`Server running at:`, `${chalk.red(serverUri)}\n`); /* prettier-ignore */
 const read = file => readFile(Path.join(__dirname, file), `utf8`).catch(report);
+const development = process.env.NODE_ENV === `development`;
 
 const init = () =>
+  
   new Promise(async resolve => {
+    
     const host = process.env.HOST || `localhost`;
     const port = process.env.PORT || 3000;
 
-    const key = await read(`config/sslcerts/key.pem`);
-    const cert = await read(`config/sslcerts/cert.pem`);
-
-    const server = new Hapi.Server({
+    const serverOptions = {
       host,
       port,
-      tls: {key, cert},
       routes: {
         files: {
           relativeTo: Path.join(__dirname, `public`)
         }
       }
-    });
+    };
+
+    if (development) {
+      const key = await read(`config/sslcerts/key.pem`);
+      const cert = await read(`config/sslcerts/cert.pem`);
+
+      serverOptions[`tls`] = {key, cert};
+    }
+
+    const server = new Hapi.Server(serverOptions);
 
     await server.register(Inert);
 
