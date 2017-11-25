@@ -3,8 +3,8 @@ const chalk = require('chalk');
 const log = require('fancy-log');
 
 module.exports = (file) => {
-  const pluginName = `[${chalk.magenta('ROUTE-PLUGIN')}]`;
+  const pluginName = `[${chalk.magenta('SOCKET-PLUGIN')}]`;
   const fileName = chalk.yellow(Path.basename(file));
 
-  log(`${pluginName} registered "${fileName}"`);
+  log(`${pluginName} loaded "${fileName}"`);
 };
