@@ -3,6 +3,8 @@
   <a-assets>
     <a-asset-item id="cone" src="/assets/collada/bowling-cone.dae"></a-asset-item>
     <a-asset-item id="tv-screen" src="/assets/collada/tv-screen.dae"></a-asset-item>
+    <!-- head on ball -->
+    <img id="face-ball" src="/assets/img/ball/ball-pic.jpg"></img>
   </a-assets>
 
   <!-- will be adding star roof to the sky -->
@@ -26,8 +28,8 @@
 
   <a-collada-model position="0 -2 -35" src="#cone"></a-collada-model>
 
-  <!-- will add face texture to the ball -->
-  <a-sphere position="0 -1.25 -10" radius=".75" color="#EF2D5E"></a-sphere>
+  <!-- Added face texture -->
+  <a-sphere src="#face-ball" position="0 -1.25 -10" radius=".75"></a-sphere>
 
   <!-- Ball Box -->
   <a-box position="0 -1.6 -42" width="8" height="8" depth="1"></a-box>
@@ -35,9 +37,9 @@
   <!-- will be adding wooden texture to alley -->
   <a-plane color="#6EBAA7" height="8" width="35" rotation="-90 0 90" position="0 -2 -23"></a-plane>
 
-  <!-- Cones indicator -->
+  <!-- Cones indicator triangle -->
   <a-triangle color="#CCC" position="4 0.175 -3.75" rotation="0 0 180" geometry="vertexA:0 0.67 0;vertexC:0.75 -0.5 0;vertexB:-0.75 -0.5 0" scale="0.9 0.9 0.9"></a-triangle>
-  <!-- circle indicator -->
+  <!-- Cones indicator sphere -->
   <a-sphere position="4.3 .40 -3.75" radius=".05" color="red"></a-sphere>
   <a-sphere position="4.1 .40 -3.75" radius=".05" color="red"></a-sphere>
   <a-sphere position="3.9 .40 -3.75" radius=".05" color="red"></a-sphere>
