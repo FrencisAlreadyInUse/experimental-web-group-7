@@ -11,7 +11,7 @@ const gooi = error => gutil.log(chalk.red('[ERROR]'), error);
 
 const config = {
   js: {
-    src: [_`src/js/game.js`, _`src/js/rtc.js`],
+    src: [_`src/js/game.js`, _`src/js/rtc.js`, _`src/js/glow.js`],
     dest: _`server/public/js`,
     rev: {
       glob: _`server/public/js/*.js`,
