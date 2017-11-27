@@ -22,6 +22,7 @@
     "hapi": "^17.1.1",
     "inert": "^5.0.1",
     "socket.io": "^2.0.4",
+    "superb": "^2.0.0",
     "webrtc-adapter": "^6.0.2"
   },
   "devDependencies": {

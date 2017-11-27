@@ -7,11 +7,11 @@ const chalk = require('chalk');
 const task = require('./tasks');
 
 const _ = strings => path.join(__dirname, strings[0]);
-const gooi = error => gutil.log(chalk.red('[ERROR]'), error);
+const error = err => gutil.log(chalk.red('[ERROR]'), err);
 
 const config = {
   js: {
-    src: [_`src/js/index.js`, _`src/js/game.js`, _`src/js/vendors.js`],
+    src: [_`src/js/index.js`, _`src/js/game.js`],
     dest: _`server/public/js`,
     rev: {
       glob: _`server/public/js/*.js`,
@@ -34,35 +34,35 @@ const config = {
     remove: [_`server/public`, _`rev-manifest.json`],
     create: [_`server/public`],
   },
-  copy: {
-    src: _`src/assets`,
-    dest: _`server/public/assets`,
-  },
+  copy: [
+    { from: _`src/assets`, to: _`server/public/assets` },
+    { from: _`src/js`, to: _`server/public/js` },
+  ],
 };
 
 gulp.task('css', async () => {
-  await task.css(config.css).catch(gooi);
+  await task.css(config.css).catch(error);
 });
 
 gulp.task('js', async () => {
-  await task.js(config.js).catch(gooi);
+  await task.js(config.js).catch(error);
 });
 
 gulp.task('rev', async () => {
-  await task.rev(config.css.rev, __dirname).catch(gooi);
-  await task.rev(config.js.rev, __dirname).catch(gooi);
+  await task.rev(config.css.rev, __dirname).catch(error);
+  await task.rev(config.js.rev, __dirname).catch(error);
 });
 
 gulp.task('html', async () => {
-  await task.html(config.html, __dirname).catch(gooi);
+  await task.html(config.html, __dirname).catch(error);
 });
 
 gulp.task('clean', async () => {
-  await task.clean(config.clean).catch(gooi);
+  await task.clean(config.clean).catch(error);
 });
 
 gulp.task('copy', async () => {
-  await task.copy(config.copy).catch(gooi);
+  await task.copy(config.copy).catch(error);
 });
 
 gulp.task('production', () => sequence('clean', 'copy', 'css', 'js', 'rev', 'html'));

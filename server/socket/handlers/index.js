@@ -1,4 +1,5 @@
 module.exports = params => ({
+  createRoom: require('./createRoom').bind(params),
   peerWantsACall: require('./peerWantsACall').bind(params),
   peerOffer: require('./peerOffer').bind(params),
   peerAnswer: require('./peerAnswer').bind(params),

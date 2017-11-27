@@ -15,9 +15,9 @@ html
 
     section.section.section-0
       h1 WebVR Bowling Game
-      button#request-connection Request Connection
-      button Create Room
-      button Join Room
+      button#button-request-connection Request Connection
+      button#button-create-room Create Room
+      button#button-join-room Join Room
 
     section.section.section-1
       span user info here (profile picture, name, ...)
@@ -25,12 +25,13 @@ html
     section.section.section-2
       include game.html
 
-
     script(type="text/javascript" src="/socket.io/socket.io.js")
     script(type="text/javascript" src="/js/"+INDEX_JS)
 
     - // we will be loading this stuff later when we arrive on the game page
     - // we will take the data-src and add it as src
     - // but the files will be loaded by index.js immediately when the page loads
-    script(type="text/javascript" data-src="/js/"+VENDORS_JS)
+
+    script(type="text/javascript" data-src="/js/lib/aframe-0.7.1.min.js")
+    script(type="text/javascript" data-src="/js/lib/glow.js")
     script(type="text/javascript" data-src="/js/"+GAME_JS)

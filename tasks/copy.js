@@ -3,6 +3,7 @@ const copy = promisify(require('ncp')); // eslint-disable-line
 
 module.exports = config =>
   new Promise(async (resolve, reject) => {
-    await copy(config.src, config.dest).catch(reject);
+    const copyPromises = config.map(conf => copy(conf.from, conf.to));
+    await Promise.all(copyPromises).catch(reject);
     resolve();
   });
