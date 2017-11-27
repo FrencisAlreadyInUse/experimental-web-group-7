@@ -7,11 +7,11 @@ const uglify = require('rollup-plugin-uglify');
 
 const plugins = [
   noderesolve(),
-  commonjs(),
   babel({
     exclude: 'node_modules/**',
     runtimeHelpers: true,
   }),
+  commonjs(),
 ];
 
 const writeSettings = {

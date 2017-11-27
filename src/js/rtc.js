@@ -1,33 +1,41 @@
-// import 'babel-polyfill'; // eslint-disable-line
+// import 'babel-polyfill';
+import 'webrtc-adapter';
 
 let SignalingServer = null;
 
-const connections = {};
-window.connections = connections;
-const serverOptions = { iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }] };
-const dataOptions = { ordered: false, maxRetransmitTime: 1000 };
-const newUser = { conn: null, channel: null };
+const peers = {};
+
+const RTCPeerConnectionOptions = { iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }] };
+const RTCDataChannelOptions = { ordered: false, maxPacketLifeTime: 1000 };
+
+const newPeer = { connection: null, channel: null };
+
 const $button = document.querySelector('#button');
 
 // ///////////////////////////////////////////////////////////////////////////:
 
-const log = (...data) => console.log('%c LOG ', 'background: orange; color: white', ...data);
+const log = (...data) => {
+  console.log('%c LOG ', 'background: orange; color: white', ...data);
+};
 
-const message = (...data) => console.log('%c LOG ', 'background: green; color: white', ...data);
+const message = (...data) => {
+  console.log('%c LOG ', 'background: green; color: white', ...data);
+};
 
-const error = err => console.error(err.message);
+const error = (err) => {
+  console.error(err.message);
+};
 
 // ///////////////////////////////////////////////////////////////////////////:
 
 const send = (...data) => {
-  const connectionIds = Object.keys(connections);
-  // log('connectionIds', connectionIds);
+  const peerKeys = Object.keys(peers);
 
-  connectionIds.forEach((connId) => {
-    if (!connections[connId].channel) return;
-    if (connections[connId].channel.readyState !== 'open') return;
+  peerKeys.forEach((peerId) => {
+    if (!peers[peerId].channel) return;
+    if (peers[peerId].channel.readyState !== 'open') return;
 
-    connections[connId].channel.send(...data);
+    peers[peerId].channel.send(...data);
   });
 };
 
@@ -36,95 +44,97 @@ window.send = send;
 // ///////////////////////////////////////////////////////////////////////////:
 
 const onPeerWantsACall = (peerId) => {
-  if (connections[peerId]) return;
+  if (peers[peerId]) return;
 
   log('onPeerWantsACall', peerId);
 
-  connections[peerId] = newUser;
-  connections[peerId].conn = new RTCPeerConnection(serverOptions, null);
-  const current = connections[peerId];
+  peers[peerId] = { ...newPeer };
+  const Peer = peers[peerId];
 
-  current.channel = current.conn.createDataChannel('datachannel', dataOptions);
+  Peer.connection = new RTCPeerConnection(RTCPeerConnectionOptions, null);
 
-  current.conn.addEventListener('datachannel', (event) => {
-    current.channel = event.channel;
+  Peer.channel = Peer.connection.createDataChannel('datachannel', RTCDataChannelOptions);
+
+  Peer.connection.addEventListener('datachannel', (event) => {
+    Peer.channel = event.channel;
   });
 
-  current.conn.addEventListener('icecandidate', (RTCPeerConnectionIceEvent) => {
+  Peer.connection.addEventListener('icecandidate', (RTCPeerConnectionIceEvent) => {
     if (!RTCPeerConnectionIceEvent.candidate) return;
 
     SignalingServer.emit('peerIce', peerId, RTCPeerConnectionIceEvent.candidate);
   });
 
-  current.conn.addEventListener('negotiationneeded', () => {
-    current.conn
+  Peer.connection.addEventListener('negotiationneeded', () => {
+    Peer.connection
       .createOffer()
       .then((LocalRTCSessionDescription) => {
-        current.conn.setLocalDescription(LocalRTCSessionDescription);
+        Peer.connection.setLocalDescription(LocalRTCSessionDescription);
         SignalingServer.emit('peerOffer', peerId, LocalRTCSessionDescription);
       })
       .catch(error);
   });
 
-  current.channel.addEventListener('open', () => {
-    current.channel.addEventListener('message', MessageEvent => message(MessageEvent.data));
+  Peer.channel.addEventListener('open', () => {
+    Peer.channel.addEventListener('message', MessageEvent => message(MessageEvent.data));
   });
 };
 
 // ///////////////////////////////////////////////////////////////////////////:
 
 const onPeerOffer = (peerId, RemoteRTCSessionDescription) => {
-  if (connections[peerId]) return;
+  if (peers[peerId]) return;
 
   log('onPeerOffer', peerId);
 
-  connections[peerId] = newUser;
-  connections[peerId].conn = new RTCPeerConnection(serverOptions, null);
-  const current = connections[peerId];
+  peers[peerId] = { ...newPeer };
+  const Peer = peers[peerId];
 
-  current.conn
+  Peer.connection = new RTCPeerConnection(RTCPeerConnectionOptions, null);
+
+  Peer.connection
     .setRemoteDescription(RemoteRTCSessionDescription)
-    .then(() => current.conn.createAnswer())
+    .then(() => Peer.connection.createAnswer())
     .then((LocalRTCSessionDescription) => {
-      current.conn.setLocalDescription(LocalRTCSessionDescription);
+      Peer.connection.setLocalDescription(LocalRTCSessionDescription);
       SignalingServer.emit('peerAnswer', peerId, LocalRTCSessionDescription);
     })
     .catch(error);
 
-  current.conn.addEventListener('icecandidate', (RTCPeerConnectionIceEvent) => {
+  Peer.connection.addEventListener('icecandidate', (RTCPeerConnectionIceEvent) => {
     if (!RTCPeerConnectionIceEvent.candidate) return;
 
     SignalingServer.emit('peerIce', peerId, RTCPeerConnectionIceEvent.candidate);
   });
 
-  current.conn.addEventListener('datachannel', (RTCDataChannelEvent) => {
+  Peer.connection.addEventListener('datachannel', (RTCDataChannelEvent) => {
     if (!RTCDataChannelEvent.channel) return;
 
-    current.channel = RTCDataChannelEvent.channel;
+    Peer.channel = RTCDataChannelEvent.channel;
 
-    current.channel.addEventListener('open', () => {
-      current.channel.addEventListener('message', MessageEvent => message(MessageEvent.data));
+    Peer.channel.addEventListener('open', () => {
+      Peer.channel.addEventListener('message', MessageEvent => message(MessageEvent.data));
     });
 
-    current.channel.addEventListener('close', () => log('datachannel closed'));
+    Peer.channel.addEventListener('close', () => log('datachannel closed'));
   });
 };
 
 // ///////////////////////////////////////////////////////////////////////////:
 
 const onPeerAnswer = (peerId, RemoteRTCSessionDescription) => {
-  if (!connections[peerId]) return;
+  if (!peers[peerId]) return;
 
-  connections[peerId].conn.setRemoteDescription(RemoteRTCSessionDescription);
+  peers[peerId].connection.setRemoteDescription(RemoteRTCSessionDescription);
 };
 
 // ///////////////////////////////////////////////////////////////////////////:
 
 const onPeerIce = (peerId, RTCIceCandidate) => {
   if (!RTCIceCandidate.candidate) return;
-  if (!connections[peerId]) return;
+  if (!peers[peerId]) return;
 
-  connections[peerId].conn.addIceCandidate(RTCIceCandidate);
+  peers[peerId].connection.addIceCandidate(RTCIceCandidate);
 };
 
 // ///////////////////////////////////////////////////////////////////////////:
