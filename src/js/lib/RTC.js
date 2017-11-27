@@ -3,17 +3,11 @@ import 'webrtc-adapter';
 export default class RTC {
   constructor(options) {
     this.requestConnectionButton = options.requestConnectionButton;
+    this.createRoomButton = options.createRoomButton;
+
     this.receiveMessageHandler = options.receiveMessageHandler;
 
-    if (!this.requestConnectionButton) {
-      throw new Error('requestConnectionButton is required in RTC class.');
-    }
-    if (!this.receiveMessageHandler) {
-      throw new Error('receiveMessageHandler is required in RTC class.');
-    }
-
     this.peers = {};
-    this.newPeer = { connection: null, channel: null };
 
     this.RTCPeerConnectionOptions = { iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }] };
     this.RTCDataChannelOptions = { ordered: false, maxPacketLifeTime: 1000 };
@@ -25,13 +19,19 @@ export default class RTC {
   }
 
   bindEventHandlers() {
-    this.send = this.send.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
+
     this.onConnection = this.onConnection.bind(this);
     this.onPeerIce = this.onPeerIce.bind(this);
     this.onPeerAnswer = this.onPeerAnswer.bind(this);
     this.onPeerOffer = this.onPeerOffer.bind(this);
     this.onPeerWantsACall = this.onPeerWantsACall.bind(this);
+    this.onPeerDisconnect = this.onPeerDisconnect.bind(this);
+    this.onRoomCreated = this.onRoomCreated.bind(this);
+    this.onSignalingServerMessage = this.onSignalingServerMessage.bind(this);
+
     this.askConnection = this.askConnection.bind(this);
+    this.createRoom = this.createRoom.bind(this);
   }
 
   setEventListeners() {
@@ -40,10 +40,15 @@ export default class RTC {
     this.signalingServer.addEventListener('peerAnswer', this.onPeerAnswer);
     this.signalingServer.addEventListener('peerOffer', this.onPeerOffer);
     this.signalingServer.addEventListener('peerWantsACall', this.onPeerWantsACall);
+    this.signalingServer.addEventListener('peerDisconnect', this.onPeerDisconnect);
+    this.signalingServer.addEventListener('roomCreated', this.onRoomCreated);
+    this.signalingServer.addEventListener('signalingServerMessage', this.onSignalingServerMessage);
+
     this.requestConnectionButton.addEventListener('click', this.askConnection);
+    this.createRoomButton.addEventListener('click', this.createRoom);
   }
 
-  send(...data) {
+  sendMessage(...data) {
     const peerKeys = Object.keys(this.peers);
 
     peerKeys.forEach((peerId) => {
@@ -74,7 +79,7 @@ export default class RTC {
   onPeerOffer(peerId, RemoteRTCSessionDescription) {
     if (this.peers[peerId]) return;
 
-    this.peers[peerId] = { ...this.newPeer };
+    this.peers[peerId] = { connection: null, channel: null };
     const Peer = this.peers[peerId];
 
     Peer.connection = new RTCPeerConnection(this.RTCPeerConnectionOptions, null);
@@ -111,7 +116,7 @@ export default class RTC {
   onPeerWantsACall(peerId) {
     if (this.peers[peerId]) return;
 
-    this.peers[peerId] = { ...this.newPeer };
+    this.peers[peerId] = { connection: null, channel: null };
     const Peer = this.peers[peerId];
 
     Peer.connection = new RTCPeerConnection(this.RTCPeerConnectionOptions, null);
@@ -146,7 +151,33 @@ export default class RTC {
     // Peer.channel.addEventListener('close', null);
   }
 
+  onPeerDisconnect(peerId) {
+    console.log('onPeerDisconnect');
+
+    if (!this.peers[peerId]) return;
+
+    console.log('%c BEYBEY ', 'background: orange; color: white', peerId);
+
+    this.peers[peerId].channel.close();
+    this.peers[peerId].connection.close();
+    delete this.peers[peerId];
+  }
+
+  // eslint-disable-next-line
+  onRoomCreated(roomName) {
+    console.log(roomName);
+  }
+
+  // eslint-disable-next-line
+  onSignalingServerMessage(message) {
+    console.log(message);
+  }
+
   askConnection() {
     this.signalingServer.emit('peerWantsACall');
+  }
+
+  createRoom() {
+    this.signalingServer.emit('createRoom');
   }
 }
