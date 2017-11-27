@@ -1,9 +1,11 @@
 {
   "extends": "eslint-config-airbnb-base",
   "rules": {
-    "no-console": 0,
+    "import/no-dynamic-require": "off",
+    "import/no-extraneous-dependencies": "off",
+    "no-console": "off",
     "global-require": "off",
-    "import/no-dynamic-require": "off"
+    "no-new": "off"
   },
   "globals": {
     "io": true

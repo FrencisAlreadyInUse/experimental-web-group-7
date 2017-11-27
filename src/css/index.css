@@ -1,0 +1,24 @@
+@import 'lib/reset';
+
+body {
+  font-size: 1.6rem;
+  font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #131212;
+  color: #b8b8b8;
+}
+
+.section {
+  width: 100vw;
+  height: 100vh;
+}
+
+button {
+  font-size: 2rem;
+  appearance: none;
+  padding: .8rem 1.5rem;
+  border-radius: 0;
+  border: none;
+  background-color: #252525;
+  color: #b8b8b8;
+  margin: 3rem;
+}
