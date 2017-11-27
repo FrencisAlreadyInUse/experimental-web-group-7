@@ -25,6 +25,7 @@
     "webrtc-adapter": "^6.0.2"
   },
   "devDependencies": {
+    "aframe": "^0.7.1",
     "babel-core": "^6.21.0",
     "babel-eslint": "^8.0.2",
     "babel-plugin-external-helpers": "^6.22.0",

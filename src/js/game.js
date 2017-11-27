@@ -1,5 +1,5 @@
 const init = () => {
-  console.log('[init] hi');
+  console.log('game initted');
 };
 
 init();
