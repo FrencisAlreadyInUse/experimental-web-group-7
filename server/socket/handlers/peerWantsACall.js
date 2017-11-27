@@ -1,5 +1,5 @@
-module.exports = function handlePeerWantsACall(peerId) {
-  if (!this.users[peerId]) return;
+module.exports = function handlePeerWantsACall() {
+  if (!this.users[this.clientSocket.id]) return;
 
-  io.to(peerId).emit('peerWantsACall', this.clientSocket.id);
+  this.cs.air('peerWantsACall', this.clientSocket.id);
 };

@@ -1,6 +1,6 @@
-module.exports = function handlePeerOffer(peerId, o = false) {
+module.exports = function handlePeerOffer(peerId, offer = false) {
   if (!this.users[peerId]) return;
-  if (!o) return;
+  if (!offer) return;
 
-  this.io.to(peerId).emit('peerOffer', this.clientSocket.id, o);
+  this.ss.to(peerId, 'peerOffer', this.clientSocket.id, offer);
 };

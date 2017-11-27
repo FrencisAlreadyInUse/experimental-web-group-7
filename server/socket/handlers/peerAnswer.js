@@ -1,8 +1,8 @@
-module.exports = function handlePeerAnswer(peerId, o = false) {
+module.exports = function handlePeerAnswer(peerId, answer = false) {
   if (!this.users[peerId]) return;
-  if (!o) return;
+  if (!answer) return;
 
-  this.ss.to(peerId, 'peerAnswer', this.clientSocket.id, o);
+  this.ss.to(peerId, 'peerAnswer', this.clientSocket.id, answer);
 
   // link these two users together
   this.users[this.clientSocket.id].peers[peerId] = true;

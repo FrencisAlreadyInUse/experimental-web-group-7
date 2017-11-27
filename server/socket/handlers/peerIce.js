@@ -1,6 +1,6 @@
-module.exports = function handlePeerIce(peerId, o = false) {
+module.exports = function handlePeerIce(peerId, data = false) {
   if (!this.users[peerId]) return;
-  if (!o) return;
+  if (!data) return;
 
-  io.to(peerId).emit('peerIce', this.clientSocket.id, o);
+  this.ss.to(peerId, 'peerIce', this.clientSocket.id, data);
 };

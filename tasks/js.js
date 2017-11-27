@@ -1,35 +1,35 @@
-const path = require(`path`);
-const rollup = require(`rollup`);
-const resolve = require(`rollup-plugin-node-resolve`);
-const commonjs = require(`rollup-plugin-commonjs`);
-const babel = require(`rollup-plugin-babel`);
-const uglify = require(`rollup-plugin-uglify`);
+const path = require('path');
+const rollup = require('rollup');
+const noderesolve = require('rollup-plugin-node-resolve');
+const commonjs = require('rollup-plugin-commonjs');
+const babel = require('rollup-plugin-babel');
+const uglify = require('rollup-plugin-uglify');
 
 const plugins = [
-  resolve(),
+  noderesolve(),
   commonjs(),
   babel({
-    exclude: `node_modules/**`,
-    runtimeHelpers: true
-  })
+    exclude: 'node_modules/**',
+    runtimeHelpers: true,
+  }),
 ];
 
 const writeSettings = {
-  format: `iife`,
-  sourcemap: true
+  format: 'iife',
+  sourcemap: true,
 };
 
-if (process.env.NODE_ENV === `production`) {
+if (process.env.NODE_ENV === 'production') {
   plugins.push(uglify());
   writeSettings.sourcemap = false;
 }
 
-const bundle = (file, dest) =>
+const createBundle = (file, dest) =>
   new Promise(async (resolve, reject) => {
     const bundle = await rollup
       .rollup({
         input: file,
-        plugins
+        plugins,
       })
       .catch(reject);
 
@@ -38,7 +38,7 @@ const bundle = (file, dest) =>
     await bundle
       .write({
         file: path.join(dest, `${output}`),
-        ...writeSettings
+        ...writeSettings,
       })
       .catch(reject);
 
@@ -47,7 +47,7 @@ const bundle = (file, dest) =>
 
 module.exports = config =>
   new Promise(async (resolve, reject) => {
-    const bundlePromises = config.src.map(file => bundle(file, config.dest));
+    const bundlePromises = config.src.map(file => createBundle(file, config.dest));
     await Promise.all(bundlePromises).catch(reject);
     resolve();
   });

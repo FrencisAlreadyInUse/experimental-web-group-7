@@ -1,6 +1,9 @@
 const chalk = require('chalk');
+const log = require('fancy-log');
 
 const handlersGenerator = require('./handlers');
+
+const users = {};
 
 module.exports = (
   server,
@@ -14,8 +17,6 @@ module.exports = (
   const ss = serverSocketHelperGenerator({ socket: serverSocket, label });
   const cs = clientSocketHelperGenerator({ socket: clientSocket, label });
 
-  const users = {};
-
   const handlers = handlersGenerator({
     users,
     serverSocket,
@@ -26,19 +27,15 @@ module.exports = (
 
   users[clientSocket.id] = { peers: [] };
 
-  ss.to(clientSocket.id, 'connectionUrl', server.info.uri);
+  log(`[${chalk.blue('SIGNALING-SERVER')}] ↓ received "${chalk.yellow('connect')}" from "${chalk.yellow(clientSocket.id)}"`);
+
+  // cs.air('peerConnection', clientSocket.id);
+
+  cs.on('peerWantsACall', handlers.peerWantsACall);
+  cs.on('peerIce', handlers.peerIce);
+  cs.on('peerAnswer', handlers.peerAnswer);
+  cs.on('peerOffer', handlers.peerOffer);
+  cs.on('disconnect', handlers.disconnect);
+
   ss.to(clientSocket.id, 'users', users);
-  cs.air('peerConnection', clientSocket.id);
-
-  ss.on('peerWantsACall', handlers.peerWantsACall);
-  ss.on('peerOffer', handlers.peerOffer);
-  ss.on('peerAnswer', handlers.peerAnswer);
-  ss.on('peerIce', handlers.peerIce);
-
-  ss.on('disconnect', () => {
-    if (!users[clientSocket.id]) return;
-
-    handlers.notifyPeersOfDisconnect(clientSocket.id);
-    handlers.removePeerFromUsers(clientSocket.id);
-  });
 };
