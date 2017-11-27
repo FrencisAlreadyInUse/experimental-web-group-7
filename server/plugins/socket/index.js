@@ -7,7 +7,7 @@ const clientSocketHelperGenerator = require('./lib/helpers/clientSocketHelper');
 module.exports.name = 'socket';
 module.exports.version = '1.0.0';
 
-module.exports.register = async (server, options) => {
+module.exports.register = (server, options) => {
   const { files } = options;
 
   if (!files) throw new Error('socket plugin needs a "files" array to load socket files from.');

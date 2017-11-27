@@ -1,5 +1,6 @@
 - GAME_CSS = GAME_CSS ? GAME_CSS : 'game.css'
 - GAME_JS = GAME_JS ? GAME_JS : 'game.js'
+- GLOW_JS = GLOW_JS ? GLOW_JS : 'glow.js'
 
 doctype html
 html
@@ -8,8 +9,9 @@ html
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     link(type="text/css" href="/css/"+GAME_CSS)
+    
     script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/aframe/0.7.1/aframe.min.js")
-    script(type="text/javascript" src="/js/glow.js")
+    script(type="text/javascript" src="/js/"+GLOW_JS)
+    script(type="text/javascript" src="/js/"+GAME_JS)
   body
     include game.html
-    script(type="text/javascript" src="/js/"+GAME_JS)

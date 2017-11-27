@@ -1,5 +1,5 @@
-const {promisify} = require(`util`);
-const copy = promisify(require(`ncp`));
+const { promisify } = require('util');
+const copy = promisify(require('ncp')); // eslint-disable-line
 
 module.exports = config =>
   new Promise(async (resolve, reject) => {

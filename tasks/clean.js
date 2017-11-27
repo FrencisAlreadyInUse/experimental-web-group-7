@@ -1,6 +1,6 @@
-const {promisify} = require(`util`);
-const rimraf = promisify(require(`rimraf`));
-const mkdirp = promisify(require(`mkdirp`));
+const { promisify } = require('util');
+const rimraf = promisify(require('rimraf')); // eslint-disable-line
+const mkdirp = promisify(require('mkdirp')); // eslint-disable-line
 
 module.exports = config =>
   new Promise(async (resolve, reject) => {
