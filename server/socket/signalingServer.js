@@ -2,18 +2,9 @@ const chalk = require('chalk');
 const log = require('fancy-log');
 
 const handlersGenerator = require('./handlers');
+const Store = require('./classes/Store');
 
-const store = {
-  maxRooms: 5,
-  rooms: {
-    // roomName: [
-    //   userId, userId, userId, ...
-    // ]
-  },
-  users: {
-    // id: roonName
-  },
-};
+const store = new Store();
 
 module.exports = (
   server,
@@ -38,8 +29,9 @@ module.exports = (
   log(`[${chalk.blue('SIGNALING-SERVER')}] ↓ received "${chalk.yellow('connect')}" from "${chalk.yellow(clientSocket.id)}"`);
 
   cs.on('createRoom', handlers.createRoom);
+  cs.on('joinRoom', handlers.joinRoom);
+  cs.on('userReady', handlers.userReady);
 
-  cs.on('peerWantsACall', handlers.peerWantsACall);
   cs.on('peerOffer', handlers.peerOffer);
   cs.on('peerAnswer', handlers.peerAnswer);
   cs.on('peerIce', handlers.peerIce);
