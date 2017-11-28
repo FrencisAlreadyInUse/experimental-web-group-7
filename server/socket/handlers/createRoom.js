@@ -1,22 +1,28 @@
-const superb = require('superb');
-
-const newRoomName = (rooms) => {
-  const roomName = superb();
-  if (rooms[roomName]) return newRoomName();
-  return roomName;
-};
+const Room = require('./../classes/Room');
 
 module.exports = function createRoom() {
-  const roomNames = Object.keys(this.store.rooms);
-  if (roomNames.length >= this.store.maxRooms) {
-    this.ss.to(this.clientSocket.id, 'signalingServerMessage', "The server is at it's maximum amount of rooms. Try again later"); /* prettier-ignore */
+  const clientId = this.clientSocket.id;
+
+  if (this.store.roomsFull) {
+    this.ss.to(
+      clientId,
+      'signalingServerMessage',
+      'roomError',
+      "The server is at it's maximum amount of rooms. Try again later",
+    );
     return;
   }
 
-  const roomName = newRoomName(this.store.rooms);
-  this.store.rooms[roomName] = [
-    this.clientSocket.id,
-  ];
+  // create new room and add current user in it
+  // then add room to store
+  const currentRoomNames = this.store.roomNames;
+  const roomName = Room.generateName(currentRoomNames);
+  const roomInstance = new Room(clientId);
+  this.store.addRoom(roomName, roomInstance);
 
-  this.ss.to(this.clientSocket.id, 'signalingServerMessage', roomName);
+  // add user to users object
+  this.store.users[clientId] = roomName;
+
+  // send room name to user
+  this.ss.to(clientId, 'signalingServerMessage', 'roomCreated', roomName);
 };

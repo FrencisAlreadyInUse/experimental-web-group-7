@@ -1,31 +1,95 @@
-import RTC from './lib/RTC';
+import DataChannel from './lib/DataChannel';
+import thumbDataURI from './lib/thumbDataURI';
 
-const $buttonRequestConnection = document.querySelector('#button-request-connection');
-const $buttonCreateRoom = document.querySelector('#button-create-room');
-const $buttonJoinRoom = document.querySelector('#button-join-room');
+let datachannel = null;
 
-const onMessage = (message) => {
-  console.log('%c MESSAGE ', 'background: green; color: white', message);
+const $buttonCreateRoom = document.querySelector('.button_create-room');
+const $targetRoomName = document.querySelector('.target_room-name');
+const $inputRoomName = document.querySelector('.input_room-name');
+const $buttonJoinRoom = document.querySelector('.button_join-room');
+
+const $inputUserName = document.querySelector('.input_user-name');
+const $inputUserPicture = document.querySelector('.input_user-picture');
+const $readyButton = document.querySelector('.button_ready');
+
+const log = {
+  blue: (label, ...data) =>
+    console.log(`%c ${label} `, 'background: dodgerblue; color: white', ...data),
+  red: (label, ...data) => console.log(`%c ${label} `, 'background: red; color: white', ...data),
+  green: (label, ...data) =>
+    console.log(`%c ${label} `, 'background: yellowgreen; color: white', ...data),
+};
+
+const onRoomError = (event) => {
+  log.orange('WARN', event.detail.message);
+};
+
+const onRoomSuccess = (event) => {
+  const action = event.detail.action === 'created' ? 'created and joined' : 'joined';
+  const name = event.detail.room.name;
+
+  if (event.detail.action === 'created') {
+    $targetRoomName.textContent = name;
+  }
+
+  $inputRoomName.disabled = true;
+  $buttonCreateRoom.disabled = true;
+  $buttonJoinRoom.disabled = true;
+
+  log.blue('LOG', `Successfully ${action} the "${name}" room`);
+};
+
+const onStateChange = (event) => {
+  const state = event.detail.state;
+  const peerId = event.detail.connection.peerId;
+
+  if (state === 'open') log.green('CONNECTION', `established with ${peerId}`);
+  if (state === 'close') log.red('DISCONNECTION', `from ${peerId}`);
+};
+
+const onPeerUpdate = (event) => {
+  log.blue('LOG', `got update from peer ${event.detail.peer.id} name: ${event.detail.peer.name}`);
+};
+
+const onReady = () => {
+  const name = $inputUserName.value;
+  const picture = $inputUserPicture.files[0];
+
+  if (!name || name === '' || !picture) return;
+
+  thumbDataURI(picture).then(uri => datachannel.signalReady(name, uri));
+};
+
+const onJoinRoom = () => {
+  const roomName = $inputRoomName.value;
+  if (!roomName || roomName === '') return;
+  datachannel.joinRoom(roomName);
+};
+
+const onKeyDown = (event) => {
+  if (event.keyCode !== 13) return;
+  onJoinRoom();
+};
+
+const initDataChannel = () => {
+  datachannel = new DataChannel();
+
+  $buttonJoinRoom.addEventListener('click', onJoinRoom);
+  $inputRoomName.addEventListener('keydown', onKeyDown);
+  $buttonCreateRoom.addEventListener('click', datachannel.createRoom);
+  $readyButton.addEventListener('click', onReady);
+
+  datachannel.on('roomError', onRoomError);
+  datachannel.on('roomSuccess', onRoomSuccess);
+  datachannel.on('dataChannelStateChange', onStateChange);
+  datachannel.on('peerUpdate', onPeerUpdate);
 };
 
 const init = () => {
-  //
-  const RTCOptions = {
-    requestConnectionButton: $buttonRequestConnection,
-    createRoomButton: $buttonCreateRoom,
-    receiveMessageHandler: onMessage,
-  };
+  initDataChannel();
 
-  let DataChannel = null;
-
-  try {
-    DataChannel = new RTC(RTCOptions);
-    window.send = DataChannel.sendMessage;
-  } catch (error) {
-    console.error(error);
-  }
-
-  $buttonJoinRoom.addEventListener('click', () => {});
+  window.peers = datachannel.peers;
+  window.send = datachannel.sendMessage;
 };
 
 init();

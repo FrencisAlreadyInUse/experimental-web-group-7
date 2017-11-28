@@ -14,13 +14,20 @@ html
   body
 
     section.section.section-0
-      h1 WebVR Bowling Game
-      button#button-request-connection Request Connection
-      button#button-create-room Create Room
-      button#button-join-room Join Room
+      div.row
+        button.button.button_create-room Create Room
+        div.input.target_room-name
+      div.row
+        input.input.input_room-name(placeholder="Room Name")
+        button.button.button_join-room Join Room
 
     section.section.section-1
-      span user info here (profile picture, name, ...)
+      div.row
+        input.input.input_user-name(placeholder="User Name")
+      div.row
+        input.input.input_user-picture(type="file" accept="image/*")
+      div.row
+        button.button.button_ready Ready
 
     section.section.section-2
       include game.html

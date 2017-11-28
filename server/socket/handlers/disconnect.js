@@ -1,28 +1,32 @@
 module.exports = function disconnect() {
   const clientId = this.clientSocket.id;
+
+  // find out in which room the client was joined in
   const clientRoomName = this.store.users[clientId];
 
   // if the user is not found in a room don't do anything
   if (!clientRoomName) return;
 
-  // remove user from the users object
-  delete this.store.users[clientId];
+  // return if the room doesn't exist
+  if (!this.store.roomExists(clientRoomName)) return;
 
-  const clientRoomUsers = this.store.rooms[clientRoomName];
+  const roomInstance = this.store.getRoom(clientRoomName);
 
   // remove user from the room
-  const index = clientRoomUsers.indexOf(clientId);
-  if (index !== -1) clientRoomUsers.splice(index, 1);
+  roomInstance.removeUser(clientId);
 
-  // remove room if there are no users left
-  // and return (no one left to notify)
-  if (clientRoomUsers.length === 0) {
-    delete this.store.rooms[clientRoomName];
+  // remove the room from the store if nobody is left
+  // and return because there is no one left to notify
+  if (roomInstance.isEmpty) {
+    this.store.removeRoom(clientRoomName);
     return;
   }
 
+  // remove user from the users object
+  delete this.store.users[clientId];
+
   // send remaining users that clientId disconnected
-  clientRoomUsers.forEach((roomUser) => {
-    this.ss.to(roomUser, 'peerDisconnect', clientId);
+  roomInstance.otherUsers(clientId).forEach((userId) => {
+    this.ss.to(userId, 'peerDisconnect', clientId);
   });
 };

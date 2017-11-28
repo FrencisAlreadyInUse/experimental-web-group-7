@@ -10,7 +10,10 @@ module.exports = (config, root) =>
     const locals = {};
 
     let revdata;
-    revdata = await fs.readJson(manifest).catch(() => (revdata = {})); // eslint-disable-line
+    revdata = await fs.readJson(manifest).catch(() => {
+      revdata = {};
+    });
+
     revdata = _.mapKeys(revdata, (value, key) => key.toUpperCase().replace(/(\.|-)/, '_'));
 
     gulp
