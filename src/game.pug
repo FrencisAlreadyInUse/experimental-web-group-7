@@ -13,25 +13,30 @@ html
     link(type="text/css" rel="stylesheet" href="/css/"+INDEX_CSS)
     include webfontloader.html
   body
+    main
+      header.main__header
+        h1.main-title.sr-only Virtual Lanes
+      section.dp-f.ff-rnw.jc-clanding.section.section-0
+        header.dp-f.jc-c.ai-c.landing__header
+          h1.dp-f.ff-cnw.landing__title Virtual
+            span.dp-f.as-fe.landing__title__span Lanes
+        article.dp-f.ff-cnw.ai-c.landing__content
+          h2.landing__subtitle a multiplayer virtual reality bowling game
+          div.dp-f.ff-rnw.ai-c.jc-sb.btn-wrapper
+            button.dp-f.btn.button_create-room Create Room
+            button.dp-f.btn.button_join-room Join Room
 
-    section.section.section-0
-      div.row
-        button.button.button_create-room Create Room
-        div.input.target_room-name
-      div.row
-        input.input.input_room-name(placeholder="Room Name")
-        button.button.button_join-room Join Room
 
-    section.section.section-1
-      div.row
-        input.input.input_user-name(placeholder="User Name")
-      div.row
-        input.input.input_user-picture(type="file" accept="image/*")
-      div.row
-        button.button.button_ready Ready
+      section.section.section-1
+        div.row
+          input.input.input_user-name(placeholder="User Name")
+        div.row
+          input.input.input_user-picture(type="file" accept="image/*")
+        div.row
+          button.button.button_ready Ready
 
-    section.section.section-2
-      include game.html
+      section.section.section-2
+        include game.html
 
     script(type="text/javascript" src="/socket.io/socket.io.js" defer)
     script(type="text/javascript" src="/js/vendor/webrtc-adapter-6.0.2.min.js" defer)
