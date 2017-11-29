@@ -3,7 +3,7 @@ import thumbDataURI from './lib/thumbDataURI';
 
 let datachannel = null;
 
-const currentSection = 0;
+// const currentSection = 0;
 
 const $buttonCreateRoom = document.querySelector('.button_create-room');
 const $targetRoomName = document.querySelector('.target_room-name');
