@@ -2,7 +2,6 @@
 yarn-error.log
 
 node_modules
-server/public
 server/config/sslcerts
 
 .env
