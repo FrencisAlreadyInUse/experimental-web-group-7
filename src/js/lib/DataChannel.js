@@ -243,4 +243,9 @@ export default class DataChannel extends EventTarget {
   signalReady(name, uri) {
     this.signalingServer.emit('userReady', JSON.stringify({ name, uri }));
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  startGame() {
+    //
+  }
 }

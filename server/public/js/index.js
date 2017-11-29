@@ -394,6 +394,20 @@ var thumbDataURI = (function (image) {
   });
 });
 
+// ja dat gaat te samen -> :) Maar uhm nu je heir toch bent, kunnen we t anders wel eens doorlopen
+
+
+// anders effe skype audio call?
+// totally fine
+
+// effe skype installeren :p
+// of via web zal ik doen
+
+// -> Francis De Clercq (skype)
+
+// ik kom he :p
+
+// -> Top (ik check ondertussen de files in de lib-map)
 var datachannel = null;
 
 var $buttonCreateRoom = document.querySelector('.button_create-room');
@@ -454,6 +468,8 @@ var onRoomSuccess = function onRoomSuccess(event) {
 
   if (event.detail.action === 'created') {
     $targetRoomName.textContent = name;
+
+    // start knop genereren en in pagina zetten
   }
 
   $inputRoomName.disabled = true;
@@ -497,6 +513,15 @@ var onKeyDown = function onKeyDown(event) {
   onJoinRoom();
 };
 
+var onGameStart = function onGameStart() {
+  //
+  $scripts = Array.from(document.querySelectorAll('.deferredStyle'));
+  $scripts.forEach(function ($script) {
+    var src = $script.dataset.src;
+    $script.src = src;
+  });
+};
+
 var initDataChannel = function initDataChannel() {
   datachannel = new DataChannel();
 
@@ -509,6 +534,7 @@ var initDataChannel = function initDataChannel() {
   datachannel.on('roomSuccess', onRoomSuccess);
   datachannel.on('dataChannelStateChange', onStateChange);
   datachannel.on('peerUpdate', onPeerUpdate);
+  datachannel.on('gameStart', onGameStart);
 };
 
 var init = function init() {
