@@ -3,6 +3,8 @@ import thumbDataURI from './lib/thumbDataURI';
 
 let datachannel = null;
 
+// const currentSection = 0;
+
 const $buttonCreateRoom = document.querySelector('.button_create-room');
 const $targetRoomName = document.querySelector('.target_room-name');
 const $inputRoomName = document.querySelector('.input_room-name');
@@ -11,6 +13,8 @@ const $buttonJoinRoom = document.querySelector('.button_join-room');
 const $inputUserName = document.querySelector('.input_user-name');
 const $inputUserPicture = document.querySelector('.input_user-picture');
 const $readyButton = document.querySelector('.button_ready');
+
+const $scripts = Array.from(document.querySelectorAll('.deferredStyle'));
 
 const log = {
   blue: (l, ...d) => console.log(`%c ${l} `, 'background:#1e90ff;color:#ff711e', ...d),
@@ -29,7 +33,13 @@ const onRoomSuccess = (event) => {
 
   if (event.detail.action === 'created') {
     $targetRoomName.textContent = name;
+
+    // start knop genereren en in pagina zetten
+    // $button.addEventListener('click', datachannel.startGame)
   }
+
+  // body { overflow: hidden; }
+  // window.scrollTop += window.clientHeight;
 
   $inputRoomName.disabled = true;
   $buttonCreateRoom.disabled = true;
@@ -70,6 +80,13 @@ const onKeyDown = (event) => {
   onJoinRoom();
 };
 
+const onGameStart = () => {
+  $scripts.forEach(($script) => {
+    const src = $script.dataset.src;
+    $script.src = src;
+  });
+};
+
 const initDataChannel = () => {
   datachannel = new DataChannel();
 
@@ -82,10 +99,20 @@ const initDataChannel = () => {
   datachannel.on('roomSuccess', onRoomSuccess);
   datachannel.on('dataChannelStateChange', onStateChange);
   datachannel.on('peerUpdate', onPeerUpdate);
+  datachannel.on('gameStart', onGameStart);
+};
+
+const loadScripts = () => {
+  $scripts.forEach(($script) => {
+    const $tempScript = document.createElement('script');
+    const src = $script.dataset.src;
+    $tempScript.src = src;
+  });
 };
 
 const init = () => {
   initDataChannel();
+  loadScripts();
 
   window.peers = datachannel.peers;
   window.send = datachannel.sendMessage;
