@@ -20,11 +20,11 @@ const _ = strings => Path.join(__dirname, strings[0]);
 
 const init = () =>
   new Promise(async (resolve) => {
-    const host = process.env.HOST || 'localhost';
+    // const host = process.env.HOST || 'localhost';
     const port = process.env.PORT || 3000;
 
     const serverOptions = {
-      host,
+      // host,
       port,
       routes: {
         files: {
