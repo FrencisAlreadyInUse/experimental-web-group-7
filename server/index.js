@@ -20,11 +20,10 @@ const _ = strings => Path.join(__dirname, strings[0]);
 
 const init = () =>
   new Promise(async (resolve) => {
-    // const host = process.env.HOST || 'localhost';
     const port = process.env.PORT || 3000;
+    const host = process.env.HOST || 'localhost';
 
     const serverOptions = {
-      // host,
       port,
       routes: {
         files: {
@@ -38,6 +37,7 @@ const init = () =>
       const cert = await read('config/sslcerts/cert.pem');
 
       serverOptions.tls = { key, cert };
+      serverOptions.host = host;
     }
 
     const server = new Hapi.Server(serverOptions);

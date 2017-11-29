@@ -1,5 +1,3 @@
-import 'webrtc-adapter';
-
 import EventTarget from './EventTarget';
 
 export default class DataChannel extends EventTarget {

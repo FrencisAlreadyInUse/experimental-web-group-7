@@ -1,5 +1,3 @@
-import 'webrtc-adapter';
-
 import EventTarget from './EventTarget';
 
 export default class DataChannel extends EventTarget {
@@ -74,9 +72,16 @@ export default class DataChannel extends EventTarget {
   }
 
   onPeerOffer(peerId, RemoteRTCSessionDescription) {
-    if (this.peers[peerId]) return;
+    // if there is no peer yet, create an empty one
+    if (!this.peers[peerId]) this.peers[peerId] = { ...this.newPeer };
 
-    this.peers[peerId] = { ...this.newPeer };
+    // else if the peer did exists
+    // check if there is no connection yet
+    // the peer object might exists since we can get 'userUpdate' before 'peerOffer'
+    // if we find a connection, then the connection is already setup. so we won't need
+    // to create a new one
+    if (this.peers[peerId].connection) return;
+
     const Peer = this.peers[peerId];
 
     Peer.connection = new RTCPeerConnection(this.RTCPeerConnectionOptions, null);
@@ -172,7 +177,8 @@ export default class DataChannel extends EventTarget {
 
   // eslint-disable-next-line class-methods-use-this
   onPeerUpdate(peerId, data) {
-    if (!this.peers[peerId]) return;
+    // the peer might not exists yet becaouse 'peerUpdate' can occure before 'peerOffer'
+    if (!this.peers[peerId]) this.peers[peerId] = { ...this.newPeer };
 
     const userData = JSON.parse(data);
 

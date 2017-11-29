@@ -12,7 +12,7 @@ module.exports = function userReady(data) {
   // add the user data to the user
   // and set user.ready to true
   const userData = JSON.parse(data);
-  room.updateUser(clientId, userData.name, userData.uri);
+  room.insertUserData(clientId, userData.name, userData.uri);
 
   // send user data to other user
   const otherUsers = room.otherUsers(clientId);

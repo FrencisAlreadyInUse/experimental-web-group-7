@@ -5,6 +5,7 @@ module.exports = class Room {
     this.maxUsers = 5;
     this.creator = userId;
     this.users = {};
+    this.open = true;
 
     this.bindClassMethods();
     this.addUser(userId);
@@ -50,10 +51,17 @@ module.exports = class Room {
     };
   }
 
-  updateUser(userId, name = null, uri = null) {
+  insertUserData(userId, name = null, uri = null) {
     this.users[userId].name = name;
     this.users[userId].uri = uri;
     this.users[userId].ready = true;
+  }
+
+  getUserData(userId) {
+    return {
+      name: this.users[userId].name,
+      uri: this.users[userId].uri,
+    };
   }
 
   removeUser(userId) {

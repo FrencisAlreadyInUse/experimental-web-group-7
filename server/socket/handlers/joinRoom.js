@@ -24,8 +24,13 @@ module.exports = function joinRoom(roomName) {
   // send success message to user
   this.ss.to(clientId, 'signalingServerMessage', 'roomJoined', roomName);
 
-  // send to all the users in the room that there is a new user
+  // get all the other users in the room
   roomInstance.otherUsers(clientId).forEach((userId) => {
+    // send to all the users in the room that there is a new user
     this.ss.to(userId, 'peerWantsACall', this.clientSocket.id);
+
+    // send the current user data to the new user
+    const data = JSON.stringify(roomInstance.getUserData(userId));
+    this.ss.to(clientId, 'peerUpdate', userId, data);
   });
 };

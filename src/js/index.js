@@ -13,11 +13,10 @@ const $inputUserPicture = document.querySelector('.input_user-picture');
 const $readyButton = document.querySelector('.button_ready');
 
 const log = {
-  blue: (label, ...data) =>
-    console.log(`%c ${label} `, 'background: dodgerblue; color: white', ...data),
-  red: (label, ...data) => console.log(`%c ${label} `, 'background: red; color: white', ...data),
-  green: (label, ...data) =>
-    console.log(`%c ${label} `, 'background: yellowgreen; color: white', ...data),
+  blue: (l, ...d) => console.log(`%c ${l} `, 'background:#1e90ff;color:#ff711e', ...d),
+  red: (l, ...d) => console.log(`%c ${l} `, 'background:#ff0000;color:#00ff00', ...d),
+  green: (l, ...d) => console.log(`%c ${l} `, 'background:yellowgreen;color:white', ...d),
+  orange: (l, ...d) => console.log(`%c ${l} `, 'background:orange;color:white', ...d),
 };
 
 const onRoomError = (event) => {
