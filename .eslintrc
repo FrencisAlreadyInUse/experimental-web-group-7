@@ -6,7 +6,8 @@
     "no-console": "off",
     "global-require": "off",
     "no-new": "off",
-    "prefer-destructuring": "off"
+    "prefer-destructuring": "off",
+    "no-param-reassign": "off"
   },
   "globals": {
     "io": true
