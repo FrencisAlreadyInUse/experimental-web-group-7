@@ -5,7 +5,7 @@ let datachannel = null;
 
 // const currentSection = 0;
 
-const $buttonCreateRoom = document.querySelector('.button_create-room');
+const $buttonCreateRoom = document.querySelector('.button_goto-create-room');
 const $targetRoomName = document.querySelector('.target_room-name');
 const $inputRoomName = document.querySelector('.input_room-name');
 const $buttonJoinRoom = document.querySelector('.button_join-room');
@@ -38,9 +38,6 @@ const onRoomSuccess = (event) => {
     // start knop genereren en in pagina zetten
     // $button.addEventListener('click', datachannel.startGame)
   }
-
-  // body { overflow: hidden; }
-  // window.scrollTop += window.clientHeight;
 
   $inputRoomName.disabled = true;
   $buttonCreateRoom.disabled = true;
@@ -88,12 +85,19 @@ const onGameStart = () => {
   });
 };
 
+const onCreateRoom = () => {
+  // naar pagina scrollen
+  // andere shizzle (spinnerke)
+
+  datachannel.createRoom();
+};
+
 const initDataChannel = () => {
   datachannel = new DataChannel();
 
   $buttonJoinRoom.addEventListener('click', onJoinRoom);
   $inputRoomName.addEventListener('keydown', onKeyDown);
-  $buttonCreateRoom.addEventListener('click', datachannel.createRoom);
+  $buttonCreateRoom.addEventListener('click', onCreateRoom);
   $readyButton.addEventListener('click', onReady);
 
   datachannel.on('roomError', onRoomError);
