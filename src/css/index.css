@@ -213,7 +213,7 @@ body {
   color: transparent;
 }
 
-.target_room-name::after {
+.target--room-name::after {
   content: '';
   position: absolute;
   top: 0;

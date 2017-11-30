@@ -5,7 +5,7 @@ module.exports = class Room {
     this.maxUsers = 5;
     this.creator = userId;
     this.users = {};
-    this.open = true;
+    this.open = false;
 
     this.bindClassMethods();
     this.addUser(userId);

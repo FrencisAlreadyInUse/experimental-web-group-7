@@ -15,6 +15,12 @@ module.exports = function joinRoom(roomName) {
     return;
   }
 
+  // if the room is closed return
+  if (!roomInstance.open) {
+    this.ss.to(clientId, 'signalingServerMessage', 'roomError', 'This room is closed.');
+    return;
+  }
+
   // add user to room
   roomInstance.addUser(clientId);
 
@@ -29,8 +35,14 @@ module.exports = function joinRoom(roomName) {
     // send to all the users in the room that there is a new user
     this.ss.to(userId, 'peerWantsACall', this.clientSocket.id);
 
-    // send the current user data to the new user
-    const data = JSON.stringify(roomInstance.getUserData(userId));
-    this.ss.to(clientId, 'peerUpdate', userId, data);
+    // get the current user data
+    const data = roomInstance.getUserData(userId);
+
+    // don't send anything if the user doesn't have data
+    if (!data.name || !this.uri) return;
+
+    // send the user data to the connected user
+    const userData = JSON.stringify(data);
+    this.ss.to(clientId, 'peerUpdate', userId, userData);
   });
 };

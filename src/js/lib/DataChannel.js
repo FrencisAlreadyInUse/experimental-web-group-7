@@ -211,8 +211,6 @@ export default class DataChannel extends EventTarget {
 
   onSignalingServerMessage(label, data) {
     //
-    console.log(label, data);
-
     if (label === 'roomCreated') {
       this.dispatchEvent(new CustomEvent('roomSuccess', {
         detail: { action: 'created', room: { name: data } },
@@ -222,6 +220,12 @@ export default class DataChannel extends EventTarget {
     if (label === 'roomJoined') {
       this.dispatchEvent(new CustomEvent('roomSuccess', {
         detail: { action: 'joined', room: { name: data } },
+      }));
+    }
+
+    if (label === 'roomOpened') {
+      this.dispatchEvent(new CustomEvent('roomSuccess', {
+        detail: { action: 'opened', room: { name: data } },
       }));
     }
 
@@ -238,6 +242,10 @@ export default class DataChannel extends EventTarget {
 
   joinRoom(roomName) {
     this.signalingServer.emit('joinRoom', roomName);
+  }
+
+  openRoom(roomName) {
+    this.signalingServer.emit('openRoom', roomName);
   }
 
   signalReady(name, uri) {
