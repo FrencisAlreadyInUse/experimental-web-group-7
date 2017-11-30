@@ -21,8 +21,9 @@ const $createdScreen = document.querySelector('.room--created');
 const $playerSetup = document.querySelector('.player-setup');
 const $joiningScreen = document.querySelector('.room--joining');
 const $joinedScreen = document.querySelector('.room--joined');
+const $main = document.querySelector('.main');
 
-const $scripts = Array.from(document.querySelectorAll('.deferredStyle'));
+const $scripts = Array.from(document.querySelectorAll('.deferredScript'));
 
 const log = {
   blue: (l, ...d) => console.log(`%c ${l} `, 'background:#1e90ff;color:#ff711e', ...d),
@@ -72,6 +73,17 @@ const onReady = () => {
   if (!name || name === '' || !picture) return;
 
   thumbDataURI(picture).then(uri => datachannel.signalReady(name, uri));
+
+  $playerSetup.classList.add('section--slide-out');
+  $main.classList.add('dp-n');
+
+  const $aframeScene = document.querySelector('a-scene');
+  $aframeScene.classList.add('section--slide-in');
+
+  $scripts.forEach(($script) => {
+    const src = $script.dataset.src;
+    $script.src = src;
+  });
 };
 
 const handlePictureOnChange = (e) => {
@@ -117,13 +129,6 @@ const onKeyDown = (event) => {
   onJoinRoom();
 };
 
-const onGameStart = () => {
-  $scripts.forEach(($script) => {
-    const src = $script.dataset.src;
-    $script.src = src;
-  });
-};
-
 const onPrepareJoin = () => {
   $landingScreen.classList.add('section--slide-out');
   $joiningScreen.classList.add('section--slide-in');
@@ -163,7 +168,6 @@ const initDataChannel = () => {
   datachannel.on('roomSuccess', onRoomSuccess);
   datachannel.on('dataChannelStateChange', onStateChange);
   datachannel.on('peerUpdate', onPeerUpdate);
-  datachannel.on('gameStart', onGameStart);
 };
 
 const loadScripts = () => {

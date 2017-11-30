@@ -13,7 +13,7 @@ html
     link(type="text/css" rel="stylesheet" href="/css/"+INDEX_CSS)
     include webfontloader.html
   body
-    main
+    main.main
       header.main__header
         h1.main-title.sr-only Virtual Lanes
       section.dp-f.ff-cnw.ai-c.jc-c.section.landing
@@ -41,8 +41,7 @@ html
       section.dp-f.ff-cnw.ai-c.jc-sa.section.section--off.player-setup
         include player-setup.html
 
-      section.dp-f.ff-cnw.ai-c.jc-sa.section.section--off
-        include game.html
+    include game.html
 
     script(type="text/javascript" src="/socket.io/socket.io.js" defer)
     script(type="text/javascript" src="/js/vendor/webrtc-adapter-6.0.2.min.js" defer)
