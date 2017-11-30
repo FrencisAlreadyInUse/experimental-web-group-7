@@ -76,9 +76,10 @@ const handleCreateRoomSuccess = (event) => {
     $item.textContent = createdRoomName;
   });
 
+  $pageLanding.classList.add('section--slide-out');
+
   // navigate to "about to create room" page
   $pageCreateRoom.classList.add('section--slide-in');
-  $pageLanding.classList.add('section--slide-out');
 };
 
 const handleJoinRoomSuccess = (event) => {

@@ -13,9 +13,9 @@
   --created-room-text: 4rem;
   --stroke: .1rem var(--purple-color);
   --big-title-mobile: 5.5rem;
-  --subtitle-mobile: 2.5rem;
-  --text--mobile: 1.6rem;
-  --created-room-text: 1.6rem;
+  --semi-big-mobile: 2.5rem;
+  --standard-mobile: 1.6rem;
+  --room-text-mobile: 4rem;
 }
 
 body {
@@ -26,7 +26,7 @@ body {
   width: 100%;
   height: 100%;
 
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 main {
@@ -128,8 +128,8 @@ main {
   height: 100vh;
   position: relative;
   top: 0;
-  right: 0%;
-  transition: right .3s ease-in-out;
+  left: 0;
+  transition: left .3s ease-in-out;
 }
 
 .section--off {
@@ -137,8 +137,8 @@ main {
   width: 100%;
   height: 100%;
   top: 0;
-  right: -100%;
-  transition: right .5s ease-in-out;
+  left: -200%;
+  transition: left .6s ease-in-out;
 }
 
 .game {
@@ -147,11 +147,11 @@ main {
 }
 
 .section--slide-in {
-  right: 0;
+  left: 0;
 }
 
 .section--slide-out {
-  right: -100%;
+  left: -100%;
 }
 
 .btn-wrapper {
@@ -245,19 +245,6 @@ main {
 .amount-of-friends-wrapper {
   position: relative;
 }
-
-/* NEEDS FURTHER INVESTIGATION; */
-
-/*.amount-of-friends-wrapper::after {
-  content: '';
-  position: absolute;
-  top: 35%;
-  left: 0;
-  z-index: -1;
-  width: 7.2rem;
-  height: 7.2rem;
-  background: url(../assets/svg/amount-of-friends.svg) center center no-repeat;
-}*/
 
 /* Created Room */
 
@@ -383,10 +370,6 @@ input:disabled {
 
 @media (width <= 400px) {
 
-  body {
-    overflow: hidden;
-  }
-
   .landing {
     padding: 0;
   }
@@ -403,11 +386,7 @@ input:disabled {
   .landing__subtitle {
     text-align: center;
     line-height: 150%;
-    font-size: var(--subtitle-mobile);
-  }
-
-  .section--off {
-    right: -130%;
+    font-size: var(--semi-big-mobile);
   }
 
   .btn-wrapper {
@@ -422,5 +401,51 @@ input:disabled {
 
   .btn + .btn {
     margin: 2rem 0 0;
+  }
+
+  .room__content, .input-layer-off {
+    font-size: var(--room-text-mobile);
+  }
+
+  .input-layer-off {
+    position: relative;
+  }
+
+  .target--room-name::after {
+    width: 15.7rem;
+    height: 10.9rem;
+    top: -2.5rem;
+  }
+
+  .room__share {
+    margin: 7rem 0 0;
+    font-size: var(--semi-big-mobile);
+    line-height: 150%;
+  }
+
+  .room__joined {
+    margin: 3rem 0 0;
+  }
+
+  .roomname-wrapper {
+    width: 100%;
+  }
+
+  .form {
+    max-width: 32.5rem;
+    margin: -2.5rem 0 0;
+  }
+
+  .form__label {
+    padding: 0 0 1rem;
+  }
+
+  .input-wrapper + .input-wrapper {
+    margin: 2rem 0 0;
+  }
+
+  .player-setup--aside {
+    margin: 2.5rem;
+    line-height: 150%;
   }
 }
