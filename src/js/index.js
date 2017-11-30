@@ -205,7 +205,6 @@ const initDataChannel = () => {
 const setEventListeners = () => {
   $buttonNavigatePageCreateRoom.addEventListener('click', handleNavigateToPageCreate);
   $buttonNavigatePageJoinRoom.addEventListener('click', handleNavigateToPageJoin);
-
   $buttonJoinRoom.addEventListener('click', handleButtonJoinClick);
   $buttonReady.addEventListener('click', handleButtonReadyClick);
   $inputRoomName.addEventListener('keydown', handleInputRoomNameKeyDown);
