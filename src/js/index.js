@@ -30,6 +30,7 @@ const onRoomError = (event) => {
 const onRoomSuccess = (event) => {
   const action = event.detail.action === 'created' ? 'created and joined' : 'joined';
   const name = event.detail.room.name;
+  console.log('[onRoomSucces — name]', name);
 
   if (event.detail.action === 'created') {
     $targetRoomName.textContent = name;

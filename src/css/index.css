@@ -9,6 +9,9 @@
   --text: 2.5rem;
   --pxg-regular: px-grotesk;
   --pxg-bold: px-grotesk-bold;
+  --room-text: 7.4rem;
+  --created-room-text: 4rem;
+  --stroke: .1rem var(--purple-color);
 }
 
 body {
@@ -39,6 +42,10 @@ body {
 
 .jc-sb {
   justify-content: space-between;
+}
+
+.jc-sa {
+  justify-content: space-around;
 }
 
 .jc-c {
@@ -103,10 +110,6 @@ body {
 .section {
   width: 100vw;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
 .btn-wrapper {
@@ -151,23 +154,108 @@ body {
   }
 }
 
-.button,
-.input {
-  font-size: 1.6rem;
-  background-image: linear-gradient(to bottom, #e0e0e0, #cecece);
-  border: 1px solid rgba(185, 185, 185, .8);
-  border-radius: .3rem;
-  padding: .8rem 1.2rem;
-  margin: 0 1rem;
-  height: 3.6rem;
+/* Create Room */
+
+.room__phrase {
+  width: 100%;
+  max-width: 75%;
 }
 
-.input {
-  background-image: linear-gradient(to bottom, #f3f2f2, #f1f0f0);
-  flex-grow: 1;
+.room__content {
+  font-size: var(--room-text);
+  color: var(--purple-color);
+  font-family: var(--pxg-bold);
+  position: relative;
+  line-height: 135%;
 }
 
-.button:disabled,
-.input:disabled {
+.input-layer-off {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: var(--room-text);
+  color: var(--purple-color);
+  font-family: var(--pxg-bold);
+}
+
+.input-stroke {
+  -webkit-text-stroke: var(--stroke);
+  color: transparent;
+  caret-color: var(--purple-color);
+}
+
+.input-stroke::placeholder {
+  -webkit-text-stroke: var(--stroke);
+  color: transparent;
+}
+
+.target_room-name::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 39.7rem;
+  height: 24.9rem;
+  background: url(../assets/svg/room-input-balls.svg) center center no-repeat;
+}
+
+.amount-of-friends-wrapper {
+  position: relative;
+}
+
+/* NEEDS FURTHER INVESTIGATION; */
+
+/*.amount-of-friends-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 35%;
+  left: 0;
+  z-index: -1;
+  width: 7.2rem;
+  height: 7.2rem;
+  background: url(../assets/svg/amount-of-friends.svg) center center no-repeat;
+}*/
+
+/* Created Room */
+
+.room__share {
+  font-size: var(--created-room-text);
+  color: var(--purple-color);
+  margin: 14rem 0 0;
+}
+
+.room__joined {
+  margin: 7rem 0 0;
+}
+
+.room__share--input {
+  font-family: var(--pxg-bold);
+}
+
+.btn:disabled,
+input:disabled {
   opacity: .5;
+}
+
+/* Joining Room */
+
+.roomname-wrapper {
+  width: 70%;
+}
+
+.input-underline {
+  border-bottom: 2px solid var(--purple-color);
+  width: 100%;
+}
+
+/* Joined Room */
+
+.joined-room__content {
+  width: 100%;
+  max-width: 70%;
+}
+
+.joined-roomname::after {
+  left: 20%;
 }

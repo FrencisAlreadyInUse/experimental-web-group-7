@@ -16,7 +16,7 @@ html
     main
       header.main__header
         h1.main-title.sr-only Virtual Lanes
-      section.dp-f.ff-rnw.jc-clanding.section.section-0
+      section.dp-f.ff-cnw.ai-c.jc-c.landing.section.section-0
         header.dp-f.jc-c.ai-c.landing__header
           h1.dp-f.ff-cnw.landing__title Virtual
             span.dp-f.as-fe.landing__title__span Lanes
@@ -26,8 +26,38 @@ html
             button.dp-f.btn.button_create-room Create Room
             button.dp-f.btn.button_join-room Join Room
 
+      section.dp-f.ff-cnw.ai-c.jc-sa.section.room
+        header.section__header.room__header.sr-only
+          h1.section__title.room__title Create Room
+        div.dp-f.ff-rw.room__phrase
+          include create-room.html
+        div.dp-f.ff-rnw.jc-c.btn-wrapper
+          button.dp-f.btn Open Room
 
-      section.section.section-1
+
+      section.dp-f.ff-cnw.ai-c.jc-sa.section.room
+        header.section__header.room__header.sr-only
+          h1.section__title.room__title Created Room
+        div.dp-f.ff-cnw.ai-c.room__phrase
+          include created-room.html
+        div.dp-f.ff-rnw.jc-c.btn-wrapper
+          button.dp-f.btn Let's Play
+
+      section.dp-f.ff-cnw.ai-c.jc-sa.section.room
+        header.section__header.room__header.sr-only
+          h1.section__title.room__title Joining Room
+        div.dp-f.ff-cnw.ai-c.room__phrase
+          include joining-room.html
+        div.dp-f.ff-rnw.jc-c.btn-wrapper
+          button.dp-f.btn Join Room
+
+      section.dp-f.ff-cnw.ai-c.jc-sa.section.room
+        header.section__header.room__header.sr-only
+          h1.section__title.room__title Joined Room
+        div.dp-f.ff-cnw.ai-c.room__phrase
+          include joined-room.html
+
+      section.dp-f.ff-cnw.ai-c.jc-c.section.section-1
         div.row
           input.input.input_user-name(placeholder="User Name")
         div.row
@@ -35,7 +65,7 @@ html
         div.row
           button.button.button_ready Ready
 
-      section.section.section-2
+      section.dp-f.ff-cnw.ai-c.jc-c.section.section-2
         include game.html
 
     script(type="text/javascript" src="/socket.io/socket.io.js" defer)
