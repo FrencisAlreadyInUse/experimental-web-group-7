@@ -111,6 +111,27 @@ body {
 .section {
   width: 100vw;
   height: 100vh;
+  position: relative;
+  top: 0;
+  right: 0%;
+  transition: right .3s ease-in-out;
+}
+
+.section--off {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: -100%;
+  transition: right .5s ease-in-out;
+}
+
+.section--slide-in {
+  right: 0;
+}
+
+.section--slide-out {
+  right: -100%;
 }
 
 .btn-wrapper {
@@ -259,4 +280,83 @@ input:disabled {
 
 .joined-roomname::after {
   left: 20%;
+}
+
+/* Player Setup */
+
+.player-setup--aside {
+  font-size: 1.5rem;
+  color: #7d8bd8;
+  margin: 5rem 0 0;
+}
+
+.form {
+  width: 100%;
+  max-width: 40rem;
+}
+
+.input-wrapper + .input-wrapper {
+  margin: 3rem 0 0;
+}
+
+.form__label {
+  font-size: 3rem;
+  color: var(--purple-color);
+  font-family: var(--pxg-bold);
+  padding: 0 0 2rem;
+}
+
+.form__input {
+  border: 2px solid var(--purple-color);
+  height: 5rem;
+  background-color: transparent;
+  outline: none;
+  font-size: 2rem;
+  font-family: var(--pxg-bold);
+  color: var(--purple-color);
+  padding: 2rem;
+  width: 100%;
+}
+
+.form__input--image {
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-upload-wrapper {
+  position: relative;
+  border: 2px solid var(--purple-color);
+  font-family: var(--pxg-bold);
+  color: var(--purple-color);
+  cursor: pointer;
+
+  &::before {
+    content: 'Upload';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 5rem;
+    width: 20%;
+    background-color: var(--purple-color);
+    color: var(--beige-color);
+    cursor: pointer;
+  }
+
+  &::after {
+    content: attr(data-text);
+    display: flex;
+    align-items: center;
+    height: 5rem;
+    padding: 0 2rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width: 80%;
+    color: var(--purple-color);
+    cursor: pointer;
+  }
 }

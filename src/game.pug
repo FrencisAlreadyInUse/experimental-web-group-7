@@ -16,37 +16,32 @@ html
     main
       header.main__header
         h1.main-title.sr-only Virtual Lanes
-      section.dp-f.ff-cnw.ai-c.jc-c.landing.section.section-0
+      section.dp-f.ff-cnw.ai-c.jc-c.section.landing
         header.dp-f.jc-c.ai-c.landing__header
           h1.dp-f.ff-cnw.landing__title Virtual
             span.dp-f.as-fe.landing__title__span Lanes
         article.dp-f.ff-cnw.ai-c.landing__content
           h2.landing__subtitle a multiplayer virtual reality bowling game
           div.dp-f.ff-rnw.ai-c.jc-sb.btn-wrapper
-            button.dp-f.btn.button_goto-create-room Create Room
-            button.dp-f.btn Join Room
+            button.dp-f.btn.btn_goto-create-room Create Room
+            button.dp-f.btn.btn_goto-join-room Join Room
 
-      section.dp-f.ff-cnw.ai-c.jc-sa.section.room
+      section.dp-f.ff-cnw.ai-c.jc-sa.section.section--off.room.room--create
         include create-room.html
 
-      section.dp-f.ff-cnw.ai-c.jc-sa.section.room
+      section.dp-f.ff-cnw.ai-c.jc-sa.section.section--off.room.room--created
         include created-room.html
 
-      section.dp-f.ff-cnw.ai-c.jc-sa.section.room
+      section.dp-f.ff-cnw.ai-c.jc-sa.section.section--off.room.room--joining
         include joining-room.html
 
-      section.dp-f.ff-cnw.ai-c.jc-sa.section.room
-          include joined-room.html
+      section.dp-f.ff-cnw.ai-c.jc-sa.section.section--off.room.room--joined
+        include joined-room.html
 
-      section.dp-f.ff-cnw.ai-c.jc-c.section.section-1
-        div.row
-          input.input.input_user-name(placeholder="User Name")
-        div.row
-          input.input.input_user-picture(type="file" accept="image/*")
-        div.row
-          button.button.button_ready Ready
+      section.dp-f.ff-cnw.ai-c.jc-sa.section.section--off.player-setup
+        include player-setup.html
 
-      section.dp-f.ff-cnw.ai-c.jc-c.section.section-2
+      section.dp-f.ff-cnw.ai-c.jc-sa.section.section--off
         include game.html
 
     script(type="text/javascript" src="/socket.io/socket.io.js" defer)

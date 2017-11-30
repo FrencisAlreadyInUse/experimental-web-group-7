@@ -5,7 +5,8 @@ let datachannel = null;
 
 // const currentSection = 0;
 
-const $buttonCreateRoom = document.querySelector('.button_goto-create-room');
+const $buttonCreateRoom = document.querySelector('.btn_goto-create-room');
+const $buttonGoToJoinRoom = document.querySelector('.btn_goto-join-room');
 const $targetRoomName = document.querySelector('.target_room-name');
 const $inputRoomName = document.querySelector('.input_room-name');
 const $buttonJoinRoom = document.querySelector('.button_join-room');
@@ -13,6 +14,13 @@ const $buttonJoinRoom = document.querySelector('.button_join-room');
 const $inputUserName = document.querySelector('.input_user-name');
 const $inputUserPicture = document.querySelector('.input_user-picture');
 const $readyButton = document.querySelector('.button_ready');
+
+const $landingScreen = document.querySelector('.landing');
+const $createScreen = document.querySelector('.room--create');
+const $createdScreen = document.querySelector('.room--created');
+const $playerSetup = document.querySelector('.player-setup');
+const $joiningScreen = document.querySelector('.room--joining');
+const $joinedScreen = document.querySelector('.room--joined');
 
 const $scripts = Array.from(document.querySelectorAll('.deferredStyle'));
 
@@ -35,8 +43,7 @@ const onRoomSuccess = (event) => {
   if (event.detail.action === 'created') {
     $targetRoomName.textContent = name;
 
-    // start knop genereren en in pagina zetten
-    // $button.addEventListener('click', datachannel.startGame)
+    $readyButton.addEventListener('click', datachannel.startGame);
   }
 
   $inputRoomName.disabled = true;
@@ -67,10 +74,43 @@ const onReady = () => {
   thumbDataURI(picture).then(uri => datachannel.signalReady(name, uri));
 };
 
+const handlePictureOnChange = (e) => {
+  const imagePath = e.path[0].files[0].name;
+  const $playerPictureWrapper = document.querySelector('.file-upload-wrapper');
+  $playerPictureWrapper.dataset.text = imagePath;
+};
+
+
+const onPlayerSetup = () => {
+  $joinedScreen.classList.add('section--slide-out');
+  $createdScreen.classList.add('section--slide-out');
+
+  $playerSetup.classList.add('section--slide-in');
+
+  const $playerPicute = document.querySelector('.input_user-picture');
+  $playerPicute.addEventListener('change', handlePictureOnChange);
+};
+
 const onJoinRoom = () => {
+  // wipe away joining screen
+  $joiningScreen.classList.add('section--slide-out');
+  $joinedScreen.classList.add('section--slide-in');
+
   const roomName = $inputRoomName.value;
   if (!roomName || roomName === '') return;
   datachannel.joinRoom(roomName);
+
+  // generate button when all players have joined
+  const $btnWrapper = document.createElement('div');
+  $btnWrapper.classList.add('dp-f', 'ff-rnw', 'jc-c', 'btn-wrapper');
+  const $btn = document.createElement('button');
+  $btn.classList.add('dp-f', 'btn', 'btn--setup-user');
+  $btn.textContent = 'Let\'s Play';
+
+  $btnWrapper.appendChild($btn);
+  $joinedScreen.appendChild($btnWrapper);
+
+  $btn.addEventListener('click', onPlayerSetup);
 };
 
 const onKeyDown = (event) => {
@@ -85,9 +125,29 @@ const onGameStart = () => {
   });
 };
 
+const onPrepareJoin = () => {
+  $landingScreen.classList.add('section--slide-out');
+  $joiningScreen.classList.add('section--slide-in');
+  $buttonJoinRoom.addEventListener('click', onJoinRoom);
+};
+
+const onOpenRoom = () => {
+  $createScreen.classList.add('section--slide-out');
+
+  // set joining for room on true
+  $createdScreen.classList.add('section--slide-in');
+
+  const $btnLetsPlay = document.querySelector('.btn--lets-play');
+  $btnLetsPlay.addEventListener('click', onPlayerSetup);
+};
+
 const onCreateRoom = () => {
-  // naar pagina scrollen
-  // andere shizzle (spinnerke)
+  $createScreen.classList.add('section--slide-in');
+
+  $landingScreen.classList.add('section--slide-out');
+
+  const $btnOpenRoom = document.querySelector('.btn--open-room');
+  $btnOpenRoom.addEventListener('click', onOpenRoom);
 
   datachannel.createRoom();
 };
@@ -95,7 +155,7 @@ const onCreateRoom = () => {
 const initDataChannel = () => {
   datachannel = new DataChannel();
 
-  $buttonJoinRoom.addEventListener('click', onJoinRoom);
+  $buttonGoToJoinRoom.addEventListener('click', onPrepareJoin);
   $inputRoomName.addEventListener('keydown', onKeyDown);
   $buttonCreateRoom.addEventListener('click', onCreateRoom);
   $readyButton.addEventListener('click', onReady);
