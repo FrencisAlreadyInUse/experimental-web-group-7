@@ -18,7 +18,7 @@ export default class DataChannel extends EventTarget {
     this.signalingServer = io.connect('/');
 
     this.bindClassMethods();
-    this.setEventListeners();
+    this.setSignalingSocketEventHandlers();
   }
 
   bindClassMethods() {
@@ -30,7 +30,7 @@ export default class DataChannel extends EventTarget {
     }
   }
 
-  setEventListeners() {
+  setSignalingSocketEventHandlers() {
     this.signalingServer.on('connect', this.onConnection);
     this.signalingServer.on('peerIce', this.onPeerIce);
     this.signalingServer.on('peerAnswer', this.onPeerAnswer);
