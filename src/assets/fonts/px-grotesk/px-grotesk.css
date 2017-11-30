@@ -1,0 +1,13 @@
+@font-face {
+  font-family: px-grotesk;
+  src: url(px-grotesk-regular.woff2) format('woff2'), url(px-grotesk-regular.woff) format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: px-grotesk-bold;
+  src: url(px-grotesk-bold.woff2) format('woff2'), url(px-grotesk-bold.woff) format('woff');
+  font-weight: normal;
+  font-style: normal;
+}

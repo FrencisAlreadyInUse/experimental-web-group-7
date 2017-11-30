@@ -1,1 +1,0 @@
-{"version":3,"file":"game.js","sources":["../../../src/js/game.js"],"sourcesContent":["const init = () => {\n  console.log('game initted');\n};\n\ninit();\n"],"names":["init","log"],"mappings":";;;AAAA,IAAMA,OAAO,SAAPA,IAAO,GAAM;UACTC,GAAR,CAAY,cAAZ;CADF;;AAIAD;;;;"}
