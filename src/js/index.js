@@ -92,7 +92,6 @@ const onPlayerSetup = () => {
 };
 
 const onJoinRoom = () => {
-  // wipe away joining screen
   $joiningScreen.classList.add('section--slide-out');
   $joinedScreen.classList.add('section--slide-in');
 
