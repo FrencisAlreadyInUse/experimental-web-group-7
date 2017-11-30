@@ -12,11 +12,10 @@
   --room-text: 7.4rem;
   --created-room-text: 4rem;
   --stroke: .1rem var(--purple-color);
-}
-
-html {
-  width: 100%;
-  height: 100%;
+  --big-title-mobile: 5.5rem;
+  --subtitle-mobile: 2.5rem;
+  --text--mobile: 1.6rem;
+  --created-room-text: 1.6rem;
 }
 
 body {
@@ -28,6 +27,11 @@ body {
   height: 100%;
 
   overflow: hidden;
+}
+
+main {
+  width: 100%;
+  height: 100%;
 }
 
 /* Flexbox */
@@ -374,5 +378,49 @@ input:disabled {
     width: 80%;
     color: var(--purple-color);
     cursor: pointer;
+  }
+}
+
+@media (width <= 400px) {
+
+  body {
+    overflow: hidden;
+  }
+
+  .landing {
+    padding: 0;
+  }
+
+  .landing__header {
+    width: 35.5rem;
+    height: 28.5rem;
+  }
+
+  .landing__title {
+    font-size: var(--big-title-mobile);
+  }
+
+  .landing__subtitle {
+    text-align: center;
+    line-height: 150%;
+    font-size: var(--subtitle-mobile);
+  }
+
+  .section--off {
+    right: -130%;
+  }
+
+  .btn-wrapper {
+    max-width: 32.5rem;
+    flex-flow: row wrap;
+  }
+
+  .btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .btn + .btn {
+    margin: 2rem 0 0;
   }
 }
