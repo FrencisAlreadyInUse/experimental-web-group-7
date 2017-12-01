@@ -4,17 +4,14 @@
   <a-assets>
     <a-asset-item id="cone" src="/assets/collada/bowling-cone.dae"></a-asset-item>
     <a-asset-item id="triangle" src="/assets/collada/cones-indicator-triangle.dae"></a-asset-item>
+    <a-asset-item id="bowling-alley" src="/assets/collada/bowling-alley.dae"></a-asset-item>
+    <a-asset-item id="players-table" src="/assets/collada/players-table.dae"></a-asset-item>
     <!-- head on ball -->
     <img id="face-ball" src="/assets/img/ball/ball-pic.jpg"></img>
   </a-assets>
 
-  <!-- Add ornaments next to bowling alley -->
-  <!-- glow="scale:.5;p:1;color:#FF00FF" -->
-  <a-box width="10" height="2" color="blue" position="-7 0 -14" rotation="0 90 45" material="" geometry="width:4;height:0.1;depth:0.1"></a-box>
-  <a-box width="10" height="2" color="#2AFC98" position="-7 0 -14" rotation="0 90 180" material="" geometry="width:4;height:0.1;depth:0.1"></a-box>
-
   <!-- will be adding star roof to the sky -->
-  <a-sky color="coral"></a-sky>
+  <a-sky color="#ffdeaf"></a-sky>
 
   <!-- Text -->
   <a-text position="0 4.25 -7" wrap-count="20" text="align: center; width: 6; value: Score: 88;"></a-text>
@@ -37,11 +34,11 @@
   <!-- Added face texture -->
   <a-sphere src="#face-ball" position="0 -1.25 -10" radius=".75"></a-sphere>
 
-  <!-- Ball Box -->
-  <a-box position="0 -1.6 -42" width="8" height="8" depth="1"></a-box>
-  <a-box position="0 -1.6 -41" width="6" height="6" depth="1" color="black"></a-box>
-  <!-- will be adding wooden texture to alley -->
-  <a-plane color="#6EBAA7" height="8" width="35" rotation="-90 0 90" position="0 -2 -23"></a-plane>
+  <!-- alley -->
+  <a-collada-model position="-4 -2.35 -5.52" scale="7.6 5 4.5" src="#bowling-alley"></a-collada-model>
+
+  <!-- table -->
+  <a-collada-model position="-4 0 12" scale="7.6 5 4.5" src="#players-table"></a-collada-model>
 
   <!-- Cones indicator triangle -->
   <a-collada-model position="4 -0.8 -3.4" scale="1.5 1.5 1.5" src="#triangle"></a-collada-model>

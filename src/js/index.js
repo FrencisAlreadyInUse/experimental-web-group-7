@@ -169,6 +169,11 @@ const channelOnGameStart = () => {
     const src = $script.dataset.src;
     $script.src = src;
   });
+
+  $main.classList.add('dp-n');
+
+  const $aframeScene = document.querySelector('a-scene');
+  $aframeScene.classList.add('section--slide-in');
 };
 
 const handleNavigateToPageJoin = () => {
@@ -188,13 +193,6 @@ const handleButtonOpenRoomClick = () => {
 const handleButtonPlayClick = () => {
   //
   // go to the game
-
-  channelOnGameStart();
-
-  $main.classList.add('dp-n');
-
-  const $aframeScene = document.querySelector('a-scene');
-  $aframeScene.classList.add('section--slide-in');
 };
 
 const handleNavigateToPageCreate = () => {
