@@ -3,7 +3,7 @@
   <!-- all assets -->
   <a-assets>
     <a-asset-item id="cone" src="/assets/collada/bowling-cone.dae"></a-asset-item>
-    <a-asset-item id="tv-screen" src="/assets/collada/tv-screen.dae"></a-asset-item>
+    <a-asset-item id="triangle" src="/assets/collada/cones-indicator-triangle.dae"></a-asset-item>
     <!-- head on ball -->
     <img id="face-ball" src="/assets/img/ball/ball-pic.jpg"></img>
   </a-assets>
@@ -16,8 +16,6 @@
   <!-- will be adding star roof to the sky -->
   <a-sky color="coral"></a-sky>
 
-  <!-- TV Screen -->
-  <a-collada-model position="0 3 -8" src="#tv-screen"></a-collada-model>
   <!-- Text -->
   <a-text position="0 4.25 -7" wrap-count="20" text="align: center; width: 6; value: Score: 88;"></a-text>
 
@@ -46,7 +44,7 @@
   <a-plane color="#6EBAA7" height="8" width="35" rotation="-90 0 90" position="0 -2 -23"></a-plane>
 
   <!-- Cones indicator triangle -->
-  <a-triangle color="white" position="4 0.175 -3.75" rotation="0 0 180" geometry="vertexA:0 0.67 0;vertexC:0.75 -0.5 0;vertexB:-0.75 -0.5 0" scale="0.9 0.9 0.9"></a-triangle>
+  <a-collada-model position="4 -0.8 -3.4" scale="1.5 1.5 1.5" src="#triangle"></a-collada-model>
   <!-- Cones indicator sphere -->
   <a-sphere position="4.3 .40 -3.75" radius=".05" color="red"></a-sphere>
   <a-sphere position="4.1 .40 -3.75" radius=".05" color="red"></a-sphere>
