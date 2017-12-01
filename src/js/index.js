@@ -33,6 +33,8 @@ const $pageCreateRoom = document.querySelector('.room--create');
 const $pageCreateRoomDone = document.querySelector('.room--created');
 const $pageJoinRoom = document.querySelector('.room--joining');
 const $pageJoinRoomDone = document.querySelector('.room--joined');
+
+const $main = document.querySelector('.main');
 // const $pagePlayerSetup = document.querySelector('.player-setup');
 
 // MOVE TO USER INFO PAGE
@@ -46,12 +48,12 @@ const $pageJoinRoomDone = document.querySelector('.room--joined');
 // UPDATE USER PICTURE NAME
 //
 // const handlePictureOnChange = (e) => {
-//   const imagePath = e.path[0].files[0].name;
+//   const imagePth = e.path[0].files[0].name;
 //   const $inputUserPictureWrapper = document.querySelector('.file-upload-wrapper');
 //   $inputUserPictureWrapper.dataset.text = imagePath;
 // };
 
-const $deferredScripts = Array.from(document.querySelectorAll('.deferredStyle'));
+const $deferredScripts = Array.from(document.querySelectorAll('.deferredScript'));
 
 const log = {
   blue: (l, ...d) => console.log(`%c ${l} `, 'background:dodgerblue;color:white', ...d),
@@ -186,6 +188,13 @@ const handleButtonOpenRoomClick = () => {
 const handleButtonPlayClick = () => {
   //
   // go to the game
+
+  $main.classList.add('dp-n');
+
+  const $aframeScene = document.querySelector('a-scene');
+  $aframeScene.classList.add('section--slide-in');
+
+  channelOnGameStart();
 };
 
 const handleNavigateToPageCreate = () => {
@@ -211,14 +220,6 @@ const setEventListeners = () => {
   $inputRoomName.addEventListener('keydown', handleInputRoomNameKeyDown);
   $buttonOpenRoom.addEventListener('click', handleButtonOpenRoomClick);
   $buttonPlay.addEventListener('click', handleButtonPlayClick);
-};
-
-const loadScripts = () => {
-  $deferredScripts.forEach(($script) => {
-    const $tempScript = document.createElement('script');
-    const src = $script.dataset.src;
-    $tempScript.src = src;
-  });
 };
 
 const init = () => {

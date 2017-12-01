@@ -14,7 +14,7 @@ html
     script
       include js/webfontloader.js
   body
-    main
+    main.main.dp-n
 
       header.main__header
         h1.main-title.sr-only Virtual Lanes
@@ -32,6 +32,8 @@ html
     script(type="text/javascript" src="/js/vendor/webrtc-adapter-6.0.2.min.js" defer)
     script(type="text/javascript" src="/js/"+INDEX_JS defer)
 
-    script(type="text/javascript" data-src="/js/vendor/aframe-0.7.1.min.js" defer).deferredScript
-    script(type="text/javascript" data-src="/js/vendor/aframe-glow.js" defer).deferredScript
-    script(type="text/javascript" data-src="/js/"+GAME_JS defer).deferredScript
+    - // data-
+
+    script(type="text/javascript" src="/js/vendor/aframe-0.7.1.min.js" defer).deferredScript
+    script(type="text/javascript" src="/js/vendor/aframe-glow.js" defer).deferredScript
+    script(type="text/javascript" src="/js/"+GAME_JS defer).deferredScript
