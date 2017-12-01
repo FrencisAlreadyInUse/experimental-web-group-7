@@ -10,7 +10,6 @@
     <img id="face-ball" src="/assets/img/ball/ball-pic.jpg">
   </a-assets>
 
-  <!-- will be adding star roof to the sky -->
   <a-sky color="#ffdeaf"></a-sky>
 
   <!-- Text -->
@@ -31,14 +30,27 @@
 
   <a-collada-model position="0 -2 -35" src="#cone"></a-collada-model>
 
-  <!-- Added face texture -->
+  <!-- Bowling Ball -->
   <a-sphere src="#face-ball" position="0 -1.25 -10" radius=".75"></a-sphere>
 
-  <!-- alley -->
+  <!-- Alley -->
   <a-collada-model position="-4 -2.35 -5.52" scale="7.6 5 4.5" src="#bowling-alley"></a-collada-model>
 
-  <!-- table -->
+  <!-- table + players -->
   <a-collada-model position="-4 0 12" scale="7.6 5 4.5" src="#players-table"></a-collada-model>
+  <!--
+    Player Positions
+    3 | | 2
+    4 | | 1
+  -->
+  <!-- 1 -->
+  <a-sphere src="#face-ball" position="-5.3 .5 6.5" rotation="0 100 0" radius=".85"></a-sphere>
+  <!-- 2 -->
+  <a-sphere src="#face-ball" position="-5.3 .5 9" rotation="0 100 0" radius=".85"></a-sphere>
+  <!-- 3 -->
+  <a-sphere src="#face-ball" position="5.3 .5 9" rotation="0 100 0" radius=".85"></a-sphere>
+  <!-- 4 -->
+  <a-sphere src="#face-ball" position="5.3 .5 6.5" rotation="0 100 0" radius=".85"></a-sphere>
 
   <!-- Cones indicator triangle -->
   <a-collada-model position="4 -0.8 -3.4" scale="1.5 1.5 1.5" src="#triangle"></a-collada-model>
