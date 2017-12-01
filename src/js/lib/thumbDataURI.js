@@ -1,4 +1,4 @@
-export default (image, dSize = 100) =>
+export default (image, dSize = 256) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
     const img = new Image();
