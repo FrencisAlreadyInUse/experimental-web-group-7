@@ -189,12 +189,12 @@ const handleButtonPlayClick = () => {
   //
   // go to the game
 
+  channelOnGameStart();
+
   $main.classList.add('dp-n');
 
   const $aframeScene = document.querySelector('a-scene');
   $aframeScene.classList.add('section--slide-in');
-
-  channelOnGameStart();
 };
 
 const handleNavigateToPageCreate = () => {
@@ -225,7 +225,6 @@ const setEventListeners = () => {
 const init = () => {
   initDataChannel();
   setEventListeners();
-  loadScripts();
 
   window.peers = datachannel.peers;
   window.send = datachannel.sendMessage;
