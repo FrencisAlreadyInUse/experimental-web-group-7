@@ -3,11 +3,15 @@
   "rules": {
     "import/no-dynamic-require": "off",
     "import/no-extraneous-dependencies": "off",
+    "import/extensions": "off",
     "no-console": "off",
     "global-require": "off",
     "no-new": "off",
     "prefer-destructuring": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "arrow-parens": "off",
+    "function-paren-newline": "off",
+    "consistent-return": "off"
   },
   "globals": {
     "io": true

@@ -8,6 +8,8 @@ export default class EventTarget {
       this.listeners[type] = [];
     }
     this.listeners[type].push(callback);
+
+    return this;
   }
 
   removeEventListener(type, callback) {
@@ -20,6 +22,8 @@ export default class EventTarget {
         return;
       }
     }
+
+    return this;
   }
 
   dispatchEvent(event) {

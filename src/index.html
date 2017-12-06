@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebVR Bowling Game</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link type="text/css" rel="stylesheet" href="/css/index.css">
+  <script>
+    WebFontConfig = {
+      custom: {
+        families: ['px-grotesk'],
+        urls: ['assets/fonts/px-grotesk/px-grotesk.css']
+      }
+    };
+    (function (d) {
+      var wf = d.createElement('script'), s = d.scripts[0];
+      wf.async = true;
+      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js';
+      s.parentNode.insertBefore(wf, s);
+    })(document);
+  </script>
+</head>
+<body>
+  <main class="main">
+
+    <header class="main__header">
+      <h1 class="main-title sr-only">Virtual Lanes</h1>
+    </header>
+
+    <section class="dp-f ff-cnw ai-c jc-c section landing">
+      <header class="dp-f jc-c ai-c landing__header">
+        <h1 class="dp-f ff-cnw landing__title">
+          Virtual
+          <span class="dp-f as-fe landing__title__span">Lanes</span>
+        </h1>
+      </header>
+      <article class="dp-f ff-cnw ai-c landing__content">
+        <h2 class="landing__subtitle">A multiplayer virtual reality bowling game</h2>
+        <div class="dp-f ff-rnw ai-c jc-sb btn-wrapper">
+          <button class="dp-f btn btn--goto-create-room">Create Room</button>
+          <button class="dp-f btn btn--goto-join-room">Join Room</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="dp-f ff-cnw ai-c jc-sa section section--off room room--create">
+      <header class="section__header room__header sr-only">
+        <h1 class="section__title room__title">Create Room</h1>
+      </header>
+      <div class="dp-f ff-rw room__phrase">
+        <h2 class="room__content">
+          You're about to create the
+          <span class="input-layer-off input-stroke target--room-name">room name</span>
+          room for
+          <input class="input-layer-off input-stroke input--room-size" type="number" name="players" value="5" min="2" max="5"> players
+        </h2>
+      </div>
+      <div class="dp-f ff-rnw jc-c btn-wrapper">
+        <button class="dp-f btn btn--open-room">Open Room</button>
+      </div>
+    </section>
+
+    <section class="dp-f ff-cnw ai-c jc-sa section section--off room room--created">
+      <header class="section__header room__header sr-only">
+        <h1 class="section__title room__title">Created Room</h1>
+      </header>
+      <div class="dp-f ff-cnw ai-c room__phrase">
+        <h2 class="room__content">
+          You've just created the
+          <span class="input-layer-off input-stroke target--room-name">room name</span>
+          room for
+          <span class="input-layer-off input-stroke target--room-size">0</span>
+          players
+        </h2>
+
+        <h3 class="room__share">
+          Share the
+          <span class="room__share--input input-stroke">room name</span> with friends
+        </h3>
+
+        <h3 class="room__share room__joined">
+          <span class="room__share--input target--room-size--current">0</span>
+          /
+          <span class="room__share--input target--room-size">0</span>
+          players joined
+        </h3>
+      </div>
+      <div class="dp-f ff-rnw jc-c btn-wrapper">
+        <button class="dp-f btn btn--lets-play">Let's Play</button>
+      </div>
+    </section>
+
+    <section class="dp-f ff-cnw ai-c jc-sa section section--off room room--joining">
+      <header class="section__header room__header sr-only">
+        <h1 class="section__title room__title">Joining Room</h1>
+      </header>
+      <div class="dp-f ff-cnw ai-c room__phrase">
+        <h2 class="room__content">
+          You're about to join the
+          <div class="dp-f ff-rnw roomname-wrapper">
+            <input class="input-layer-off input-underline input-stroke input--room-name" type="text" name="room-name" placeholder="room name">
+          </div>
+          room
+        </h2>
+      </div>
+      <div class="dp-f ff-rnw jc-c btn-wrapper">
+        <button class="dp-f btn btn--join-room">Join Room</button>
+      </div>
+    </section>
+
+    <section class="dp-f ff-cnw ai-c jc-sa section section--off room room--joined">
+      <header class="section__header room__header sr-only">
+        <h1 class="section__title room__title">Joined Room</h1>
+      </header>
+      <div class="dp-f ff-cnw ai-c room__phrase">
+        <h2 class="room__content">
+          You've joined the
+          <span class="input-layer-off input-stroke target--room-name joined-roomname">
+            room name
+          </span>
+          room
+        </h2>
+
+        <h3 class="room__share">
+          Waiting for
+          <span class="room__share--input input-stroke">0</span> more player(s)
+        </h3>
+      </div>
+    </section>
+
+    <section class="dp-f ff-cnw ai-c jc-sa section section--off player-setup">
+      <header class="section__header room__header">
+        <h1 class="section__title room__title sr-only">Player Setup</h1>
+        <h2 class="dp-f ff-cnw ai-c room__content">
+          <div class="small-container">
+            Setup a
+            <span class="input-layer-off input-stroke">username</span>
+          </div>
+          <div class="small-container">
+            &
+            <span class="input-layer-off input-stroke">profile picture</span>*
+          </div>
+        </h2>
+      </header>
+
+      <form class="dp-f ff-cnw form">
+        <div class="dp-f ff-cnw input-wrapper">
+          <label class="form__label" for="username">username</label>
+          <input class="dp-f ai-c jc-c form__input input--user-name" type="text" name="username" id="username" />
+        </div>
+        <div class="dp-f ff-cnw input-wrapper">
+          <label class="form__label" for="ballpicture">profile picture</label>
+          <div class="dp-f ff-rnw file-upload-wrapper" data-text="Select your profile picture">
+            <input class="dp-f ai-c jc-c form__input form__input--image input--user-picture" type="file" name="ballpicture" id="ballpicture"
+            />
+          </div>
+        </div>
+      </form>
+
+      <div class="dp-f ff-cnw ai-c jc-c btn-wrapper">
+        <button class="dp-f btn btn--ready">Ready</button>
+
+        <aside class="player-setup--aside">
+          *Please, upload a picture of your face. It will be funny, we promise
+        </aside>
+      </div>
+    </section>
+
+  </main>
+
+  <a-scene class="section--off">
+    <!-- class="section--off" -->
+
+    <a-camera>
+      <!-- TODO: styling + interactions -->
+      <a-cursor color="red"></a-cursor>
+    </a-camera>
+    <!-- all assets -->
+    <a-assets>
+      <a-asset-item id="cone" src="/assets/collada/bowling-cone.dae"></a-asset-item>
+      <a-asset-item id="triangle" src="/assets/collada/cones-indicator-triangle.dae"></a-asset-item>
+      <a-asset-item id="bowling-alley" src="/assets/collada/bowling-alley.dae"></a-asset-item>
+      <a-asset-item id="players-table" src="/assets/collada/players-table.dae"></a-asset-item>
+      <a-asset-item id="winners-crown" src="/assets/collada/winners-crown.dae"></a-asset-item>
+      <a-asset-item id="ball-slider" src="/assets/collada/ball-slider.dae"></a-asset-item>
+      <a-asset-item id="ball-slider-indicator" src="/assets/collada/ball-slider-indicator.dae"></a-asset-item>
+      <!-- head on ball -->
+      <img id="face-ball" src="/assets/img/ball/ball-pic.jpg">
+    </a-assets>
+
+    <a-sky color="#ffdeaf"></a-sky>
+
+    <!-- Text -->
+    <!-- First Thrown -->
+    <a-text position="-0.446 3.9 -7" color="#d1b390" wrap-count="35" text="width:6; align:center; value: 8" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+    <!-- Second Thrown -->
+    <a-text position="0.008 3.9 -7" color="#d1b390" wrap-count="35" text="value:1; width: 6; align:center" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+    <!-- TOTAL -->
+    <a-text position="0 3.2 -7" color="#2A2A9B" wrap-count="15" text="width:6; align:center; value: 9" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+
+
+    <!-- Bowling Cones -->
+    <a-collada-model position="-1.5 -2 -38" src="#cone"></a-collada-model>
+    <a-collada-model position="-.5 -2 -38" src="#cone"></a-collada-model>
+    <a-collada-model position=".5 -2 -38" src="#cone"></a-collada-model>
+    <a-collada-model position="1.5 -2 -38" src="#cone"></a-collada-model>
+
+    <a-collada-model position="-1 -2 -37" src="#cone"></a-collada-model>
+    <a-collada-model position="0 -2 -37" src="#cone"></a-collada-model>
+    <a-collada-model position="1 -2 -37" src="#cone"></a-collada-model>
+
+    <a-collada-model position="-.5 -2 -36" src="#cone"></a-collada-model>
+    <a-collada-model position=".5 -2 -36" src="#cone"></a-collada-model>
+
+    <a-collada-model position="0 -2 -35" src="#cone"></a-collada-model>
+
+    <!-- Bowling Ball -->
+    <a-sphere src="#face-ball" position="0 -1.25 -10" radius=".75"></a-sphere>
+
+    <!-- Alley -->
+    <a-collada-model position="-4 -2.35 -5.52" scale="7.6 5 4.5" src="#bowling-alley"></a-collada-model>
+
+    <!-- Ball Directional Slider -->
+    <a-collada-model position="-1.38 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider"></a-collada-model>
+    <!-- Ball Directional Indicator -->
+    <a-collada-model position="-2.730 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider-indicator">
+      <!-- -0.51 -1.86 -4.86 (Perfect Left Point) -->
+      <!-- -1.38 -1.29 -4.86 (Perfect Middle Point) -->
+      <!-- animate slider (L - R) -->
+      <!-- <a-animation attribute="rotation" repeat="indefinite" to="-15 0 90"></a-animation> -->
+      <a-animation attribute="position" direction="alternate" easing="ease-in-out" repeat="indefinite" to="-0.052 -1.29 -4.86"></a-animation>
+    </a-collada-model>
+
+    <!-- table + players -->
+    <a-collada-model position="-4 0 12" scale="7.6 5 4.5" src="#players-table"></a-collada-model>
+    <!--
+      Player Positions
+      3 | | 2
+      4 | | 1
+    -->
+
+    <!-- 1 + Crown -->
+    <a-collada-model position="-5.28 1.082 6.474" rotation="10 0 15" scale="1.4 1 1.4" src="#winners-crown">
+      <a-animation attribute="rotation" repeat="indefinite" to="10 360 15"></a-animation>
+    </a-collada-model>
+    <!-- score + playerhead  -->
+    <a-text rotation="0 180 0" position="-5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 130;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
+      <a-animation attribute="position" direction="alternate" easing="ease-in-out" dur="1800" repeat="indefinite" to="-5.3 2.2 6.5"></a-animation>
+    </a-text>
+    <a-sphere src="#face-ball" position="-5.3 .5 6.5" rotation="0 100 0" glow="c:1;p:3;color:#3737dd;scale:1.1;" radius=".85"></a-sphere>
+
+    <!-- 2 -->
+    <a-text rotation="0 180 0" position="-5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 63;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
+      <a-animation attribute="position" direction="alternate" easing="ease-in-out" dur="1500" repeat="indefinite" to="-5.3 2 9"></a-animation>
+    </a-text>
+    <a-sphere src="#face-ball" position="-5.3 .5 9" rotation="0 100 0" radius=".85"></a-sphere>
+    <!-- 3 -->
+    <a-text rotation="0 180 0" position="5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 90;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
+      <a-animation attribute="position" direction="alternate" easing="ease-in-out" dur="2000" repeat="indefinite" to="5.3 2 9"></a-animation>
+    </a-text>
+    <a-sphere src="#face-ball" position="5.3 .5 9" rotation="0 100 0" radius=".85"></a-sphere>
+    <!-- 4 -->
+    <a-text rotation="0 180 0" position="5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 10;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
+      <a-animation attribute="position" direction="alternate" easing="ease-in-out" dur="1600" repeat="indefinite" to="5.3 2.2 6.5"></a-animation>
+    </a-text>
+    <a-sphere src="#face-ball" position="5.3 .5 6.5" rotation="0 100 0" radius=".85"></a-sphere>
+
+    <!-- Cones indicator triangle -->
+    <a-collada-model position="4 -0.8 -3.4" scale="1.5 1.5 1.5" src="#triangle"></a-collada-model>
+    <!-- Cones indicator sphere -->
+    <a-sphere position="4.3 .40 -3.75" radius=".05" color="white"></a-sphere>
+    <a-sphere position="4.1 .40 -3.75" radius=".05" color="white"></a-sphere>
+    <a-sphere position="3.9 .40 -3.75" radius=".05" color="white"></a-sphere>
+    <a-sphere position="3.7 .40 -3.75" radius=".05" color="white"></a-sphere>
+
+    <a-sphere position="4.2 .25 -3.75" radius=".05" color="white"></a-sphere>
+    <a-sphere position="4 .25 -3.75" radius=".05" color="white"></a-sphere>
+    <a-sphere position="3.8 .25 -3.75" radius=".05" color="white"></a-sphere>
+
+    <a-sphere position="4.1 .1 -3.75" radius=".05" color="white"></a-sphere>
+    <a-sphere position="3.9 .1 -3.75" radius=".05" color="white"></a-sphere>
+
+    <a-sphere position="4 -.05 -3.75" radius=".05" color="white"></a-sphere>
+  </a-scene>
+
+  <script type="text/javascript" src="/socket.io/socket.io.js" defer></script>
+  <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js" defer></script>
+  <script type="module" src="/js/index.js" defer></script>
+
+  <script type="text/javascript" data-src="https://cdn.jsdelivr.net/npm/aframe@0.7.1/dist/aframe-master.min.js" class="deferred-script"></script>
+  <script type="text/javascript" data-src="/js/vendor/aframe-glow.js" class="deferred-script"></script>
+  <script type="module" data-src="/js/game.js" class="deferred-script"></script>
+</body>
+</html>

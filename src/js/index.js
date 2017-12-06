@@ -1,9 +1,11 @@
-import DataChannel from './lib/DataChannel';
-import thumbDataURI from './lib/thumbDataURI';
+import DataChannel from './lib/DataChannel.js';
+import thumbDataURI from './lib/thumbDataURI.js';
 
 let datachannel = null;
 let createdRoomName = '';
 let createdRoomSize = 0;
+
+const $deferredScripts = Array.from(document.querySelectorAll('.deferred-script'));
 
 // buttons
 const $buttonNavigatePageCreateRoom = document.querySelector('.btn--goto-create-room');
@@ -53,8 +55,6 @@ const $main = document.querySelector('.main');
 //   $inputUserPictureWrapper.dataset.text = imagePath;
 // };
 
-const $deferredScripts = Array.from(document.querySelectorAll('.deferredScript'));
-
 const log = {
   blue: (l, ...d) => console.log(`%c ${l} `, 'background:dodgerblue;color:white', ...d),
   red: (l, ...d) => console.log(`%c ${l} `, 'background:red;color:white', ...d),
@@ -62,11 +62,11 @@ const log = {
   orange: (l, ...d) => console.log(`%c ${l} `, 'background:orange;color:white', ...d),
 };
 
-const channelOnRoomError = (event) => {
+const channelOnRoomError = event => {
   log.orange('WARN', event.detail.message);
 };
 
-const handleCreateRoomSuccess = (event) => {
+const handleCreateRoomSuccess = event => {
   const name = event.detail.room.name;
 
   log.blue('LOG', `Successfully created and joined the "${name}" room`);
@@ -74,7 +74,7 @@ const handleCreateRoomSuccess = (event) => {
   // set room name global
   createdRoomName = name;
   // update the room name fields with the correct room name
-  $targetRoomNames.forEach(($item) => {
+  $targetRoomNames.forEach($item => {
     $item.textContent = createdRoomName;
   });
 
@@ -84,7 +84,7 @@ const handleCreateRoomSuccess = (event) => {
   $pageCreateRoom.classList.add('section--slide-in');
 };
 
-const handleJoinRoomSuccess = (event) => {
+const handleJoinRoomSuccess = event => {
   const name = event.detail.room.name;
 
   log.blue('LOG', `Successfully joined the "${name}" room`);
@@ -92,7 +92,7 @@ const handleJoinRoomSuccess = (event) => {
   // set room name global
   createdRoomName = name;
   // update the room name fields with the correct room name
-  $targetRoomNames.forEach(($item) => {
+  $targetRoomNames.forEach($item => {
     $item.textContent = createdRoomName;
   });
 
@@ -101,7 +101,7 @@ const handleJoinRoomSuccess = (event) => {
   $pageJoinRoomDone.classList.add('section--slide-in');
 };
 
-const handleOpenRoomSuccess = (event) => {
+const handleOpenRoomSuccess = event => {
   const name = event.detail.room.name;
 
   log.blue('LOG', `Successfully opened the "${name}" room`);
@@ -109,7 +109,7 @@ const handleOpenRoomSuccess = (event) => {
   // set room amount global
   createdRoomSize = $inputRoomSize.value;
   // update the room size fields with the correct room size
-  $targetRoomSizes.forEach(($item) => {
+  $targetRoomSizes.forEach($item => {
     $item.textContent = createdRoomSize;
   });
 
@@ -118,7 +118,7 @@ const handleOpenRoomSuccess = (event) => {
   $pageCreateRoomDone.classList.add('section--slide-in');
 };
 
-const channelOnRoomSuccess = (event) => {
+const channelOnRoomSuccess = event => {
   const action = event.detail.action;
 
   if (action === 'created') handleCreateRoomSuccess(event);
@@ -126,7 +126,7 @@ const channelOnRoomSuccess = (event) => {
   if (action === 'opened') handleOpenRoomSuccess(event);
 };
 
-const channelOnStateChange = (event) => {
+const channelOnStateChange = event => {
   const state = event.detail.state;
   const peerId = event.detail.connection.peerId;
 
@@ -134,7 +134,7 @@ const channelOnStateChange = (event) => {
   if (state === 'close') log.red('DISCONNECTION', `from ${peerId}`);
 };
 
-const channelOnPeerUpdate = (event) => {
+const channelOnPeerUpdate = event => {
   const peerId = event.detail.peer.id;
   const peerName = event.detail.peer.name;
 
@@ -159,16 +159,19 @@ const handleButtonJoinClick = () => {
   datachannel.joinRoom(roomName);
 };
 
-const handleInputRoomNameKeyDown = (event) => {
+const handleInputRoomNameKeyDown = event => {
   if (event.keyCode !== 13) return;
   handleButtonJoinClick();
 };
 
-const channelOnGameStart = () => {
-  $deferredScripts.forEach(($script) => {
-    const src = $script.dataset.src;
-    $script.src = src;
+const loadGame = () => {
+  $deferredScripts.forEach($script => {
+    $script.setAttribute('src', $script.dataset.src);
   });
+};
+
+const channelOnGameStart = () => {
+  loadGame();
 
   $main.classList.add('dp-n');
 
@@ -203,11 +206,12 @@ const handleNavigateToPageCreate = () => {
 const initDataChannel = () => {
   datachannel = new DataChannel();
 
-  datachannel.addEventListener('roomError', channelOnRoomError);
-  datachannel.addEventListener('roomSuccess', channelOnRoomSuccess);
-  datachannel.addEventListener('dataChannelStateChange', channelOnStateChange);
-  datachannel.addEventListener('peerUpdate', channelOnPeerUpdate);
-  datachannel.addEventListener('gameStart', channelOnGameStart);
+  datachannel
+    .addEventListener('roomError', channelOnRoomError)
+    .addEventListener('roomSuccess', channelOnRoomSuccess)
+    .addEventListener('dataChannelStateChange', channelOnStateChange)
+    .addEventListener('peerUpdate', channelOnPeerUpdate)
+    .addEventListener('gameStart', channelOnGameStart);
 };
 
 const setEventListeners = () => {
@@ -221,9 +225,22 @@ const setEventListeners = () => {
 };
 
 const init = () => {
+  //
+  /* uncomment the following block when developing the game */
+  /**/
+  // document.addEventListener('DOMContentLoaded', () => {
+  //   document.getElementsByClassName('main')[0].classList.add('dp-n');
+  //   document.getElementsByTagName('a-scene')[0].classList.remove('section--off');
+  // });
+  // loadGame();
+
+  /* start communication channels */
+  /**/
   initDataChannel();
   setEventListeners();
 
+  /* only for development */
+  /**/
   window.peers = datachannel.peers;
   window.send = datachannel.sendMessage;
 };
