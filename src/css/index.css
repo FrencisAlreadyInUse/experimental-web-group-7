@@ -1,10 +1,8 @@
 @import 'lib/reset.css';
 
 :root {
-  /* --purple-color: #3737DD; */
-  /* --beige-color: #FFD9B7; */
-  --purple-color: #03318C;
-  --beige-color: #ffdeaf;
+  --purple-color: #3737DD;
+  --beige-color: #FFD9B7;
   --light-beige-color: #fff9e6;
   --big-title: 9.5rem;
   --subtitle: 3rem;
@@ -376,7 +374,7 @@ input:disabled {
   cursor: pointer;
 }
 
-@media only screen and (min-width: 400px) {
+@media only screen and (max-width: 400px) {
 
   .landing {
     padding: 0;
