@@ -12,6 +12,8 @@
     <a-asset-item id="bowling-alley" src="/assets/collada/bowling-alley.dae"></a-asset-item>
     <a-asset-item id="players-table" src="/assets/collada/players-table.dae"></a-asset-item>
     <a-asset-item id="winners-crown" src="/assets/collada/winners-crown.dae"></a-asset-item>
+    <a-asset-item id="ball-slider" src="/assets/collada/ball-slider.dae"></a-asset-item>
+    <a-asset-item id="ball-slider-indicator" src="/assets/collada/ball-slider-indicator.dae"></a-asset-item>
     <!-- head on ball -->
     <img id="face-ball" src="/assets/img/ball/ball-pic.jpg">
   </a-assets>
@@ -41,6 +43,11 @@
 
   <!-- Alley -->
   <a-collada-model position="-4 -2.35 -5.52" scale="7.6 5 4.5" src="#bowling-alley"></a-collada-model>
+
+  <!-- Ball Directional Slider -->
+  <a-collada-model position="-1.38 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider"></a-collada-model>
+  <!-- Ball Directional Indicator -->
+  <a-collada-model position="-1.38 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider-indicator"></a-collada-model>
 
   <!-- table + players -->
   <a-collada-model position="-4 0 12" scale="7.6 5 4.5" src="#players-table"></a-collada-model>
