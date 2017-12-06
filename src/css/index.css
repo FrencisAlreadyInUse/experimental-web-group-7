@@ -376,7 +376,7 @@ input:disabled {
   cursor: pointer;
 }
 
-@media only screen and (min-width: 400px) {
+@media only screen and (max-width: 400px) {
 
   .landing {
     padding: 0;

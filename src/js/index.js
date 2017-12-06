@@ -19,6 +19,9 @@ const $buttonPlay = document.querySelector('.btn--lets-play');
 // targets
 const $targetRoomNames = Array.from(document.querySelectorAll('.target--room-name'));
 const $targetRoomSizes = Array.from(document.querySelectorAll('.target--room-size'));
+const $targetRoomSizesCurrent = Array.from(document.querySelectorAll('.target--room-size--current'));
+const $targetRoomSizesMissing = Array.from(document.querySelectorAll('.target--room-size--missing'));
+
 
 // inputs
 const $inputRoomSize = document.querySelector('.input--room-size');
@@ -56,10 +59,10 @@ const $main = document.querySelector('.main');
 // };
 
 const log = {
-  blue: (l, ...d) => console.log(`%c ${l} `, 'background:dodgerblue;color:white', ...d),
-  red: (l, ...d) => console.log(`%c ${l} `, 'background:red;color:white', ...d),
-  green: (l, ...d) => console.log(`%c ${l} `, 'background:yellowgreen;color:white', ...d),
-  orange: (l, ...d) => console.log(`%c ${l} `, 'background:orange;color:white', ...d),
+  blue: (l, m) => console.log(`%c ${l} `, 'background:dodgerblue;color:white', m),
+  red: (l, m) => console.log(`%c ${l} `, 'background:red;color:white', m),
+  green: (l, m) => console.log(`%c ${l} `, 'background:yellowgreen;color:white', m),
+  orange: (l, m) => console.log(`%c ${l} `, 'background:orange;color:white', m),
 };
 
 const channelOnRoomError = event => {
@@ -85,15 +88,23 @@ const handleCreateRoomSuccess = event => {
 };
 
 const handleJoinRoomSuccess = event => {
-  const name = event.detail.room.name;
+  const { name, maxUsers, userCount } = event.detail.room;
+
+  console.log(event.detail.room);
 
   log.blue('LOG', `Successfully joined the "${name}" room`);
 
   // set room name global
   createdRoomName = name;
+
   // update the room name fields with the correct room name
   $targetRoomNames.forEach($item => {
     $item.textContent = createdRoomName;
+  });
+
+  // update the "waiting for ... platers" text
+  $targetRoomSizesMissing.forEach($target => {
+    $target.textContent = maxUsers - userCount;
   });
 
   // navigate to "joined coom" page
@@ -124,14 +135,6 @@ const channelOnRoomSuccess = event => {
   if (action === 'created') handleCreateRoomSuccess(event);
   if (action === 'joined') handleJoinRoomSuccess(event);
   if (action === 'opened') handleOpenRoomSuccess(event);
-};
-
-const channelOnStateChange = event => {
-  const state = event.detail.state;
-  const peerId = event.detail.connection.peerId;
-
-  if (state === 'open') log.green('CONNECTION', `established with ${peerId}`);
-  if (state === 'close') log.red('DISCONNECTION', `from ${peerId}`);
 };
 
 const channelOnPeerUpdate = event => {
@@ -203,13 +206,26 @@ const handleNavigateToPageCreate = () => {
   datachannel.createRoom();
 };
 
+const channelOnMessage = event => {
+  const action = event.detail.action;
+
+  if (action === 'peerConnect') {
+    log.green('CONNECT', event.detail.peerId);
+
+    $targetRoomSizesCurrent.forEach($current => {
+      $current.textContent = datachannel.peerCount + 1;
+    });
+  }
+  if (action === 'peerDisconnect') log.red('DISCONNECT', event.detail.peerId);
+};
+
 const initDataChannel = () => {
   datachannel = new DataChannel();
 
   datachannel
     .addEventListener('roomError', channelOnRoomError)
     .addEventListener('roomSuccess', channelOnRoomSuccess)
-    .addEventListener('dataChannelStateChange', channelOnStateChange)
+    .addEventListener('dataChannelMessage', channelOnMessage)
     .addEventListener('peerUpdate', channelOnPeerUpdate)
     .addEventListener('gameStart', channelOnGameStart);
 };
@@ -241,6 +257,7 @@ const init = () => {
 
   /* only for development */
   /**/
+  window.channel = datachannel;
   window.peers = datachannel.peers;
   window.send = datachannel.sendMessage;
 };

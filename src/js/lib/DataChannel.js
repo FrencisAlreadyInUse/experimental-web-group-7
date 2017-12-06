@@ -33,9 +33,6 @@ export default class DataChannel extends EventTarget {
   }
 
   setSignalingSocketEventHandlers() {
-    console.log('set');
-    console.log(this);
-
     this.signalingServer.addEventListener('connect', this.onConnection);
     this.signalingServer.addEventListener('peerIce', this.onPeerIce);
     this.signalingServer.addEventListener('peerAnswer', this.onPeerAnswer);
@@ -57,6 +54,10 @@ export default class DataChannel extends EventTarget {
       const message = JSON.stringify({ label, data });
       this.peers[peerId].channel.send(message);
     });
+  }
+
+  get peerCount() {
+    return Object.keys(this.peers).length || 0;
   }
 
   onConnection() {
@@ -118,22 +119,10 @@ export default class DataChannel extends EventTarget {
       Peer.channel = RTCDataChannelEvent.channel;
 
       Peer.channel.addEventListener('open', () => {
-        this.dispatchEvent(
-          new CustomEvent('dataChannelStateChange', {
-            detail: { state: 'open', connection: { peerId } },
-          }),
-        );
-
         Peer.channel.addEventListener('message', this.onMessage);
       });
 
-      Peer.channel.addEventListener('close', () => {
-        this.dispatchEvent(
-          new CustomEvent('dataChannelStateChange', {
-            detail: { state: 'close', connection: { peerId } },
-          }),
-        );
-      });
+      Peer.channel.addEventListener('close', () => {});
     });
   }
 
@@ -175,21 +164,15 @@ export default class DataChannel extends EventTarget {
 
     Peer.channel.addEventListener('open', () => {
       this.dispatchEvent(
-        new CustomEvent('dataChannelStateChange', {
-          detail: { state: 'open', connection: { peerId } },
+        new CustomEvent('dataChannelMessage', {
+          detail: { action: 'peerConnect', peerId },
         }),
       );
 
       Peer.channel.addEventListener('message', this.onMessage);
     });
 
-    Peer.channel.addEventListener('close', () => {
-      this.dispatchEvent(
-        new CustomEvent('dataChannelStateChange', {
-          detail: { state: 'close', connection: { peerId } },
-        }),
-      );
-    });
+    Peer.channel.addEventListener('close', () => {});
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -211,21 +194,18 @@ export default class DataChannel extends EventTarget {
     );
   }
 
-  onMessage(MessageEvent) {
-    const { label, data } = JSON.parse(MessageEvent.data);
-
-    if (label === 'userdata') this.onPeerUserData(data);
-    if (label === 'message') {
-      this.dispatchEvent(new Event('message', { bubbles: false, cancelable: false }));
-    }
-  }
-
   onPeerDisconnect(peerId) {
     if (!this.peers[peerId]) return;
 
     this.peers[peerId].channel.close();
     this.peers[peerId].connection.close();
     delete this.peers[peerId];
+
+    this.dispatchEvent(
+      new CustomEvent('dataChannelMessage', {
+        detail: { action: 'peerDisconnect', peerId },
+      }),
+    );
   }
 
   onSignalingServerMessage(label, data) {
@@ -241,7 +221,7 @@ export default class DataChannel extends EventTarget {
     if (label === 'roomJoined') {
       this.dispatchEvent(
         new CustomEvent('roomSuccess', {
-          detail: { action: 'joined', room: { name: data } },
+          detail: { action: 'joined', room: data },
         }),
       );
     }
