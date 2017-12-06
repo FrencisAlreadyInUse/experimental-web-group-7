@@ -9,8 +9,7 @@
   --big-title: 9.5rem;
   --subtitle: 3rem;
   --text: 2.5rem;
-  --pxg-regular: px-grotesk;
-  --pxg-bold: px-grotesk-bold;
+  --pxg: 'px-grotesk', -apple-system, 'Helvetica Neue', helvetica, arial, sans-serif;
   --room-text: 7.4rem;
   --created-room-text: 4rem;
   --stroke: .1rem var(--purple-color);
@@ -22,7 +21,7 @@
 
 body {
   font-size: 1.6rem;
-  font-family: px-grotesk, -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: var(--pxg);
   background-color: var(--beige-color);
 
   width: 100%;
@@ -111,7 +110,8 @@ main {
 }
 
 .landing__title {
-  font-family: var(--pxg-bold);
+  font-family: var(--pxg);
+  font-weight: 700;
   font-size: var(--big-title);
   width: 75%;
   color: var(--purple-color);
@@ -168,9 +168,15 @@ main {
   font-size: var(--text);
   padding: 1rem 1.5rem;
   color: var(--purple-color);
-  font-family: var(--pxg-regular);
+  font-family: var(--pxg);
+  font-weight: 400;
   position: relative;
   overflow: hidden;
+}
+
+.btn:disabled,
+input:disabled {
+  opacity: .5;
 }
 
 .btn::after {
@@ -207,7 +213,8 @@ main {
 .room__content {
   font-size: var(--room-text);
   color: var(--purple-color);
-  font-family: var(--pxg-bold);
+  font-family: var(--pxg);
+  font-weight: 700;
   position: relative;
   line-height: 135%;
 }
@@ -218,7 +225,8 @@ main {
   outline: none;
   font-size: var(--room-text);
   color: var(--purple-color);
-  font-family: var(--pxg-bold);
+  font-family: var(--pxg);
+  font-weight: 700;
 }
 
 .input-stroke {
@@ -260,12 +268,8 @@ main {
 }
 
 .room__share--input {
-  font-family: var(--pxg-bold);
-}
-
-.btn:disabled,
-input:disabled {
-  opacity: .5;
+  font-family: var(--pxg);
+  font-weight: 700;
 }
 
 /* Joining Room */
@@ -310,7 +314,8 @@ input:disabled {
 .form__label {
   font-size: 3rem;
   color: var(--purple-color);
-  font-family: var(--pxg-bold);
+  font-family: var(--pxg);
+  font-weight: 700;
   padding: 0 0 2rem;
 }
 
@@ -320,7 +325,8 @@ input:disabled {
   background-color: transparent;
   outline: none;
   font-size: 2rem;
-  font-family: var(--pxg-bold);
+  font-family: var(--pxg);
+  font-weight: 700;
   color: var(--purple-color);
   padding: 2rem;
   width: 100%;
@@ -334,7 +340,8 @@ input:disabled {
 .file-upload-wrapper {
   position: relative;
   border: 2px solid var(--purple-color);
-  font-family: var(--pxg-bold);
+  font-family: var(--pxg);
+  font-weight: 700;
   color: var(--purple-color);
   cursor: pointer;
 }
