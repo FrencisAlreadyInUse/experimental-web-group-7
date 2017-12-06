@@ -7,7 +7,9 @@
     "global-require": "off",
     "no-new": "off",
     "prefer-destructuring": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "arrow-parens": "off",
+    "function-paren-newline": "off"
   },
   "globals": {
     "io": true
