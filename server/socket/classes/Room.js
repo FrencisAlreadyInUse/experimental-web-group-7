@@ -13,10 +13,11 @@ module.exports = class Room {
 
   bindClassMethods() {
     // eslint-disable-next-line no-restricted-syntax
-    for (const method in this) {
-      if (typeof this[method] === 'function') {
-        this[method] = this[method].bind(this);
-      }
+    for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
+      const method = this[name];
+      // eslint-disable-next-line no-continue
+      if (!(method instanceof Function) || method === Room) continue;
+      this[name] = this[name].bind(this);
     }
   }
 

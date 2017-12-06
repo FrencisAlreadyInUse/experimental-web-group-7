@@ -1,4 +1,4 @@
-import EventTarget from './EventTarget';
+import EventTarget from './EventTarget.js';
 
 export default class DataChannel extends EventTarget {
   constructor() {
@@ -16,6 +16,7 @@ export default class DataChannel extends EventTarget {
     this.RTCDataChannelOptions = { ordered: false, maxPacketLifeTime: 1000 };
 
     this.signalingServer = io.connect('/');
+    window.signalingServer = this.signalingServer;
 
     this.bindClassMethods();
     this.setSignalingSocketEventHandlers();
@@ -23,29 +24,33 @@ export default class DataChannel extends EventTarget {
 
   bindClassMethods() {
     // eslint-disable-next-line no-restricted-syntax
-    for (const method in this) {
-      if (typeof this[method] === 'function') {
-        this[method] = this[method].bind(this);
-      }
+    for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
+      const method = this[name];
+      // eslint-disable-next-line no-continue
+      if (!(method instanceof Function) || method === DataChannel) continue;
+      this[name] = this[name].bind(this);
     }
   }
 
   setSignalingSocketEventHandlers() {
-    this.signalingServer.on('connect', this.onConnection);
-    this.signalingServer.on('peerIce', this.onPeerIce);
-    this.signalingServer.on('peerAnswer', this.onPeerAnswer);
-    this.signalingServer.on('peerOffer', this.onPeerOffer);
-    this.signalingServer.on('peerWantsACall', this.onPeerWantsACall);
-    this.signalingServer.on('peerUpdate', this.onPeerUpdate);
-    this.signalingServer.on('peerDisconnect', this.onPeerDisconnect);
-    this.signalingServer.on('signalingServerMessage', this.onSignalingServerMessage);
+    console.log('set');
+    console.log(this);
+
+    this.signalingServer.addEventListener('connect', this.onConnection);
+    this.signalingServer.addEventListener('peerIce', this.onPeerIce);
+    this.signalingServer.addEventListener('peerAnswer', this.onPeerAnswer);
+    this.signalingServer.addEventListener('peerOffer', this.onPeerOffer);
+    this.signalingServer.addEventListener('peerWantsACall', this.onPeerWantsACall);
+    this.signalingServer.addEventListener('peerUpdate', this.onPeerUpdate);
+    this.signalingServer.addEventListener('peerDisconnect', this.onPeerDisconnect);
+    this.signalingServer.addEventListener('signalingServerMessage', this.onSignalingServerMessage);
   }
 
   sendMessage(label, ...input) {
     const data = input.length === 1 ? input[0] : input;
     const peerKeys = Object.keys(this.peers);
 
-    peerKeys.forEach((peerId) => {
+    peerKeys.forEach(peerId => {
       if (!this.peers[peerId].channel) return;
       if (this.peers[peerId].channel.readyState !== 'open') return;
 
@@ -89,39 +94,45 @@ export default class DataChannel extends EventTarget {
     Peer.connection
       .setRemoteDescription(RemoteRTCSessionDescription)
       .then(() => Peer.connection.createAnswer())
-      .then((LocalRTCSessionDescription) => {
+      .then(LocalRTCSessionDescription => {
         Peer.connection.setLocalDescription(LocalRTCSessionDescription);
         this.signalingServer.emit('peerAnswer', peerId, LocalRTCSessionDescription);
       })
       .catch(() => {
-        this.dispatchEvent(new CustomEvent('connectionError', {
-          detail: { message: 'Failed to connect to another users' },
-        }));
+        this.dispatchEvent(
+          new CustomEvent('connectionError', {
+            detail: { message: 'Failed to connect to another users' },
+          }),
+        );
       });
 
-    Peer.connection.addEventListener('icecandidate', (RTCPeerConnectionIceEvent) => {
+    Peer.connection.addEventListener('icecandidate', RTCPeerConnectionIceEvent => {
       if (!RTCPeerConnectionIceEvent.candidate) return;
 
       this.signalingServer.emit('peerIce', peerId, RTCPeerConnectionIceEvent.candidate);
     });
 
-    Peer.connection.addEventListener('datachannel', (RTCDataChannelEvent) => {
+    Peer.connection.addEventListener('datachannel', RTCDataChannelEvent => {
       if (!RTCDataChannelEvent.channel) return;
 
       Peer.channel = RTCDataChannelEvent.channel;
 
       Peer.channel.addEventListener('open', () => {
-        this.dispatchEvent(new CustomEvent('dataChannelStateChange', {
-          detail: { state: 'open', connection: { peerId } },
-        }));
+        this.dispatchEvent(
+          new CustomEvent('dataChannelStateChange', {
+            detail: { state: 'open', connection: { peerId } },
+          }),
+        );
 
         Peer.channel.addEventListener('message', this.onMessage);
       });
 
       Peer.channel.addEventListener('close', () => {
-        this.dispatchEvent(new CustomEvent('dataChannelStateChange', {
-          detail: { state: 'close', connection: { peerId } },
-        }));
+        this.dispatchEvent(
+          new CustomEvent('dataChannelStateChange', {
+            detail: { state: 'close', connection: { peerId } },
+          }),
+        );
       });
     });
   }
@@ -136,11 +147,11 @@ export default class DataChannel extends EventTarget {
 
     Peer.channel = Peer.connection.createDataChannel('datachannel', this.RTCDataChannelOptions);
 
-    Peer.connection.addEventListener('datachannel', (event) => {
+    Peer.connection.addEventListener('datachannel', event => {
       Peer.channel = event.channel;
     });
 
-    Peer.connection.addEventListener('icecandidate', (RTCPeerConnectionIceEvent) => {
+    Peer.connection.addEventListener('icecandidate', RTCPeerConnectionIceEvent => {
       if (!RTCPeerConnectionIceEvent.candidate) return;
 
       this.signalingServer.emit('peerIce', peerId, RTCPeerConnectionIceEvent.candidate);
@@ -149,29 +160,35 @@ export default class DataChannel extends EventTarget {
     Peer.connection.addEventListener('negotiationneeded', () => {
       Peer.connection
         .createOffer()
-        .then((LocalRTCSessionDescription) => {
+        .then(LocalRTCSessionDescription => {
           Peer.connection.setLocalDescription(LocalRTCSessionDescription);
           this.signalingServer.emit('peerOffer', peerId, LocalRTCSessionDescription);
         })
         .catch(() => {
-          this.dispatchEvent(new CustomEvent('connectionError', {
-            detail: { message: 'Failed to connect to another users' },
-          }));
+          this.dispatchEvent(
+            new CustomEvent('connectionError', {
+              detail: { message: 'Failed to connect to another users' },
+            }),
+          );
         });
     });
 
     Peer.channel.addEventListener('open', () => {
-      this.dispatchEvent(new CustomEvent('dataChannelStateChange', {
-        detail: { state: 'open', connection: { peerId } },
-      }));
+      this.dispatchEvent(
+        new CustomEvent('dataChannelStateChange', {
+          detail: { state: 'open', connection: { peerId } },
+        }),
+      );
 
       Peer.channel.addEventListener('message', this.onMessage);
     });
 
     Peer.channel.addEventListener('close', () => {
-      this.dispatchEvent(new CustomEvent('dataChannelStateChange', {
-        detail: { state: 'close', connection: { peerId } },
-      }));
+      this.dispatchEvent(
+        new CustomEvent('dataChannelStateChange', {
+          detail: { state: 'close', connection: { peerId } },
+        }),
+      );
     });
   }
 
@@ -187,9 +204,11 @@ export default class DataChannel extends EventTarget {
       uri: userData.uri,
     };
 
-    this.dispatchEvent(new CustomEvent('peerUpdate', {
-      detail: { peer: { id: peerId, name: userData.name, uri: userData.uri } },
-    }));
+    this.dispatchEvent(
+      new CustomEvent('peerUpdate', {
+        detail: { peer: { id: peerId, name: userData.name, uri: userData.uri } },
+      }),
+    );
   }
 
   onMessage(MessageEvent) {
@@ -212,27 +231,35 @@ export default class DataChannel extends EventTarget {
   onSignalingServerMessage(label, data) {
     //
     if (label === 'roomCreated') {
-      this.dispatchEvent(new CustomEvent('roomSuccess', {
-        detail: { action: 'created', room: { name: data } },
-      }));
+      this.dispatchEvent(
+        new CustomEvent('roomSuccess', {
+          detail: { action: 'created', room: { name: data } },
+        }),
+      );
     }
 
     if (label === 'roomJoined') {
-      this.dispatchEvent(new CustomEvent('roomSuccess', {
-        detail: { action: 'joined', room: { name: data } },
-      }));
+      this.dispatchEvent(
+        new CustomEvent('roomSuccess', {
+          detail: { action: 'joined', room: { name: data } },
+        }),
+      );
     }
 
     if (label === 'roomOpened') {
-      this.dispatchEvent(new CustomEvent('roomSuccess', {
-        detail: { action: 'opened', room: { name: data } },
-      }));
+      this.dispatchEvent(
+        new CustomEvent('roomSuccess', {
+          detail: { action: 'opened', room: { name: data } },
+        }),
+      );
     }
 
     if (label === 'roomError') {
-      this.dispatchEvent(new CustomEvent('roomError', {
-        detail: { message: data },
-      }));
+      this.dispatchEvent(
+        new CustomEvent('roomError', {
+          detail: { message: data },
+        }),
+      );
     }
   }
 

@@ -1,5 +1,5 @@
-import DataChannel from './lib/DataChannel';
-import thumbDataURI from './lib/thumbDataURI';
+import DataChannel from './lib/DataChannel.js';
+import thumbDataURI from './lib/thumbDataURI.js';
 
 let datachannel = null;
 let createdRoomName = '';

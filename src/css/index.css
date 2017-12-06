@@ -1,4 +1,4 @@
-@import 'lib/reset';
+@import 'lib/reset.css';
 
 :root {
   --purple-color: #3737dd;
@@ -186,13 +186,13 @@ main {
 
 .btn:hover:enabled {
   cursor: pointer;
+}
 
-  &::after {
-    right: 10%;
-    width: 80%;
-    justify-content: center;
-    transition: right .3s ease-in-out;
-  }
+.btn:hover:enabled::after {
+  right: 10%;
+  width: 80%;
+  justify-content: center;
+  transition: right .3s ease-in-out;
 }
 
 /* Create Room */
@@ -335,39 +335,39 @@ input:disabled {
   font-family: var(--pxg-bold);
   color: var(--purple-color);
   cursor: pointer;
-
-  &::before {
-    content: 'Upload';
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 5rem;
-    width: 20%;
-    background-color: var(--purple-color);
-    color: var(--beige-color);
-    cursor: pointer;
-  }
-
-  &::after {
-    content: attr(data-text);
-    display: flex;
-    align-items: center;
-    height: 5rem;
-    padding: 0 2rem;
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    width: 80%;
-    color: var(--purple-color);
-    cursor: pointer;
-  }
 }
 
-@media (width <= 400px) {
+.file-upload-wrapper::before {
+  content: 'Upload';
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 5rem;
+  width: 20%;
+  background-color: var(--purple-color);
+  color: var(--beige-color);
+  cursor: pointer;
+}
+
+.file-upload-wrapper::after {
+  content: attr(data-text);
+  display: flex;
+  align-items: center;
+  height: 5rem;
+  padding: 0 2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 80%;
+  color: var(--purple-color);
+  cursor: pointer;
+}
+
+@media only screen and (min-width: 400px) {
 
   .landing {
     padding: 0;
