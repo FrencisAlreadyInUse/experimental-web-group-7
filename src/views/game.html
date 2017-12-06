@@ -52,7 +52,7 @@
     <!-- -1.38 -1.29 -4.86 (Perfect Middle Point) -->
     <!-- animate slider (L - R) -->
     <!-- <a-animation attribute="rotation" repeat="indefinite" to="-15 0 90"></a-animation> -->
-    <a-animation attribute="position" direction="alternate" repeat="indefinite" to="-0.052 -1.29 -4.86"></a-animation>
+    <a-animation attribute="position" direction="alternate" easing="ease-in-out" repeat="indefinite" to="-0.052 -1.29 -4.86"></a-animation>
   </a-collada-model>
 
   <!-- table + players -->
@@ -68,17 +68,25 @@
     <a-animation attribute="rotation" repeat="indefinite" to="10 360 15"></a-animation>
   </a-collada-model>
   <!-- score + playerhead  -->
-  <a-text rotation="0 180 0" position="-5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 130;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+  <a-text rotation="0 180 0" position="-5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 130;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
+    <a-animation attribute="position" direction="alternate" easing="ease-in-out" dur="1800" repeat="indefinite" to="-5.3 2.2 6.5"></a-animation>
+  </a-text>
   <a-sphere src="#face-ball" position="-5.3 .5 6.5" rotation="0 100 0" glow="c:1;p:3;color:#3737dd;scale:1.1;" radius=".85"></a-sphere>
 
   <!-- 2 -->
-  <a-text rotation="0 180 0" position="-5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 63;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+  <a-text rotation="0 180 0" position="-5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 63;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
+    <a-animation attribute="position" direction="alternate" easing="ease-in-out" dur="1500" repeat="indefinite" to="-5.3 2 9"></a-animation>
+  </a-text>
   <a-sphere src="#face-ball" position="-5.3 .5 9" rotation="0 100 0" radius=".85"></a-sphere>
   <!-- 3 -->
-  <a-text rotation="0 180 0" position="5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 90;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+  <a-text rotation="0 180 0" position="5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 90;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
+    <a-animation attribute="position" direction="alternate" easing="ease-in-out" dur="2000" repeat="indefinite" to="5.3 2 9"></a-animation>
+  </a-text>
   <a-sphere src="#face-ball" position="5.3 .5 9" rotation="0 100 0" radius=".85"></a-sphere>
   <!-- 4 -->
-  <a-text rotation="0 180 0" position="5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 10;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+  <a-text rotation="0 180 0" position="5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 10;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
+    <a-animation attribute="position" direction="alternate" easing="ease-in-out" dur="1600" repeat="indefinite" to="5.3 2.2 6.5"></a-animation>
+  </a-text>
   <a-sphere src="#face-ball" position="5.3 .5 6.5" rotation="0 100 0" radius=".85"></a-sphere>
 
   <!-- Cones indicator triangle -->
