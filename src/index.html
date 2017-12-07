@@ -137,7 +137,7 @@
             <span class="input-layer-off input-stroke">username</span>
           </div>
           <div class="small-container">
-            &
+            &amp;
             <span class="input-layer-off input-stroke">profile picture</span>*
           </div>
         </h2>
@@ -168,18 +168,18 @@
 
   </main>
 
-  <a-scene class="section--off">
-    <!-- class="section--off" -->
+  <a-scene class="section--off" physics="debug: true; iterations: 20; gravity: -4">
 
     <a-camera>
       <!-- TODO: styling + interactions -->
-      <a-cursor color="red"></a-cursor>
+      <a-cursor color="red" fuse="true"></a-cursor>
     </a-camera>
     <!-- all assets -->
     <a-assets>
       <a-asset-item id="cone" src="/assets/collada/bowling-cone.dae"></a-asset-item>
       <a-asset-item id="triangle" src="/assets/collada/cones-indicator-triangle.dae"></a-asset-item>
       <a-asset-item id="bowling-alley" src="/assets/collada/bowling-alley.dae"></a-asset-item>
+      <a-asset-item id="cones-box" src="/assets/collada/cones-box.dae"></a-asset-item>
       <a-asset-item id="players-table" src="/assets/collada/players-table.dae"></a-asset-item>
       <a-asset-item id="winners-crown" src="/assets/collada/winners-crown.dae"></a-asset-item>
       <a-asset-item id="ball-slider" src="/assets/collada/ball-slider.dae"></a-asset-item>
@@ -187,8 +187,6 @@
       <!-- head on ball -->
       <img id="face-ball" src="/assets/img/ball/ball-pic.jpg">
     </a-assets>
-
-    <a-sky color="#ffdeaf"></a-sky>
 
     <!-- Text -->
     <!-- First Thrown -->
@@ -200,25 +198,30 @@
 
 
     <!-- Bowling Cones -->
-    <a-collada-model position="-1.5 -2 -38" src="#cone"></a-collada-model>
-    <a-collada-model position="-.5 -2 -38" src="#cone"></a-collada-model>
-    <a-collada-model position=".5 -2 -38" src="#cone"></a-collada-model>
-    <a-collada-model position="1.5 -2 -38" src="#cone"></a-collada-model>
+    <a-collada-model position="-1.5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model position="-.5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model position=".5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model position="1.5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
 
-    <a-collada-model position="-1 -2 -37" src="#cone"></a-collada-model>
-    <a-collada-model position="0 -2 -37" src="#cone"></a-collada-model>
-    <a-collada-model position="1 -2 -37" src="#cone"></a-collada-model>
+    <a-collada-model position="-1 -2 -35" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model position="0 -2 -35" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model position="1 -2 -35" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
 
-    <a-collada-model position="-.5 -2 -36" src="#cone"></a-collada-model>
-    <a-collada-model position=".5 -2 -36" src="#cone"></a-collada-model>
+    <a-collada-model position="-.5 -2 -32" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model position=".5 -2 -32" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
 
-    <a-collada-model position="0 -2 -35" src="#cone"></a-collada-model>
+    <a-collada-model position="0 -2 -29" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
 
     <!-- Bowling Ball -->
-    <a-sphere src="#face-ball" position="0 -1.25 -10" radius=".75"></a-sphere>
+    <a-sphere id="bowlingBall" src="#face-ball" position="0 -1.25 -10" radius=".75" dynamic-body="shape: sphere; mass: 50;" velocity="0 0 -50">
+      <a-animation attribute="position" to="0 -1.25 -20" easing="ease-in-out" begin="click"></a-animation>
+      <a-animation attribute="velocity" to="0 0 -20" begin="click"></a-animation>
+    </a-sphere>
 
     <!-- Alley -->
-    <a-collada-model position="-4 -2.35 -5.52" scale="7.6 5 4.5" src="#bowling-alley"></a-collada-model>
+    <a-collada-model static-body position="-4 -2.35 -5.52" scale="7.6 5 4.5" src="#bowling-alley"></a-collada-model>
+    <!-- Cones Box -->
+    <a-collada-model static-body position="-4 -2.35 -7" scale="7.6 5 4.5" src="#cones-box"></a-collada-model>
 
     <!-- Ball Directional Slider -->
     <a-collada-model position="-1.38 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider"></a-collada-model>
@@ -281,14 +284,17 @@
     <a-sphere position="3.9 .1 -3.75" radius=".05" color="white"></a-sphere>
 
     <a-sphere position="4 -.05 -3.75" radius=".05" color="white"></a-sphere>
+
+    <a-sky color="#ffdeaf"></a-sky>
   </a-scene>
 
   <script type="text/javascript" src="/socket.io/socket.io.js" defer></script>
   <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js" defer></script>
   <script type="module" src="/js/index.js" defer></script>
 
-  <script type="text/javascript" data-src="https://cdn.jsdelivr.net/npm/aframe@0.7.1/dist/aframe-master.min.js" class="deferred-script"></script>
-  <script type="text/javascript" data-src="/js/vendor/aframe-glow.js" class="deferred-script"></script>
-  <script type="module" data-src="/js/game.js" class="deferred-script"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aframe@0.7.1/dist/aframe-master.min.js" class="deferred-script"></script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/donmccurdy/aframe-physics-system/v2.1.0/dist/aframe-physics-system.min.js" class="deferred-script"></script>
+  <script type="text/javascript" src="/js/vendor/aframe-glow.js" class="deferred-script"></script>
+  <script type="module" src="/js/game.js" class="deferred-script"></script>
 </body>
 </html>
