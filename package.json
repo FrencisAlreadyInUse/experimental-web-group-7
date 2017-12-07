@@ -6,7 +6,7 @@
     "development": "NODE_ENV=development nodemon . & NODE_ENV=development webpack --watch --progress --display minimal",
     "production": "NODE_ENV=production webpack -p --progress --display verbose",
     "start": "forever .",
-    "serve": "NODE_ENV=development forever ."
+    "serve": "NODE_ENV=development forever --minUptime 1000 --spinSleepTime 2000 ."
   },
   "main": "server/index.js",
   "engines": {
