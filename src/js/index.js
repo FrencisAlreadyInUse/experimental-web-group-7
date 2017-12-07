@@ -5,7 +5,7 @@ let datachannel = null;
 let createdRoomName = '';
 let createdRoomSize = 0;
 
-const $deferredScripts = Array.from(document.querySelectorAll('.deferred-script'));
+// const $deferredScripts = Array.from(document.querySelectorAll('.deferred-script'));
 
 // buttons
 const $buttonNavigatePageCreateRoom = document.querySelector('.btn--goto-create-room');
@@ -59,10 +59,10 @@ const $main = document.querySelector('.main');
 // };
 
 const log = {
-  blue: (l, ...d) => console.log(`%c ${l} `, 'background:dodgerblue;color:white', d),
-  red: (l, ...d) => console.log(`%c ${l} `, 'background:red;color:white', d),
-  green: (l, ...d) => console.log(`%c ${l} `, 'background:yellowgreen;color:white', d),
-  orange: (l, ...d) => console.log(`%c ${l} `, 'background:orange;color:white', d),
+  blue: (l, ...d) => console.log(`%c ${l} `, 'background:dodgerblue;color:white', ...d),
+  red: (l, ...d) => console.log(`%c ${l} `, 'background:red;color:white', ...d),
+  green: (l, ...d) => console.log(`%c ${l} `, 'background:yellowgreen;color:white', ...d),
+  orange: (l, ...d) => console.log(`%c ${l} `, 'background:orange;color:white', ...d),
 };
 
 const channelOnRoomError = event => {
