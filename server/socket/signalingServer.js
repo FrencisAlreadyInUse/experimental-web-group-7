@@ -12,11 +12,12 @@ module.exports = (
   clientSocket,
   serverSocketHelperGenerator,
   clientSocketHelperGenerator,
+  enableLogging,
 ) => {
   //
   const label = `[${chalk.blue('SIGNALING-SERVER')}]`;
-  const ss = serverSocketHelperGenerator({ socket: serverSocket, label });
-  const cs = clientSocketHelperGenerator({ socket: clientSocket, label });
+  const ss = serverSocketHelperGenerator({ socket: serverSocket, label, enableLogging });
+  const cs = clientSocketHelperGenerator({ socket: clientSocket, label, enableLogging });
 
   const handlers = handlersGenerator({
     store,
@@ -26,7 +27,7 @@ module.exports = (
     cs,
   });
 
-  log(`[${chalk.blue('SIGNALING-SERVER')}] ↓ received "${chalk.yellow('connect')}" from "${chalk.yellow(clientSocket.id)}"`);
+  if (enableLogging) log(`[${chalk.blue('SIGNALING-SERVER')}] ↓ received "${chalk.yellow('connect')}" from "${chalk.yellow(clientSocket.id)}"`);
 
   cs.on('createRoom', handlers.createRoom);
   cs.on('joinRoom', handlers.joinRoom);

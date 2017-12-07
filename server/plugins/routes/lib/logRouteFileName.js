@@ -6,5 +6,5 @@ module.exports = (file) => {
   const pluginName = `[${chalk.magenta('ROUTE-PLUGIN')}]`;
   const fileName = chalk.yellow(Path.basename(file));
 
-  log(`${pluginName} registered "${fileName}"`);
+  if (process.env.LOG) log(`${pluginName} registered "${fileName}"`);
 };

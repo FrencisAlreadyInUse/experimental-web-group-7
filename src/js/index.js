@@ -59,10 +59,10 @@ const $main = document.querySelector('.main');
 // };
 
 const log = {
-  blue: (l, m) => console.log(`%c ${l} `, 'background:dodgerblue;color:white', m),
-  red: (l, m) => console.log(`%c ${l} `, 'background:red;color:white', m),
-  green: (l, m) => console.log(`%c ${l} `, 'background:yellowgreen;color:white', m),
-  orange: (l, m) => console.log(`%c ${l} `, 'background:orange;color:white', m),
+  blue: (l, ...d) => console.log(`%c ${l} `, 'background:dodgerblue;color:white', d),
+  red: (l, ...d) => console.log(`%c ${l} `, 'background:red;color:white', d),
+  green: (l, ...d) => console.log(`%c ${l} `, 'background:yellowgreen;color:white', d),
+  orange: (l, ...d) => console.log(`%c ${l} `, 'background:orange;color:white', d),
 };
 
 const channelOnRoomError = event => {
@@ -167,15 +167,7 @@ const handleInputRoomNameKeyDown = event => {
   handleButtonJoinClick();
 };
 
-const loadGame = () => {
-  $deferredScripts.forEach($script => {
-    $script.setAttribute('src', $script.dataset.src);
-  });
-};
-
 const channelOnGameStart = () => {
-  loadGame();
-
   $main.classList.add('dp-n');
 
   const $aframeScene = document.querySelector('a-scene');
@@ -248,7 +240,6 @@ const init = () => {
   //   document.getElementsByClassName('main')[0].classList.add('dp-n');
   //   document.getElementsByTagName('a-scene')[0].classList.remove('section--off');
   // });
-  // loadGame();
 
   /* start communication channels */
   /**/

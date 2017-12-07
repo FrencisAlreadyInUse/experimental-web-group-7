@@ -6,7 +6,7 @@ module.exports = function on(key, handler) {
   const cId = chalk.yellow(this.socket.id);
 
   this.socket.on(key, (...value) => {
-    log(`${this.label} ↓ received "${cKey}" from "${cId}"`);
+    if (this.enableLogging) log(`${this.label} ↓ received "${cKey}" from "${cId}"`);
 
     handler(...value);
   });

@@ -8,7 +8,7 @@ module.exports.name = 'socket';
 module.exports.version = '1.0.0';
 
 module.exports.register = (server, options) => {
-  const { files } = options;
+  const { files, enableLogging } = options;
 
   if (!files) throw new Error('socket plugin needs a "files" array to load socket files from.');
 
@@ -16,9 +16,9 @@ module.exports.register = (server, options) => {
 
   files.forEach((file) => {
     handlers.push(require(file));
-    logSocketFileName(file);
+    if (enableLogging) logSocketFileName(file);
   });
-  console.log('');
+  if (enableLogging) console.log('');
 
   const serverSocket = io(server.listener);
 
@@ -31,6 +31,7 @@ module.exports.register = (server, options) => {
         clientSocket,
         serverSocketHelperGenerator,
         clientSocketHelperGenerator,
+        enableLogging,
       ));
   });
 };
