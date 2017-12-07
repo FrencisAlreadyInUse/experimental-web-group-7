@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>WebVR Bowling Game</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link type="text/css" rel="stylesheet" href="/css/index.css">
+
   <script>
     WebFontConfig = {
       custom: {
@@ -19,7 +20,14 @@
       s.parentNode.insertBefore(wf, s);
     })(document);
   </script>
+
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+  <script type="text/javascript" data-src="https://cdn.jsdelivr.net/npm/aframe@0.7.1/dist/aframe-master.min.js"></script>
+  <script type="text/javascript" data-src="/js/vendor/aframe-glow.js"></script>
+
 </head>
+
 <body>
   <main class="main">
 
@@ -169,12 +177,12 @@
   </main>
 
   <a-scene class="section--off">
-    <!-- class="section--off" -->
 
     <a-camera>
       <!-- TODO: styling + interactions -->
       <a-cursor color="red"></a-cursor>
     </a-camera>
+
     <!-- all assets -->
     <a-assets>
       <a-asset-item id="cone" src="/assets/collada/bowling-cone.dae"></a-asset-item>
@@ -283,12 +291,6 @@
     <a-sphere position="4 -.05 -3.75" radius=".05" color="white"></a-sphere>
   </a-scene>
 
-  <script type="text/javascript" src="/socket.io/socket.io.js" defer></script>
-  <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js" defer></script>
-  <script type="module" src="/js/index.js" defer></script>
-
-  <script type="text/javascript" data-src="https://cdn.jsdelivr.net/npm/aframe@0.7.1/dist/aframe-master.min.js" class="deferred-script"></script>
-  <script type="text/javascript" data-src="/js/vendor/aframe-glow.js" class="deferred-script"></script>
-  <script type="module" data-src="/js/game.js" class="deferred-script"></script>
 </body>
+
 </html>

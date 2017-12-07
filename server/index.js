@@ -18,6 +18,8 @@ const read = file => readFile(Path.join(__dirname, file), 'utf8').catch(report);
 const development = process.env.NODE_ENV === 'development';
 const _ = strings => Path.join(__dirname, strings[0]);
 
+const enableLogging = false;
+
 const init = () =>
   new Promise(async (resolve) => {
     const port = process.env.PORT || 3000;
@@ -47,6 +49,7 @@ const init = () =>
     await server.register({
       plugin: Socket,
       options: {
+        enableLogging,
         files: [_`socket/signalingServer.js`],
       },
     });
@@ -54,6 +57,7 @@ const init = () =>
     await server.register({
       plugin: Routes,
       options: {
+        enableLogging,
         files: [_`routes/static/public.js`],
       },
     });
