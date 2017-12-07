@@ -19,6 +19,7 @@
       s.parentNode.insertBefore(wf, s);
     })(document);
   </script>
+
 </head>
 <body>
   <main class="main">
@@ -168,11 +169,13 @@
 
   </main>
 
-  <a-scene class="section--off" physics="debug: true; iterations: 20; gravity: -4">
+  <a-scene class="section--off" physics="debug: true; iterations: 20; gravity: -4; friction: 0.1; restitution: 0.5;">
 
     <a-camera>
       <!-- TODO: styling + interactions -->
-      <a-cursor color="red" fuse="true"></a-cursor>
+      <a-cursor color="red" fuse="true" scale="1 1 1">
+        <a-animation begin="click" easing="ease-in-out" attribute="scale" fill="backwards" to="1.5 1.5 1.5"></a-animation>
+      </a-cursor>
     </a-camera>
     <!-- all assets -->
     <a-assets>
@@ -198,41 +201,46 @@
 
 
     <!-- Bowling Cones -->
-    <a-collada-model position="-1.5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
-    <a-collada-model position="-.5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
-    <a-collada-model position=".5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
-    <a-collada-model position="1.5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <!-- <a-collada-model id="10" position="-1.5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model id="9" position="-.5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model id="8" position=".5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model id="7" position="1.5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
 
-    <a-collada-model position="-1 -2 -35" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
-    <a-collada-model position="0 -2 -35" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
-    <a-collada-model position="1 -2 -35" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model id="6" position="-1 -2 -35" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model id="5" position="0 -2 -35" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model id="14" position="1 -2 -35" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
 
-    <a-collada-model position="-.5 -2 -32" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
-    <a-collada-model position=".5 -2 -32" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model id="3" position="-.5 -2 -32" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model id="2" position=".5 -2 -32" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
 
-    <a-collada-model position="0 -2 -29" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
+    <a-collada-model id="1" position="0 -2 -29" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model> -->
 
     <!-- Bowling Ball -->
-    <a-sphere id="bowlingBall" src="#face-ball" position="0 -1.25 -10" radius=".75" dynamic-body="shape: sphere; mass: 50;" velocity="0 0 -50">
-      <a-animation attribute="position" to="0 -1.25 -20" easing="ease-in-out" begin="click"></a-animation>
+    <!-- <a-sphere id="bowlingBall" src="#face-ball" position="0 -1.25 -10" radius=".75" dynamic-body="shape: sphere; sphereRadius: .77; mass: 50;" velocity="0 0 -50"> -->
+      <!-- velocity="0 0 -50" -->
+      <!-- <a-animation attribute="position" to="0 -1.25 -20" easing="ease-in-out" begin="click"></a-animation>
       <a-animation attribute="velocity" to="0 0 -20" begin="click"></a-animation>
-    </a-sphere>
+    </a-sphere> -->
+
+    <!-- Start Ball Rolling by clicking this button -->
+    <a-text position="0 -0.8 -6.82" color="#FFD9B7" wrap-count="15" text="width:6; align:center; value: Start" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+    <a-box id="startButton" position="0 -0.891 -7.098" width="2.010" height="0.750" depth="0.150" color="#3737DD"></a-box>
 
     <!-- Alley -->
     <a-collada-model static-body position="-4 -2.35 -5.52" scale="7.6 5 4.5" src="#bowling-alley"></a-collada-model>
     <!-- Cones Box -->
-    <a-collada-model static-body position="-4 -2.35 -7" scale="7.6 5 4.5" src="#cones-box"></a-collada-model>
+    <a-collada-model position="-4 -2.35 -7" scale="7.6 5 4.5" src="#cones-box"></a-collada-model>
 
     <!-- Ball Directional Slider -->
     <a-collada-model position="-1.38 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider"></a-collada-model>
     <!-- Ball Directional Indicator -->
-    <a-collada-model position="-2.730 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider-indicator">
+    <!-- <a-collada-model id="working-slider" position="-2.730 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider-indicator"> -->
       <!-- -0.51 -1.86 -4.86 (Perfect Left Point) -->
       <!-- -1.38 -1.29 -4.86 (Perfect Middle Point) -->
       <!-- animate slider (L - R) -->
       <!-- <a-animation attribute="rotation" repeat="indefinite" to="-15 0 90"></a-animation> -->
-      <a-animation attribute="position" direction="alternate" easing="ease-in-out" repeat="indefinite" to="-0.052 -1.29 -4.86"></a-animation>
-    </a-collada-model>
+      <!-- <a-animation attribute="position" direction="alternate" easing="ease-in-out" repeat="indefinite" to="-0.052 -1.29 -4.86"></a-animation>
+    </a-collada-model> -->
 
     <!-- table + players -->
     <a-collada-model position="-4 0 12" scale="7.6 5 4.5" src="#players-table"></a-collada-model>
@@ -295,6 +303,6 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aframe@0.7.1/dist/aframe-master.min.js" class="deferred-script"></script>
   <script type="text/javascript" src="https://cdn.rawgit.com/donmccurdy/aframe-physics-system/v2.1.0/dist/aframe-physics-system.min.js" class="deferred-script"></script>
   <script type="text/javascript" src="/js/vendor/aframe-glow.js" class="deferred-script"></script>
-  <script type="module" src="/js/game.js" class="deferred-script"></script>
+  <script type="module" data-src="/js/game.js" class="deferred-script"></script>
 </body>
 </html>

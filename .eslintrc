@@ -14,7 +14,8 @@
     "consistent-return": "off"
   },
   "globals": {
-    "io": true
+    "io": true,
+    "THREE": true
   },
   "env": {
     "browser": true
