@@ -228,11 +228,11 @@ const init = () => {
   //
   /* uncomment the following block when developing the game */
   /**/
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementsByClassName('main')[0].classList.add('dp-n');
-    document.getElementsByTagName('a-scene')[0].classList.remove('section--off');
-  });
-  loadGame();
+  // document.addEventListener('DOMContentLoaded', () => {
+  //   document.getElementsByClassName('main')[0].classList.add('dp-n');
+  //   document.getElementsByTagName('a-scene')[0].classList.remove('section--off');
+  // });
+  // loadGame();
 
   /* start communication channels */
   /**/
