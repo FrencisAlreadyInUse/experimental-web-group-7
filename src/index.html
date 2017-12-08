@@ -175,7 +175,7 @@
 
   </main>
 
-  <a-scene class="section--off" physics="debug: true; iterations: 20; gravity: -4; friction: 0.1; restitution: 0.5;">
+  <a-scene class="section--off" physics="debug: true; iterations: 20; gravity: -3.5; friction: 0.1; restitution: 0.5;">
 
     <a-camera>
       <a-cursor color="coral" scale="1 1 1">
@@ -193,6 +193,7 @@
       <a-asset-item id="winners-crown" src="/assets/collada/winners-crown.dae"></a-asset-item>
       <a-asset-item id="ball-slider" src="/assets/collada/ball-slider.dae"></a-asset-item>
       <a-asset-item id="ball-slider-indicator" src="/assets/collada/ball-slider-indicator.dae"></a-asset-item>
+      <a-asset-item id="strike" src="/assets/collada/strike-msg.dae"></a-asset-item>
       <!-- head on ball -->
       <img id="face-ball" src="/assets/img/ball/ball-pic.jpg">
     </a-assets>
@@ -205,6 +206,11 @@
     <!-- TOTAL -->
     <a-text position="0 3.2 -7" color="#2A2A9B" wrap-count="15" text="width:6; align:center; value: 9" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
 
+
+    <!-- STRIKE -->
+    <a-collada-model visible="false" id="strike-msg" position="-4.347 -6 -8.793" src="#strike" rotation="90 0 0" scale="0.35 0.35 0.35" collada-model="/assets/collada/strike-msg.dae">
+      <a-animation attribute="position" easing="ease-in" to="-4.347 1.994 -8.793"></a-animation>
+    </a-collada-model>
 
     <!-- Bowling Cones -->
     <a-collada-model id="10" class="cones" position="-1.5 -2 -38" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>

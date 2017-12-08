@@ -3,16 +3,17 @@ const $button = document.getElementById('startButton');
 const $indicatorSlider = document.getElementById('ball-pos');
 const $cones = document.querySelectorAll('.cones');
 let $currentSliderPosition;
+const hitCones = [];
 
 const handleCollision = (e) => {
   // make array of all hit cones with their id and make the array unique (new Set())
   if (!e.detail.body.el.id) return;
-  const $hitCones = [];
   const $hit = parseInt(e.detail.body.el.id, 10);
-  if (NaN) return;
+  if (isNaN($hit)) return;
+  hitCones.push($hit);
 
-  $hitCones.push($hit);
-  console.log('[handleCollision]', $hitCones);
+  const uniqueArray = new Set(hitCones);
+  console.log('[handleCollision]', uniqueArray);
 };
 
 const generateBall = () => {
