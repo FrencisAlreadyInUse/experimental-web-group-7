@@ -1,43 +1,21 @@
 const $aframeScene = document.querySelector('a-scene');
 const $button = document.getElementById('startButton');
 const $indicatorSlider = document.getElementById('ball-pos');
+const $cones = document.querySelectorAll('.cones');
 let $currentSliderPosition;
-// const $indicatorSliderAnim = document.getElementById('working-slider-animate');
-// const $indicatorXMin = '-2.730';
-// const $indicatorXMax = '-0.052';
-
-// get position attributen van die slider
 
 const handleCollision = (e) => {
-  console.log('[handleCollision]', e.detail.contact);
-  // console.log('[handleCollision]', e);
-  // console.log(`Player has collided with body #${e.detail.body.id}`);
-  // console.log(`Player has collided with body #${e.detail.target.el}`);
-  // console.log(`Player has collided with body #${e.detail.body.el}`);
-  // console.log(`Player has collided with body #${e.detail.contact.ni}`);
+  // make array of all hit cones with their id and make the array unique (new Set())
+  if (!e.detail.body.el.id) return;
+  const $hitCones = [];
+  const $hit = parseInt(e.detail.body.el.id, 10);
+  if (NaN) return;
 
-  // e.detail.target.el; // Original entity (playerEl).
-  // e.detail.body.el; // Other entity, which playerEl touched.
-  // e.detail.contact; // Stats about the collision (CANNON.ContactEquation).
-  // e.detail.contact.ni; // Normal (direction) of the collision (CANNON.Vec3).
-};
-
-const generateCones = () => {
-  const $cone = document.createElement('a-collada-model');
-  $cone.setAttribute('id', '10');
-  $cone.setAttribute('src', '#cone');
-  $cone.setAttribute('position', '-1.5 -2 -38');
-  $cone.setAttribute('radius', '.75');
-  $cone.setAttribute('dynamic-body', 'shape: box; mass: 1;');
-  $aframeScene.appendChild($cone);
-
-  setTimeout(() => {
-    $aframeScene.removeChild($cone);
-  }, 3500);
+  $hitCones.push($hit);
+  console.log('[handleCollision]', $hitCones);
 };
 
 const generateBall = () => {
-  console.log('[generateBall]', $currentSliderPosition.x);
   const $ball = document.createElement('a-sphere');
   $ball.setAttribute('id', 'bowlingBall');
   $ball.setAttribute('src', '#face-ball');
@@ -55,14 +33,14 @@ const generateBall = () => {
 };
 
 const generateInteractiveScene = () => {
-  generateCones();
+  Array.from($cones).forEach(cone => {
+    cone.addEventListener('collide', handleCollision);
+  });
   generateBall();
 };
 
 const getAttributes = () => {
   $currentSliderPosition = $indicatorSlider.getAttribute('position');
-
-  console.log('[getAttributes]', $currentSliderPosition.x);
 
   requestAnimationFrame(getAttributes);
 };
