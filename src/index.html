@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>WebVR Bowling Game</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link type="text/css" rel="stylesheet" href="/css/index.css">
+
   <script>
     WebFontConfig = {
       custom: {
@@ -20,7 +21,12 @@
     })(document);
   </script>
 
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aframe@0.7.1/dist/aframe-master.min.js"></script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/donmccurdy/aframe-physics-system/v2.1.0/dist/aframe-physics-system.min.js"></script>
 </head>
+
 <body>
   <main class="main">
 
@@ -76,11 +82,11 @@
 
         <h3 class="room__share">
           Share the
-          <span class="room__share--input input-stroke">room name</span> with friends
+          <span class="room__share--input input-stroke target--room-size--missing">room name</span> with friends
         </h3>
 
         <h3 class="room__share room__joined">
-          <span class="room__share--input target--room-size--current">0</span>
+          <span class="room__share--input target--room-size--current">1</span>
           /
           <span class="room__share--input target--room-size">0</span>
           players joined
@@ -124,7 +130,7 @@
 
         <h3 class="room__share">
           Waiting for
-          <span class="room__share--input input-stroke">0</span> more player(s)
+          <span class="room__share--input input-stroke target--room-size--missing">0</span> more player(s)
         </h3>
       </div>
     </section>
@@ -176,6 +182,7 @@
         <a-animation begin="click" easing="ease-in-out" attribute="scale" fill="backwards" to="1.5 1.5 1.5"></a-animation>
       </a-cursor>
     </a-camera>
+
     <!-- all assets -->
     <a-assets>
       <a-asset-item id="cone" src="/assets/collada/bowling-cone.dae"></a-asset-item>
@@ -294,14 +301,6 @@
 
     <a-sky color="#ffdeaf"></a-sky>
   </a-scene>
-
-  <script type="text/javascript" src="/socket.io/socket.io.js" defer></script>
-  <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js" defer></script>
-  <script type="module" src="/js/index.js" defer></script>
-
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aframe@0.7.1/dist/aframe-master.min.js" class="deferred-script"></script>
-  <script type="text/javascript" src="https://cdn.rawgit.com/donmccurdy/aframe-physics-system/v2.1.0/dist/aframe-physics-system.min.js" class="deferred-script"></script>
-  <script type="text/javascript" src="/js/vendor/aframe-glow.js" class="deferred-script"></script>
-  <script type="module" data-src="/js/game.js" class="deferred-script"></script>
 </body>
+
 </html>

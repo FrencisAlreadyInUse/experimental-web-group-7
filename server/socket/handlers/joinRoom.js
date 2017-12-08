@@ -28,7 +28,11 @@ module.exports = function joinRoom(roomName) {
   this.store.users[clientId] = roomName;
 
   // send success message to user
-  this.ss.to(clientId, 'signalingServerMessage', 'roomJoined', roomName);
+  this.ss.to(clientId, 'signalingServerMessage', 'roomJoined', {
+    name: roomName,
+    userCount: roomInstance.amountUsers,
+    maxUsers: roomInstance.maxUsers,
+  });
 
   // get all the other users in the room
   roomInstance.otherUsers(clientId).forEach((userId) => {

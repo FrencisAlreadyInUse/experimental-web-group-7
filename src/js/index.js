@@ -5,7 +5,7 @@ let datachannel = null;
 let createdRoomName = '';
 let createdRoomSize = 0;
 
-const $deferredScripts = Array.from(document.querySelectorAll('.deferred-script'));
+// const $deferredScripts = Array.from(document.querySelectorAll('.deferred-script'));
 
 // buttons
 const $buttonNavigatePageCreateRoom = document.querySelector('.btn--goto-create-room');
@@ -19,6 +19,9 @@ const $buttonPlay = document.querySelector('.btn--lets-play');
 // targets
 const $targetRoomNames = Array.from(document.querySelectorAll('.target--room-name'));
 const $targetRoomSizes = Array.from(document.querySelectorAll('.target--room-size'));
+const $targetRoomSizesCurrent = Array.from(document.querySelectorAll('.target--room-size--current'));
+const $targetRoomSizesMissing = Array.from(document.querySelectorAll('.target--room-size--missing'));
+
 
 // inputs
 const $inputRoomSize = document.querySelector('.input--room-size');
@@ -85,15 +88,23 @@ const handleCreateRoomSuccess = event => {
 };
 
 const handleJoinRoomSuccess = event => {
-  const name = event.detail.room.name;
+  const { name, maxUsers, userCount } = event.detail.room;
+
+  console.log(event.detail.room);
 
   log.blue('LOG', `Successfully joined the "${name}" room`);
 
   // set room name global
   createdRoomName = name;
+
   // update the room name fields with the correct room name
   $targetRoomNames.forEach($item => {
     $item.textContent = createdRoomName;
+  });
+
+  // update the "waiting for ... platers" text
+  $targetRoomSizesMissing.forEach($target => {
+    $target.textContent = maxUsers - userCount;
   });
 
   // navigate to "joined coom" page
@@ -126,14 +137,6 @@ const channelOnRoomSuccess = event => {
   if (action === 'opened') handleOpenRoomSuccess(event);
 };
 
-const channelOnStateChange = event => {
-  const state = event.detail.state;
-  const peerId = event.detail.connection.peerId;
-
-  if (state === 'open') log.green('CONNECTION', `established with ${peerId}`);
-  if (state === 'close') log.red('DISCONNECTION', `from ${peerId}`);
-};
-
 const channelOnPeerUpdate = event => {
   const peerId = event.detail.peer.id;
   const peerName = event.detail.peer.name;
@@ -164,15 +167,7 @@ const handleInputRoomNameKeyDown = event => {
   handleButtonJoinClick();
 };
 
-const loadGame = () => {
-  $deferredScripts.forEach($script => {
-    $script.setAttribute('src', $script.dataset.src);
-  });
-};
-
 const channelOnGameStart = () => {
-  loadGame();
-
   $main.classList.add('dp-n');
 
   const $aframeScene = document.querySelector('a-scene');
@@ -203,13 +198,26 @@ const handleNavigateToPageCreate = () => {
   datachannel.createRoom();
 };
 
+const channelOnMessage = event => {
+  const action = event.detail.action;
+
+  if (action === 'peerConnect') {
+    log.green('CONNECT', event.detail.peerId);
+
+    $targetRoomSizesCurrent.forEach($current => {
+      $current.textContent = datachannel.peerCount + 1;
+    });
+  }
+  if (action === 'peerDisconnect') log.red('DISCONNECT', event.detail.peerId);
+};
+
 const initDataChannel = () => {
   datachannel = new DataChannel();
 
   datachannel
     .addEventListener('roomError', channelOnRoomError)
     .addEventListener('roomSuccess', channelOnRoomSuccess)
-    .addEventListener('dataChannelStateChange', channelOnStateChange)
+    .addEventListener('dataChannelMessage', channelOnMessage)
     .addEventListener('peerUpdate', channelOnPeerUpdate)
     .addEventListener('gameStart', channelOnGameStart);
 };
@@ -233,7 +241,6 @@ const init = () => {
     document.getElementsByTagName('a-scene')[0].classList.remove('section--off');
   });
   loadGame();
-
   /* start communication channels */
   /**/
   initDataChannel();
@@ -241,6 +248,7 @@ const init = () => {
 
   /* only for development */
   /**/
+  window.channel = datachannel;
   window.peers = datachannel.peers;
   window.send = datachannel.sendMessage;
 };
