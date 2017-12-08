@@ -240,12 +240,8 @@
     <!-- Ball Directional Slider -->
     <a-collada-model position="-1.38 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider"></a-collada-model>
     <!-- Ball Directional Indicator -->
-    <a-collada-model id="working-slider" position="-2.730 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider-indicator">
-      <!-- -0.51 -1.86 -4.86 (Perfect Left Point) -->
-      <!-- -1.38 -1.29 -4.86 (Perfect Middle Point) -->
-      <!-- animate slider (L - R) -->
-      <!-- <a-animation attribute="rotation" repeat="indefinite" to="-15 0 90"></a-animation> -->
-      <a-animation id="working-slider-animate" attribute="position" direction="alternate" easing="ease-in-out" repeat="indefinite" to="-0.052 -1.29 -4.86"></a-animation>
+    <a-collada-model id="ball-pos" position="-1.45 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider-indicator">
+      <a-animation attribute="position" direction="alternate" easing="ease-in-out" repeat="indefinite" to="1.22 -1.29 -4.86"></a-animation>
     </a-collada-model>
 
     <!-- table + players -->

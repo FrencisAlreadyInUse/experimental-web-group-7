@@ -1,6 +1,6 @@
 const $aframeScene = document.querySelector('a-scene');
 const $button = document.getElementById('startButton');
-const $indicatorSlider = document.getElementById('working-slider');
+const $indicatorSlider = document.getElementById('ball-pos');
 let $currentSliderPosition;
 // const $indicatorSliderAnim = document.getElementById('working-slider-animate');
 // const $indicatorXMin = '-2.730';
@@ -37,6 +37,7 @@ const generateCones = () => {
 };
 
 const generateBall = () => {
+  console.log('[generateBall]', $currentSliderPosition.x);
   const $ball = document.createElement('a-sphere');
   $ball.setAttribute('id', 'bowlingBall');
   $ball.setAttribute('src', '#face-ball');
@@ -44,10 +45,7 @@ const generateBall = () => {
   $ball.setAttribute('radius', '.75');
   $ball.setAttribute('dynamic-body', 'shape: sphere; sphereRadius: .77; mass: 50;');
   $ball.setAttribute('velocity', '0 0 -35');
-
-  setTimeout(() => {
-    $aframeScene.appendChild($ball);
-  }, 1000);
+  $aframeScene.appendChild($ball);
 
   setTimeout(() => {
     $aframeScene.removeChild($ball);
@@ -56,7 +54,6 @@ const generateBall = () => {
   $ball.addEventListener('collide', handleCollision);
 };
 
-
 const generateInteractiveScene = () => {
   generateCones();
   generateBall();
@@ -64,6 +61,8 @@ const generateInteractiveScene = () => {
 
 const getAttributes = () => {
   $currentSliderPosition = $indicatorSlider.getAttribute('position');
+
+  console.log('[getAttributes]', $currentSliderPosition.x);
 
   requestAnimationFrame(getAttributes);
 };

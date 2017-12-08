@@ -240,7 +240,7 @@ const init = () => {
     document.getElementsByClassName('main')[0].classList.add('dp-n');
     document.getElementsByTagName('a-scene')[0].classList.remove('section--off');
   });
-  loadGame();
+
   /* start communication channels */
   /**/
   initDataChannel();
