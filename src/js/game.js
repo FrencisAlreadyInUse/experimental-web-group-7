@@ -1,7 +1,12 @@
 const $aframeScene = document.querySelector('a-scene');
 const $button = document.getElementById('startButton');
+const $indicatorSlider = document.getElementById('working-slider');
+let $currentSliderPosition;
+// const $indicatorSliderAnim = document.getElementById('working-slider-animate');
 // const $indicatorXMin = '-2.730';
 // const $indicatorXMax = '-0.052';
+
+// get position attributen van die slider
 
 const handleCollision = (e) => {
   console.log('[handleCollision]', e.detail.contact);
@@ -35,7 +40,7 @@ const generateBall = () => {
   const $ball = document.createElement('a-sphere');
   $ball.setAttribute('id', 'bowlingBall');
   $ball.setAttribute('src', '#face-ball');
-  $ball.setAttribute('position', '0 -1.25 -10');
+  $ball.setAttribute('position', `${$currentSliderPosition.x} -1.25 -10`);
   $ball.setAttribute('radius', '.75');
   $ball.setAttribute('dynamic-body', 'shape: sphere; sphereRadius: .77; mass: 50;');
   $ball.setAttribute('velocity', '0 0 -35');
@@ -57,30 +62,14 @@ const generateInteractiveScene = () => {
   generateBall();
 };
 
-const generateSliderIndicator = () => {
-  const $slider = document.createElement('a-collada-model');
-  $slider.setAttribute('id', 'ballSlider');
-  $slider.setAttribute('src', '#ball-slider-indicator');
-  $slider.setAttribute('position', {
-    x: -2.730,
-    y: -1.29,
-    z: -4.86,
-  });
-  $slider.setAttribute('rotation', '-15 0 0');
-  $aframeScene.appendChild($slider);
+const getAttributes = () => {
+  $currentSliderPosition = $indicatorSlider.getAttribute('position');
 
-  // if ($slider.position === '-2.730 -1.29 -4.86') {
-  //   $slider.position === '-0.052 -1.29 -4.86';
-  //   requestAnimationFrame(generateSliderIndicator);
-  // } else {
-  //   $slider.position === '-2.730 -1.29 -4.86';
-  //   requestAnimationFrame(generateSliderIndicator);
-  // }
+  requestAnimationFrame(getAttributes);
 };
 
 const generateScene = () => {
-  // Slider Indicator
-  requestAnimationFrame(generateSliderIndicator);
+  getAttributes();
 };
 
 const handleLoadedScene = () => {
