@@ -11,12 +11,11 @@
     "no-param-reassign": "off",
     "arrow-parens": "off",
     "function-paren-newline": "off",
-    "consistent-return": "off"
+    "no-restricted-globals": "off",
   },
   "globals": {
     "io": true,
     "THREE": true,
-    "isNaN": true
   },
   "env": {
     "browser": true

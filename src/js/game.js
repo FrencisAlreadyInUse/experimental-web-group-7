@@ -1,27 +1,61 @@
 const $aframeScene = document.querySelector('a-scene');
 const $button = document.getElementById('startButton');
+
 const $indicatorSlider = document.getElementById('ball-pos');
+let $currentSliderPosition;
+
 const $cones = document.querySelectorAll('.cones');
 const $coneIndicators = document.querySelectorAll('.cone-indicator');
-let $currentSliderPosition;
-const hitCones = [];
+let hitCones = [];
+
+const $firstThrow = document.getElementById('first-throw');
+const $secondThrow = document.getElementById('second-throw');
+const $totalScore = document.getElementById('total-score');
+
+let firstThrow = '';
+const secondThrow = '';
+let counter = 0;
+
+const setScoring = (first = '-', second = '-', totalScore = 0) => {
+  $firstThrow.setAttribute('text', `width:6; align:center; value: ${first}`);
+  $secondThrow.setAttribute('text', `width:6; align:center; value: ${second}`);
+  $totalScore.setAttribute('text', `width:6; align:center; value: ${totalScore}`);
+};
 
 const handleCollision = (e) => {
-  // make array of all hit cones with their id and make the array unique (new Set())
   if (!e.detail.body.el.id) return;
   const $hit = parseInt(e.detail.body.el.id, 10);
   if (isNaN($hit)) return;
   hitCones.push($hit);
 
-  const uniqueArray = new Set(hitCones);
+  const uniqueHits = new Set(hitCones);
+  firstThrow = uniqueHits.size;
 
-  uniqueArray.forEach(id => {
+  uniqueHits.forEach(id => {
     $coneIndicators.forEach(
       indicator => {
-        if (parseInt(indicator.dataset.id, 10) === id) indicator.setAttribute('color', 'red');
+        if (parseInt(indicator.dataset.id, 10) === id) {
+          indicator.setAttribute('color', 'red');
+          setScoring(firstThrow, secondThrow, firstThrow + secondThrow);
+        }
       },
     );
   });
+};
+
+const getAttributes = () => {
+  $currentSliderPosition = $indicatorSlider.getAttribute('position');
+  requestAnimationFrame(getAttributes);
+};
+
+
+const generateScene = () => {
+  getAttributes();
+  setScoring();
+};
+
+const resetScoring = () => {
+  hitCones = [];
 };
 
 const generateBall = () => {
@@ -45,17 +79,12 @@ const generateInteractiveScene = () => {
   Array.from($cones).forEach(cone => {
     cone.addEventListener('collide', handleCollision);
   });
+  counter += 1;
+  if (counter === 3) {
+    console.log('[generateBall]', 'Reset Scoring (exept for the Total) / Reset Alley');
+    resetScoring();
+  }
   generateBall();
-};
-
-const getAttributes = () => {
-  $currentSliderPosition = $indicatorSlider.getAttribute('position');
-
-  requestAnimationFrame(getAttributes);
-};
-
-const generateScene = () => {
-  getAttributes();
 };
 
 const handleLoadedScene = () => {
