@@ -2,6 +2,7 @@ const $aframeScene = document.querySelector('a-scene');
 const $button = document.getElementById('startButton');
 const $indicatorSlider = document.getElementById('ball-pos');
 const $cones = document.querySelectorAll('.cones');
+const $coneIndicators = document.querySelectorAll('.cone-indicator');
 let $currentSliderPosition;
 const hitCones = [];
 
@@ -13,7 +14,14 @@ const handleCollision = (e) => {
   hitCones.push($hit);
 
   const uniqueArray = new Set(hitCones);
-  console.log('[handleCollision]', uniqueArray);
+
+  uniqueArray.forEach(id => {
+    $coneIndicators.forEach(
+      indicator => {
+        if (parseInt(indicator.dataset.id, 10) === id) indicator.setAttribute('color', 'red');
+      },
+    );
+  });
 };
 
 const generateBall = () => {

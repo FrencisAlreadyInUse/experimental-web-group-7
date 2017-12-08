@@ -15,7 +15,8 @@
   },
   "globals": {
     "io": true,
-    "THREE": true
+    "THREE": true,
+    "isNaN": true
   },
   "env": {
     "browser": true
