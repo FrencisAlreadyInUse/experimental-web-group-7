@@ -18,7 +18,7 @@ const read = file => readFile(Path.join(__dirname, file), 'utf8').catch(report);
 const development = process.env.NODE_ENV === 'development';
 const _ = strings => Path.join(__dirname, strings[0]);
 
-const enableLogging = false;
+const enableLogging = true;
 
 const init = () =>
   new Promise(async (resolve) => {

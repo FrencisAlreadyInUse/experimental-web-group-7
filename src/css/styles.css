@@ -1,0 +1,396 @@
+@import 'lib/reset.css';
+
+:root {
+  --font-stack: 'px-grotesk', -apple-system, 'Helvetica Neue', helvetica, arial, sans-serif;
+
+  --color-purple: #3737dd;
+  --color-purple-light: #3737dd70;
+  --color-beige: #ECC8AF;
+  --color-beige-light: #e2d1c5;
+  
+  --text: 2.5rem;
+
+  --title: 7.4rem;
+  --title--big: 9.5rem;
+  --title--small: 4rem;
+  --title--mini: 1.7rem;
+  --title--sub: 3rem;
+
+  --title-mobile: 4.8rem;
+  --title--big-mobile: 5.5rem;
+  --title--small-mobile: 1.8rem;
+  --title--mini-mobile: 1.4rem;
+  --title--sub-mobile: 2rem;
+}
+
+.hide {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+.main {
+  display: none;
+}
+
+body {
+  font-size: 1.6rem;
+  font-family: var(--font-stack);
+  background-color: var(--color-beige);
+}
+
+html,
+body,
+.section,
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.wrapper {
+  position: relative;
+}
+
+.section {
+  display: flex;
+  flex-flow: column nowrap;
+  float: left;
+  padding: 2.5rem 0;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  will-change: transform;
+  transition: .5s transform;
+  top: 0;
+  left: 0;
+  background-color: var(--color-beige);
+  box-shadow: 0 0 10rem 0 rgba(0, 0, 0, .15);
+}
+
+.left {
+  transition: .5s transform;
+  transition-delay: .04s;
+  transform: translateX(-40vw);
+}
+
+.right {
+  transform: translateX(110vw);
+}
+
+.section__content {
+  max-width: 75%;
+}
+
+.flex {
+  display: flex;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.around {
+  justify-content: space-around;
+}
+
+.between {
+  justify-content: space-between;
+}
+
+.center {
+  justify-content: center;
+}
+
+.column-center {
+  align-items: center;
+}
+
+.title {
+  color: var(--color-purple);
+  font-size: var(--title);
+  font-weight: 700;
+  position: relative;
+  line-height: 135%;
+}
+
+.title--big {
+  color: var(--color-purple);
+  font-size: var(--title--big);
+  font-weight: 700;
+  width: 75%;
+  margin: 2.5rem 0 0;
+}
+
+.title--small {
+  color: var(--color-purple);
+  font-size: var(--title--small);
+}
+
+.title--sub {
+  color: var(--color-purple);
+  font-size: var(--title--sub);
+  padding: 1.5rem 0 5rem;
+}
+
+.stroke {
+  -webkit-text-stroke: .1rem var(--color-purple);
+  color: transparent;
+  caret-color: var(--color-purple);
+}
+
+.input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: var(--title);
+  color: var(--color-purple);
+  font-family: var(--font-stack);
+  font-weight: 700;
+}
+
+.input::placeholder {
+  color: var(--color-purple-light)
+}
+
+.input--text {
+  width: 100%;
+}
+
+.input--small {
+  font-size: var(--title--small);
+}
+
+.input--mini {
+  font-size: var(--title--mini);
+}
+
+.input--underline {
+  border-bottom: 2px solid var(--color-purple);
+}
+
+.input--stroke {
+  color: transparent;
+}
+
+.input--stroke::placeholder {
+  -webkit-text-stroke: .1rem var(--color-purple);
+  color: transparent;
+}
+
+.input--bordered {
+  border: 2px solid var(--color-purple);
+  height: 5.2rem;
+  padding: 0 2rem;
+}
+
+.input--file {
+  position: relative;
+  border: 2px solid var(--color-purple);
+  font-family: var(--font-stack);
+  font-weight: 700;
+  color: var(--color-purple);
+  cursor: pointer;
+  font-size: var(--title--mini);
+  height: 5.2rem;
+  width: 100%;
+
+  &::before {
+    content: 'Upload';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 5rem;
+    width: 20%;
+    background-color: var(--color-purple);
+    color: var(--color-beige);
+    z-index: -1;
+  }
+
+  &::after {
+    content: attr(data-text);
+    display: flex;
+    align-items: center;
+    height: 5rem;
+    padding: 0 2rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width: 80%;
+    color: var(--color-purple);
+    z-index: -1;
+  }
+}
+
+.input--file--inner {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.label {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--color-purple);
+  margin-bottom: 2rem;
+}
+
+.note {
+  color: var(--color-purple-light);
+}
+
+.btn {
+  border: .2rem solid var(--color-purple);
+  background: transparent;
+  outline: none;
+  border-radius: 0;
+  font-size: var(--text);
+  padding: 1rem 1.5rem;
+  color: var(--color-purple);
+  font-family: var(--font-stack);
+  font-weight: 400;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  flex-shrink: 0;
+}
+
+.btn:disabled {
+  opacity: .5;
+}
+
+.blobs,
+.blob {
+  position: relative;
+}
+
+.blobs::before,
+.blobs::after,
+.blob::after {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  display: block;
+  border-radius: 100%;
+  background-color: var(--color-beige-light);
+}
+
+.blobs::after {
+  width: 26rem;
+  height: 26rem;
+  left: -3rem;
+  top: -10rem;
+}
+
+.blobs::before {
+  width: 20rem;
+  height: 20rem;
+  left: 21rem;
+  top: -4rem;
+}
+
+.blob::after {
+  width: 8rem;
+  height: 8rem;
+  left: -1rem;
+  top: 2rem;
+}
+
+/*
+@media (hover: hover) {
+
+  .input--file--inner:hover {
+    cursor: pointer;
+  }
+
+  .btn {
+    transition: transform .4s;
+    transition-delay: .03s;
+  }
+
+  .btn::after {
+    content: '';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: .45rem;
+    position: absolute;
+    background-color: var(--color-purple);
+    top: calc(50% - .25rem);
+    right: -100%;
+    transition: right .3s ease-in-out;
+  }
+
+  .btn:hover:enabled {
+    cursor: pointer;
+    transform: scale(1.1);
+  }
+
+  .btn:hover:enabled::after {
+    right: 10%;
+    width: 80%;
+    justify-content: center;
+    transition: right .3s ease-in-out;
+  }
+
+}
+*/
+
+@media only screen and (width <= 768px) {
+
+  .section {
+    overflow: scroll;
+  }
+
+  .section__content {
+    max-width: 90%;
+    display: block;
+  }
+
+  .title {
+    font-size: var(--title-mobile);
+  }
+
+  .title--big {
+    font-size: var(--title--big-mobile);
+  }
+
+  .title--sub {
+    font-size: var(--title--sub-mobile);
+  }
+
+  .title--small {
+    font-size: var(--title--small-mobile);
+  }
+
+  .input {
+    font-size: var(--title-mobile);
+  }
+
+  .input--small {
+    font-size: var(--title--small);
+  }
+
+  .input--mini {
+    font-size: var(--title--mini-mobile);
+  }
+
+  .input--file {
+    font-size: var(--title--mini-mobile);
+  }
+
+}

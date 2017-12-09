@@ -25,7 +25,12 @@ module.exports = class Room {
     const roomName = superb();
 
     // regenerate if name is already taken or if name contains a dash
-    if (currentRoomNames.indexOf(roomName) !== -1 || roomName.indexOf('-') !== -1) {
+    if (
+      currentRoomNames.indexOf(roomName) !== -1 ||
+      roomName.indexOf('-') !== -1 ||
+      roomName.indexOf(' ') !== -1 ||
+      roomName.length > 6
+    ) {
       return Room.generateName(currentRoomNames);
     }
 

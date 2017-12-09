@@ -9,7 +9,8 @@
         "modules": false,
         "loose": true
       }
-    ]
+    ],
+    "react"
   ],
   "plugins": [
     "transform-decorators-legacy",

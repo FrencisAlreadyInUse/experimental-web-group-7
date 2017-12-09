@@ -32,6 +32,7 @@ module.exports = (
   cs.on('createRoom', handlers.createRoom);
   cs.on('joinRoom', handlers.joinRoom);
   cs.on('openRoom', handlers.openRoom);
+  cs.on('roomFull', handlers.roomFull);
   cs.on('userReady', handlers.userReady);
 
   cs.on('peerOffer', handlers.peerOffer);

@@ -8,7 +8,6 @@ module.exports = class Store {
   }
 
   bindClassMethods() {
-    // eslint-disable-next-line no-restricted-syntax
     for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
       const method = this[name];
       // eslint-disable-next-line no-continue

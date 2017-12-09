@@ -23,11 +23,12 @@
 
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aframe@0.7.1/dist/aframe-master.min.js"></script>
-  <script type="text/javascript" src="https://cdn.rawgit.com/donmccurdy/aframe-physics-system/v2.1.0/dist/aframe-physics-system.min.js"></script>
+  <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aframe@0.7.1/dist/aframe-master.min.js"></script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/donmccurdy/aframe-physics-system/v2.1.0/dist/aframe-physics-system.min.js"></script> -->
 </head>
 
 <body>
+  <div class="react-mount"></div>
   <main class="main">
 
     <header class="main__header">
@@ -175,7 +176,7 @@
 
   </main>
 
-  <a-scene class="section--off" physics="debug: true; iterations: 20; gravity: -4; friction: 0.1; restitution: 0.5;">
+  <a-scene style="display: none;" class="section--off" physics="debug: true; iterations: 20; gravity: -4; friction: 0.1; restitution: 0.5;">
 
     <a-camera>
       <a-cursor color="coral" scale="1 1 1">
@@ -223,8 +224,8 @@
 
     <!-- Bowling Ball -->
     <!-- <a-sphere id="bowlingBall" src="#face-ball" position="0 -1.25 -10" radius=".75" dynamic-body="shape: sphere; sphereRadius: .77; mass: 50;" velocity="0 0 -50"> -->
-      <!-- velocity="0 0 -50" -->
-      <!-- <a-animation attribute="position" to="0 -1.25 -20" easing="ease-in-out" begin="click"></a-animation>
+    <!-- velocity="0 0 -50" -->
+    <!-- <a-animation attribute="position" to="0 -1.25 -20" easing="ease-in-out" begin="click"></a-animation>
       <a-animation attribute="velocity" to="0 0 -20" begin="click"></a-animation>
     </a-sphere> -->
 
@@ -240,6 +241,7 @@
     <!-- Ball Directional Slider -->
     <a-collada-model position="-1.38 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider"></a-collada-model>
     <!-- Ball Directional Indicator -->
+<<<<<<< Updated upstream
     <a-collada-model id="working-slider" position="-2.730 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider-indicator">
       <!-- -0.51 -1.86 -4.86 (Perfect Left Point) -->
       <!-- -1.38 -1.29 -4.86 (Perfect Middle Point) -->
@@ -247,6 +249,15 @@
       <!-- <a-animation attribute="rotation" repeat="indefinite" to="-15 0 90"></a-animation> -->
       <a-animation id="working-slider-animate" attribute="position" direction="alternate" easing="ease-in-out" repeat="indefinite" to="-0.052 -1.29 -4.86"></a-animation>
     </a-collada-model>
+=======
+    <!-- <a-collada-model id="working-slider" position="-2.730 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider-indicator"> -->
+    <!-- -0.51 -1.86 -4.86 (Perfect Left Point) -->
+    <!-- -1.38 -1.29 -4.86 (Perfect Middle Point) -->
+    <!-- animate slider (L - R) -->
+    <!-- <a-animation attribute="rotation" repeat="indefinite" to="-15 0 90"></a-animation> -->
+    <!-- <a-animation attribute="position" direction="alternate" easing="ease-in-out" repeat="indefinite" to="-0.052 -1.29 -4.86"></a-animation>
+    </a-collada-model> -->
+>>>>>>> Stashed changes
 
     <!-- table + players -->
     <a-collada-model position="-4 0 12" scale="7.6 5 4.5" src="#players-table"></a-collada-model>

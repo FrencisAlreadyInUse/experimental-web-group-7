@@ -18,21 +18,10 @@ export default class DataChannel extends EventTarget {
     this.signalingServer = io.connect('/');
     window.signalingServer = this.signalingServer;
 
-    this.bindClassMethods();
     this.setSignalingSocketEventHandlers();
   }
 
-  bindClassMethods() {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const name of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
-      const method = this[name];
-      // eslint-disable-next-line no-continue
-      if (!(method instanceof Function) || method === DataChannel) continue;
-      this[name] = this[name].bind(this);
-    }
-  }
-
-  setSignalingSocketEventHandlers() {
+  setSignalingSocketEventHandlers = () => {
     this.signalingServer.addEventListener('connect', this.onConnection);
     this.signalingServer.addEventListener('peerIce', this.onPeerIce);
     this.signalingServer.addEventListener('peerAnswer', this.onPeerAnswer);
@@ -41,9 +30,9 @@ export default class DataChannel extends EventTarget {
     this.signalingServer.addEventListener('peerUpdate', this.onPeerUpdate);
     this.signalingServer.addEventListener('peerDisconnect', this.onPeerDisconnect);
     this.signalingServer.addEventListener('signalingServerMessage', this.onSignalingServerMessage);
-  }
+  };
 
-  sendMessage(label, ...input) {
+  sendMessage = (label, ...input) => {
     const data = input.length === 1 ? input[0] : input;
     const peerKeys = Object.keys(this.peers);
 
@@ -54,30 +43,30 @@ export default class DataChannel extends EventTarget {
       const message = JSON.stringify({ label, data });
       this.peers[peerId].channel.send(message);
     });
-  }
+  };
 
   get peerCount() {
     return Object.keys(this.peers).length || 0;
   }
 
-  onConnection() {
+  onConnection = () => {
     console.log(this.signalingServer.id);
-  }
+  };
 
-  onPeerIce(peerId, RTCIceCandidate) {
+  onPeerIce = (peerId, RTCIceCandidate) => {
     if (!RTCIceCandidate.candidate) return;
     if (!this.peers[peerId]) return;
 
     this.peers[peerId].connection.addIceCandidate(RTCIceCandidate);
-  }
+  };
 
-  onPeerAnswer(peerId, RemoteRTCSessionDescription) {
+  onPeerAnswer = (peerId, RemoteRTCSessionDescription) => {
     if (!this.peers[peerId]) return;
 
     this.peers[peerId].connection.setRemoteDescription(RemoteRTCSessionDescription);
-  }
+  };
 
-  onPeerOffer(peerId, RemoteRTCSessionDescription) {
+  onPeerOffer = (peerId, RemoteRTCSessionDescription) => {
     // if there is no peer yet, create an empty one
     if (!this.peers[peerId]) this.peers[peerId] = { ...this.newPeer };
 
@@ -124,9 +113,9 @@ export default class DataChannel extends EventTarget {
 
       Peer.channel.addEventListener('close', () => {});
     });
-  }
+  };
 
-  onPeerWantsACall(peerId) {
+  onPeerWantsACall = peerId => {
     if (this.peers[peerId]) return;
 
     this.peers[peerId] = { ...this.newPeer };
@@ -173,10 +162,10 @@ export default class DataChannel extends EventTarget {
     });
 
     Peer.channel.addEventListener('close', () => {});
-  }
+  };
 
   // eslint-disable-next-line class-methods-use-this
-  onPeerUpdate(peerId, data) {
+  onPeerUpdate = (peerId, data) => {
     // the peer might not exists yet becaouse 'peerUpdate' can occure before 'peerOffer'
     if (!this.peers[peerId]) this.peers[peerId] = { ...this.newPeer };
 
@@ -192,9 +181,9 @@ export default class DataChannel extends EventTarget {
         detail: { peer: { id: peerId, name: userData.name, uri: userData.uri } },
       }),
     );
-  }
+  };
 
-  onPeerDisconnect(peerId) {
+  onPeerDisconnect = peerId => {
     if (!this.peers[peerId]) return;
 
     this.peers[peerId].channel.close();
@@ -206,9 +195,9 @@ export default class DataChannel extends EventTarget {
         detail: { action: 'peerDisconnect', peerId },
       }),
     );
-  }
+  };
 
-  onSignalingServerMessage(label, data) {
+  onSignalingServerMessage = (label, data) => {
     //
     if (label === 'roomCreated') {
       this.dispatchEvent(
@@ -234,6 +223,14 @@ export default class DataChannel extends EventTarget {
       );
     }
 
+    if (label === 'roomFull') {
+      this.dispatchEvent(
+        new CustomEvent('dataChannelMessage', {
+          detail: { action: 'roomFull' },
+        }),
+      );
+    }
+
     if (label === 'roomError') {
       this.dispatchEvent(
         new CustomEvent('roomError', {
@@ -241,26 +238,30 @@ export default class DataChannel extends EventTarget {
         }),
       );
     }
-  }
+  };
 
-  createRoom() {
+  createRoom = () => {
     this.signalingServer.emit('createRoom');
-  }
+  };
 
-  joinRoom(roomName) {
+  joinRoom = roomName => {
+    console.log('DataChannel: joinRoom', roomName);
     this.signalingServer.emit('joinRoom', roomName);
-  }
+  };
 
-  openRoom(roomName) {
-    this.signalingServer.emit('openRoom', roomName);
-  }
+  openRoom = (roomName, roomSize) => {
+    this.signalingServer.emit('openRoom', roomName, roomSize);
+  };
 
-  signalReady(name, uri) {
+  roomFull = roomName => {
+    this.signalingServer.emit('roomFull', roomName);
+  };
+
+  signalReady = (name, uri) => {
     this.signalingServer.emit('userReady', JSON.stringify({ name, uri }));
-  }
+  };
 
-  // eslint-disable-next-line class-methods-use-this
-  startGame() {
+  startGame = () => {
     //
-  }
+  };
 }

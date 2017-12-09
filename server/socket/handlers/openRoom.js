@@ -1,4 +1,4 @@
-module.exports = function openRoom(roomName) {
+module.exports = function openRoom(roomName, roomSize) {
   const clientId = this.clientSocket.id;
 
   // return if the room doesn't exist
@@ -9,6 +9,7 @@ module.exports = function openRoom(roomName) {
 
   const roomInstance = this.store.getRoom(roomName);
   roomInstance.open = true;
+  roomInstance.maxUsers = parseInt(roomSize, 10);
 
   this.ss.to(clientId, 'signalingServerMessage', 'roomOpened', roomName);
 };

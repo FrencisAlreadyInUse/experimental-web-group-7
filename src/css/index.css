@@ -1,8 +1,8 @@
 @import 'lib/reset.css';
 
 :root {
-  --purple-color: #3737DD;
-  --beige-color: #FFD9B7;
+  --purple-color: #3737dd;
+  --beige-color: #ffd9b7;
   --light-beige-color: #fff9e6;
   --big-title: 9.5rem;
   --subtitle: 3rem;
@@ -24,12 +24,12 @@ body {
 
   width: 100%;
   height: 100%;
-
 }
 
 main {
   width: 100%;
   height: 100%;
+  display: none;
 }
 
 /* Flexbox */
@@ -409,7 +409,8 @@ input:disabled {
     margin: 2rem 0 0;
   }
 
-  .room__content, .input-layer-off {
+  .room__content,
+  .input-layer-off {
     font-size: var(--room-text-mobile);
   }
 
