@@ -15,11 +15,12 @@
     "consistent-return": "off",
     "react/forbid-prop-types": "off",
     "no-restricted-syntax": "off",
-    "eqeqeq": "warn"
+    "eqeqeq": "warn",
+    "no-restricted-globals": "off",
   },
   "globals": {
     "io": true,
-    "THREE": true
+    "THREE": true,
   },
   "env": {
     "browser": true

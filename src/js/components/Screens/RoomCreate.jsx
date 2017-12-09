@@ -29,8 +29,8 @@ const ScreenRoomCreate = ({ channelStore }) => (
     </div>
     <div className="btn-wrapper">
       <button className="btn" onClick={channelStore.openRoom}>
-          Open Room
-        </button>
+        Open Room
+      </button>
     </div>
   </Screen>
 );

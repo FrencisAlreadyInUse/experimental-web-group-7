@@ -1,39 +1,61 @@
 const $aframeScene = document.querySelector('a-scene');
 const $button = document.getElementById('startButton');
-const $indicatorSlider = document.getElementById('working-slider');
+
+const $indicatorSlider = document.getElementById('ball-pos');
 let $currentSliderPosition;
-// const $indicatorSliderAnim = document.getElementById('working-slider-animate');
-// const $indicatorXMin = '-2.730';
-// const $indicatorXMax = '-0.052';
 
-// get position attributen van die slider
+const $cones = document.querySelectorAll('.cones');
+const $coneIndicators = document.querySelectorAll('.cone-indicator');
+let hitCones = [];
 
-const handleCollision = (e) => {
-  console.log('[handleCollision]', e.detail.contact);
-  // console.log('[handleCollision]', e);
-  // console.log(`Player has collided with body #${e.detail.body.id}`);
-  // console.log(`Player has collided with body #${e.detail.target.el}`);
-  // console.log(`Player has collided with body #${e.detail.body.el}`);
-  // console.log(`Player has collided with body #${e.detail.contact.ni}`);
+const $firstThrow = document.getElementById('first-throw');
+const $secondThrow = document.getElementById('second-throw');
+const $totalScore = document.getElementById('total-score');
 
-  // e.detail.target.el; // Original entity (playerEl).
-  // e.detail.body.el; // Other entity, which playerEl touched.
-  // e.detail.contact; // Stats about the collision (CANNON.ContactEquation).
-  // e.detail.contact.ni; // Normal (direction) of the collision (CANNON.Vec3).
+let firstThrow = '';
+const secondThrow = '';
+let counter = 0;
+
+const setScoring = (first = '-', second = '-', totalScore = 0) => {
+  $firstThrow.setAttribute('text', `width:6; align:center; value: ${first}`);
+  $secondThrow.setAttribute('text', `width:6; align:center; value: ${second}`);
+  $totalScore.setAttribute('text', `width:6; align:center; value: ${totalScore}`);
 };
 
-const generateCones = () => {
-  const $cone = document.createElement('a-collada-model');
-  $cone.setAttribute('id', '10');
-  $cone.setAttribute('src', '#cone');
-  $cone.setAttribute('position', '-1.5 -2 -38');
-  $cone.setAttribute('radius', '.75');
-  $cone.setAttribute('dynamic-body', 'shape: box; mass: 1;');
-  $aframeScene.appendChild($cone);
+const handleCollision = (e) => {
+  if (!e.detail.body.el.id) return;
+  const $hit = parseInt(e.detail.body.el.id, 10);
+  if (isNaN($hit)) return;
+  hitCones.push($hit);
 
-  setTimeout(() => {
-    $aframeScene.removeChild($cone);
-  }, 3500);
+  const uniqueHits = new Set(hitCones);
+  firstThrow = uniqueHits.size;
+
+  uniqueHits.forEach(id => {
+    $coneIndicators.forEach(
+      indicator => {
+        if (parseInt(indicator.dataset.id, 10) === id) {
+          indicator.setAttribute('color', 'red');
+          setScoring(firstThrow, secondThrow, firstThrow + secondThrow);
+        }
+      },
+    );
+  });
+};
+
+const getAttributes = () => {
+  $currentSliderPosition = $indicatorSlider.getAttribute('position');
+  requestAnimationFrame(getAttributes);
+};
+
+
+const generateScene = () => {
+  getAttributes();
+  setScoring();
+};
+
+const resetScoring = () => {
+  hitCones = [];
 };
 
 const generateBall = () => {
@@ -44,10 +66,7 @@ const generateBall = () => {
   $ball.setAttribute('radius', '.75');
   $ball.setAttribute('dynamic-body', 'shape: sphere; sphereRadius: .77; mass: 50;');
   $ball.setAttribute('velocity', '0 0 -35');
-
-  setTimeout(() => {
-    $aframeScene.appendChild($ball);
-  }, 1000);
+  $aframeScene.appendChild($ball);
 
   setTimeout(() => {
     $aframeScene.removeChild($ball);
@@ -56,20 +75,16 @@ const generateBall = () => {
   $ball.addEventListener('collide', handleCollision);
 };
 
-
 const generateInteractiveScene = () => {
-  generateCones();
+  Array.from($cones).forEach(cone => {
+    cone.addEventListener('collide', handleCollision);
+  });
+  counter += 1;
+  if (counter === 3) {
+    console.log('[generateBall]', 'Reset Scoring (exept for the Total) / Reset Alley');
+    resetScoring();
+  }
   generateBall();
-};
-
-const getAttributes = () => {
-  $currentSliderPosition = $indicatorSlider.getAttribute('position');
-
-  requestAnimationFrame(getAttributes);
-};
-
-const generateScene = () => {
-  getAttributes();
 };
 
 const handleLoadedScene = () => {
