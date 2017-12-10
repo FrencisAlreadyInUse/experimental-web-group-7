@@ -13,7 +13,7 @@ const App = () => (
   <Provider channelStore={channelStore}>
     <main className="wrapper">
       <header className="main__header">
-        <h1 className="main-title sr-only">Virtual Lanes — VR Bowling Game</h1>
+        <h1 className="main-title hide">Virtual Lanes — VR Bowling Game</h1>
       </header>
       <Start />
       <Create />
