@@ -12,8 +12,17 @@ export default class DataChannel extends EventTarget {
       data: null,
     };
 
-    this.RTCPeerConnectionOptions = { iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }] };
-    this.RTCDataChannelOptions = { ordered: false, maxPacketLifeTime: 1000 };
+    this.RTCPeerConnectionOptions = {
+      iceServers: [
+        {
+          urls: ['stun:stun.l.google.com:19302'],
+        },
+      ],
+    };
+    this.RTCDataChannelOptions = {
+      ordered: false,
+      maxPacketLifeTime: 1000,
+    };
 
     this.signalingServer = io.connect('/');
     window.signalingServer = this.signalingServer;

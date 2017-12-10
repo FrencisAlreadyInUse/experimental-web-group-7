@@ -51,9 +51,10 @@ body {
 html,
 body,
 .section,
-.wrapper {
+.wrapper,
+.react-mount {
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -352,6 +353,7 @@ body,
 
   .section {
     overflow: scroll;
+    -webkit-overflow-scrolling: touch;
   }
 
   .section__content {
