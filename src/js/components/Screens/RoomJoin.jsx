@@ -18,6 +18,8 @@ const ScreenRoomJoin = ({ channelStore }) => (
             type="text"
             placeholder="room name"
             onChange={channelStore.updateRoomName}
+            autoCorrect="off"
+            autoCapitalize="off"
           />
         </div>{' '}
         room
