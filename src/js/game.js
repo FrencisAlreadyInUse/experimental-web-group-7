@@ -15,6 +15,8 @@ const $totalScore = document.getElementById('total-score');
 const $conesHitSound = document.getElementById('cones-hit-sound');
 $conesHitSound.volume = 0.35;
 
+const $strikeMessage = document.getElementById('strike-msg');
+
 let uniqueHits;
 
 let currentRound = 1;
@@ -55,8 +57,10 @@ const setScoring = score => {
     totalThrowScore = currentThrowScore;
     setScoreValue($firstThrow, score);
 
-    if (score === 10) setScoreValue($firstThrow, 'X');
-    else setScoreValue($firstThrow, score);
+    if (score === 10) {
+      setScoreValue($firstThrow, 'X');
+      $strikeMessage.setAttribute('visible', true);
+    } else setScoreValue($firstThrow, score);
   }
 
   // this is our second throw
