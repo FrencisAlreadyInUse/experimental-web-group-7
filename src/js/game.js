@@ -27,7 +27,17 @@ let totalThrowScore = 0;
 let canThrow = true;
 
 const setAttributeMultiple = ($nodes, attribute, value) => {
-  Array.from($nodes).forEach($node => $node.setAttribute(attribute, value));
+  Array.from($nodes).forEach($node => {
+    $node.setAttribute(attribute, value);
+  });
+
+  // const $nodesAnimation = document.createElement('a-animation');
+  // $nodesAnimation.setAttribute('attribute', 'opacity');
+  // $nodesAnimation.setAttribute('to', '0');
+  // $nodesAnimation.setAttribute('dur', '1500');
+  // $nodesAnimation.setAttribute('repeat', '1');
+  // $nodesAnimation.setAttribute('easing', 'ease-in-out');
+  // $nodes.appendChild($nodesAnimation);
 };
 
 /* prettier-ignore */
@@ -132,7 +142,7 @@ const endOfThrowCallback = $ball => {
       currentThrow = 2;
 
       // ball is ready to be thrown again, show "throw" message
-      setAttributeMultiple($throwMessage, 'visible', true);
+      setAttributeMultiple($throwMessage, 'opacity', 1);
     } else {
       // we threw a strike, next player's turn
       console.log("we threw a strike, next player's turn");
@@ -160,7 +170,7 @@ const generateBall = targetPosition => {
   $ball.addEventListener('collide', handleCollision);
 
   // ball was thrown, hide "throw" message
-  setAttributeMultiple($throwMessage, 'visible', false);
+  setAttributeMultiple($throwMessage, 'opacity', 0);
 
   canThrow = false;
   setTimeout(() => endOfThrowCallback($ball), 3000);

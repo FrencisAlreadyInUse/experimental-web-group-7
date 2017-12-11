@@ -21,7 +21,6 @@
   s.parentNode.insertBefore(wf, s);
 }(document));
 </script>
-
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aframe@0.7.1/dist/aframe-master.min.js"></script>
@@ -50,7 +49,6 @@
       <a-asset-item id="ball-slider" src="/assets/collada/ball-slider.dae"></a-asset-item>
       <a-asset-item id="ball-slider-indicator" src="/assets/collada/ball-slider-indicator.dae"></a-asset-item>
       <a-asset-item id="strike" src="/assets/collada/strike-msg.dae"></a-asset-item>
-      <!-- head on ball -->
       <img id="face-ball" src="/assets/img/ball/ball-pic.jpg">
     </a-assets>
 
@@ -83,30 +81,30 @@
     <a-collada-model id="1" class="cones" position="0 -2 -29" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
 
     <!-- Start Ball Rolling by clicking this button -->
-    <a-text class="throw-message" position="0.048 -0.793 -6.82" color="#FFD9B7" wrap-count="15" text="width:3; align:center; value: THROW" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
-    <a-box class="throw-message" id="start-button" position="0 -0.891 -7.098" width="1.5 "height="0.65" depth="0.05" color="#3737DD"></a-box>
+    <a-text class="throw-message" opacity="1" position="0.048 -0.793 -6.82" color="#FFD9B7" wrap-count="15" text="width:3; align:center; value: THROW" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
+      <a-animation begin="click" easing="ease-in-out" attribute="opacity" to="0" dur="600"></a-animation>
+    </a-text>
+    <a-box class="throw-message" opacity="1" id="start-button" position="0 -0.891 -7.098" width="1.5 "height="0.65" depth="0.05" color="#3737DD">
+      <a-animation begin="click" easing="ease-in-out" attribute="opacity" to="0" dur="600"></a-animation>
+    </a-box>
 
-    <!-- Alley -->
+    <!-- Alley + Cones Box -->
     <a-collada-model static-body position="-4 -2.35 -5.52" scale="7.6 5 4.5" src="#bowling-alley"></a-collada-model>
-    <!-- Cones Box -->
     <a-collada-model position="-4 -2.35 -7" scale="7.6 5 4.5" src="#cones-box"></a-collada-model>
 
-    <!-- Ball Directional Slider -->
+    <!-- Ball Directional Slider + Ball Directional Indicator -->
     <a-collada-model position="-1.38 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider"></a-collada-model>
-
-    <!-- Ball Directional Indicator -->
     <a-collada-model id="ball-pos" position="-1.45 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider-indicator">
       <a-animation attribute="position" direction="alternate" dur="900" easing="ease-in-out" repeat="indefinite" to="1.22 -1.29 -4.86"></a-animation>
     </a-collada-model>
 
-    <!-- table + players -->
-    <a-collada-model position="-4 0 12" scale="7.6 5 4.5" src="#players-table"></a-collada-model>
     <!--
       Player Positions
       3 | | 2
       4 | | 1
     -->
-
+    <!-- table + players -->
+    <a-collada-model position="-4 0 12" scale="7.6 5 4.5" src="#players-table"></a-collada-model>
     <!-- 1 + Crown -->
     <a-collada-model position="-5.28 1.082 6.474" rotation="10 0 15" scale="1.4 1 1.4" src="#winners-crown">
       <a-animation attribute="rotation" repeat="indefinite" to="10 360 15"></a-animation>
