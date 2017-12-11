@@ -32,7 +32,6 @@
   <div class="react-mount main"></div>
 
   <a-scene class="section--off" physics="iterations: 20; gravity: -3.5; friction: 0.1; restitution: 0.5;">
-    <!-- <a-light type="ambient" color="#fff"></a-light> -->
 
     <a-camera>
       <a-cursor fuse="false" color="#2A2A9B" scale="1 1 1">
@@ -63,7 +62,6 @@
     <!-- TOTAL -->
     <a-text id="total-score" position="0 3.2 -7" color="#2A2A9B" wrap-count="15" text="width:6; align:center; value: 0" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
 
-
     <!-- STRIKE -->
     <a-collada-model visible="false" id="strike-msg" position="-4.347 -6 -8.793" src="#strike" rotation="90 0 0" scale="0.35 0.35 0.35" collada-model="/assets/collada/strike-msg.dae">
       <a-animation attribute="position" easing="ease-in-out" to="-4.347 1.994 -8.793"></a-animation>
@@ -85,8 +83,8 @@
     <a-collada-model id="1" class="cones" position="0 -2 -29" src="#cone" dynamic-body="shape: box; mass: 1;"></a-collada-model>
 
     <!-- Start Ball Rolling by clicking this button -->
-    <a-text position="0 -0.8 -6.82" color="#FFDEAF" wrap-count="15" text="width:6; align:center; value: Start" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
-    <a-box id="startButton" position="0 -0.891 -7.098" width="2.010" height="0.750" depth="0.150" color="#3737DD"></a-box>
+    <a-text class="throw-message" position="0.048 -0.793 -6.82" color="#FFD9B7" wrap-count="15" text="width:3; align:center; value: THROW" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+    <a-box class="throw-message" id="start-button" position="0 -0.891 -7.098" width="1.5 "height="0.65" depth="0.05" color="#3737DD"></a-box>
 
     <!-- Alley -->
     <a-collada-model static-body position="-4 -2.35 -5.52" scale="7.6 5 4.5" src="#bowling-alley"></a-collada-model>
@@ -95,9 +93,10 @@
 
     <!-- Ball Directional Slider -->
     <a-collada-model position="-1.38 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider"></a-collada-model>
+
     <!-- Ball Directional Indicator -->
     <a-collada-model id="ball-pos" position="-1.45 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider-indicator">
-      <a-animation attribute="position" direction="alternate" easing="ease-in-out" repeat="indefinite" to="1.22 -1.29 -4.86"></a-animation>
+      <a-animation attribute="position" direction="alternate" dur="600" easing="ease-in-out" repeat="indefinite" to="1.22 -1.29 -4.86"></a-animation>
     </a-collada-model>
 
     <!-- table + players -->
