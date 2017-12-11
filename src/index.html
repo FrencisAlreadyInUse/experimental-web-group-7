@@ -29,8 +29,8 @@
 </head>
 
 <body>
+  <audio id="cones-hit-sound" src="assets/audio/cones-hit.mp3" preload='auto'></audio>
   <div class="react-mount main"></div>
-
   <a-scene class="section--off" physics="iterations: 20; gravity: -3.5; friction: 0.1; restitution: 0.5;">
 
     <a-camera>
@@ -96,7 +96,7 @@
 
     <!-- Ball Directional Indicator -->
     <a-collada-model id="ball-pos" position="-1.45 -1.29 -4.86" rotation="-15 0 0" src="#ball-slider-indicator">
-      <a-animation attribute="position" direction="alternate" dur="600" easing="ease-in-out" repeat="indefinite" to="1.22 -1.29 -4.86"></a-animation>
+      <a-animation attribute="position" direction="alternate" dur="900" easing="ease-in-out" repeat="indefinite" to="1.22 -1.29 -4.86"></a-animation>
     </a-collada-model>
 
     <!-- table + players -->

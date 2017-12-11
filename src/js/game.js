@@ -12,6 +12,8 @@ const $firstThrow = document.getElementById('first-throw');
 const $secondThrow = document.getElementById('second-throw');
 const $totalScore = document.getElementById('total-score');
 
+const $conesHitSound = document.getElementById('cones-hit-sound');
+
 let uniqueHits;
 
 let currentRound = 1;
@@ -68,6 +70,7 @@ const handleCollision = e => {
   uniqueHits.forEach(id => {
     $coneIndicators.forEach(indicator => {
       if (parseInt(indicator.dataset.id, 10) === id) {
+        $conesHitSound.play();
         indicator.setAttribute('color', 'red');
         setScoring(uniqueHits.size);
       }
