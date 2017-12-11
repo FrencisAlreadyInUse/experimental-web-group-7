@@ -6,13 +6,10 @@ let $currentSliderPosition;
 
 const $cones = document.querySelectorAll('.cones');
 const $coneIndicators = document.querySelectorAll('.cone-indicator');
-let hitCones = [];
 
 const $firstThrow = document.getElementById('first-throw');
 const $secondThrow = document.getElementById('second-throw');
 const $totalScore = document.getElementById('total-score');
-
-let counter = 0;
 
 let uniqueHits;
 
@@ -75,15 +72,8 @@ const generateScene = () => {
   getAttributes();
 };
 
-const resetScoring = () => {
-  hitCones = [];
-};
-
 const removeBallAndHitCones = $ball => {
-  console.log('RESET');
-
   uniqueHits.forEach(id => {
-    // hitCones = hitCones.filter(c => c === id);
     $aframeScene.removeChild(document.getElementById(id));
     uniqueHits.delete(id);
   });
@@ -110,13 +100,25 @@ const regenerateCones = () => {
 
 const resetSceneForNextPlayer = () => {
   regenerateCones();
-
-  // ...
 };
 
-/**
- * Generates the bowling ball
- */
+const endOfThrowCallback = $ball => {
+  removeBallAndHitCones($ball);
+
+  // we will go to throw nr 2 here
+  if (currentThrow === 1) {
+    firstThrowScore = currentThrowScore;
+    canThrow = true;
+    currentThrow = 2;
+  }
+
+  // we did our nr 2 throw, next player's turn
+  if (currentThrow === 2) {
+    currentRound += 1;
+    resetSceneForNextPlayer();
+  }
+};
+
 const generateBall = targetPosition => {
   const $ball = document.createElement('a-sphere');
   $ball.setAttribute('id', 'bowlingBall');
@@ -127,39 +129,16 @@ const generateBall = targetPosition => {
   $ball.setAttribute('velocity', '0 0 -35');
   $aframeScene.appendChild($ball);
 
-  canThrow = false;
-
-  setTimeout(() => {
-    // Array.from($cones).forEach($cone => $aframeScene.removeChild($cone));
-
-    removeBallAndHitCones($ball);
-
-    if (currentThrow === 1) {
-      firstThrowScore = currentThrowScore;
-      canThrow = true;
-      currentThrow = 2;
-    }
-    if (currentThrow === 2) {
-      // next player
-
-      currentRound += 1;
-
-      resetSceneForNextPlayer();
-    }
-  }, 3000);
-
   $ball.addEventListener('collide', handleCollision);
+
+  canThrow = false;
+  setTimeout(() => endOfThrowCallback($ball), 3000);
 };
 
 const generateInteractiveScene = () => {
   Array.from($cones).forEach(cone => {
     cone.addEventListener('collide', handleCollision);
   });
-  counter += 1;
-  if (counter === 3) {
-    console.log('[generateBall]', 'Reset Scoring (exept for the Total) / Reset Alley');
-    resetScoring();
-  }
   if (canThrow) generateBall($currentSliderPosition.x);
 };
 
