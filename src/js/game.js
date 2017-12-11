@@ -13,6 +13,7 @@ const $secondThrow = document.getElementById('second-throw');
 const $totalScore = document.getElementById('total-score');
 
 const $conesHitSound = document.getElementById('cones-hit-sound');
+$conesHitSound.volume = 0.35;
 
 let uniqueHits;
 
