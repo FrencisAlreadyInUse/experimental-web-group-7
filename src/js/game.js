@@ -15,12 +15,12 @@ const $totalScore = document.getElementById('total-score');
 const $conesHitSound = document.getElementById('cones-hit-sound');
 $conesHitSound.volume = 0.35;
 
-const $strikeMessage = document.getElementById('strike-msg');
-const $strikeMessageAnimation = document.createElement('a-animation');
+// const $strikeMessage = document.getElementById('strike-msg');
+// const $strikeMessageAnimation = document.createElement('a-animation');
 
 let uniqueHits;
 
-let currentRound = 1;
+let currentFrame = 1;
 let currentThrow = 1;
 
 let firstThrowScore = 0;
@@ -53,15 +53,16 @@ const setScoring = score => {
 
     if (score === 10) {
       setScoreValue($firstThrow, 'X');
-      $strikeMessage.setAttribute('visible', true);
+      // $strikeMessage.setAttribute('visible', true);
 
-      $strikeMessageAnimation.setAttribute('attribute', 'position');
-      $strikeMessageAnimation.setAttribute('to', '-2.347 1.994 -8.793');
-      $strikeMessageAnimation.setAttribute('easing', 'ease-in-out');
-      $strikeMessageAnimation.setAttribute('fill', 'backwards');
-      $strikeMessageAnimation.setAttribute('direction', 'alternateReverse');
-      $strikeMessageAnimation.setAttribute('dur', '1500');
-      $strikeMessage.appendChild($strikeMessageAnimation);
+      // $strikeMessageAnimation.setAttribute('attribute', 'position');
+      // $strikeMessageAnimation.setAttribute('to', '-2.347 1.994 -8.793');
+      // $strikeMessageAnimation.setAttribute('easing', 'ease-in-out');
+      // $strikeMessageAnimation.setAttribute('fill', 'backwards');
+      // $strikeMessageAnimation.setAttribute('direction', 'alternate');
+      // $strikeMessageAnimation.setAttribute('delay', '1000');
+      // $strikeMessageAnimation.setAttribute('dur', '1500');
+      // $strikeMessage.appendChild($strikeMessageAnimation);
     } else setScoreValue($firstThrow, score);
   }
 
@@ -75,6 +76,7 @@ const setScoring = score => {
 };
 
 const handleCollision = e => {
+  console.log('[handleCollision]', 'I Got Called Again');
   const hit = parseInt(e.detail.body.el.id, 10);
   if (isNaN(hit)) return;
 
@@ -118,22 +120,41 @@ const removeBallAndHitCones = $ball => {
   $aframeScene.removeChild($ball);
 };
 
+const generateCone = (id, pos) => {
+  const $cone = document.createElement('a-collada-model');
+  $cone.setAttribute('id', id);
+  $cone.setAttribute('src', '#cone');
+  $cone.setAttribute('position', pos);
+  $cone.setAttribute('radius', '.75');
+  $cone.setAttribute('dynamic-body', 'shape: box; mass: 1;');
+  $aframeScene.appendChild($cone);
+};
+
 const regenerateCones = () => {
   //
   // only set new cones for hit ones
   //
-  // const generateCone = () => {
-  //   const $cone = document.createElement('a-collada-model');
-  //   $cone.setAttribute('id', '10');
-  //   $cone.setAttribute('src', '#cone');
-  //   $cone.setAttribute('position', '-1.5 -2 -38');
-  //   $cone.setAttribute('radius', '.75');
-  //   $cone.setAttribute('dynamic-body', 'shape: box; mass: 1;');
-  //   $aframeScene.appendChild($cone);
-  // };
+  generateCone('1', '0 -2 -29');
+  generateCone('2', '.5 -2 -32');
+  generateCone('3', '-.5 -2 -32');
+  generateCone('4', '1 -2 -35');
+  generateCone('5', '0 -2 -35');
+  generateCone('6', '-1 -2 -35');
+  generateCone('7', '1.5 -2 -38');
+  generateCone('8', '.5 -2 -38');
+  generateCone('9', '-.5 -2 -38');
+  generateCone('10', '-1.5 -2 -38');
 };
 
 const resetSceneForNextPlayer = () => {
+  console.log('[resetSceneForNextPlayer] — I Got Called');
+  canThrow = true;
+  currentThrow = 1;
+  firstThrowScore = 0;
+  currentThrowScore = 0;
+  playedSound = false;
+  uniqueHits = '';
+  setAttributeMultiple($throwMessage, 'opacity', 1);
   regenerateCones();
 };
 
@@ -156,11 +177,10 @@ const endOfThrowCallback = $ball => {
       console.log("we threw a strike, next player's turn");
       resetSceneForNextPlayer();
     }
-  }
-
-  // we did our nr 2 throw, next player's turn
-  if (currentThrow === 2) {
-    currentRound += 1;
+  } else if (currentThrow === 2) {
+    // we did our nr 2 throw, next player's turn
+    console.log('[currentThrow] — 2 // reset game after');
+    currentFrame += 1;
     resetSceneForNextPlayer();
   }
 };
