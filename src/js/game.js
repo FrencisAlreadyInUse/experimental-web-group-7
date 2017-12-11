@@ -1,5 +1,5 @@
 const $aframeScene = document.querySelector('a-scene');
-const $button = document.getElementById('startButton');
+const $button = document.getElementById('start-button');
 
 const $indicatorSlider = document.getElementById('ball-pos');
 let $currentSliderPosition;
@@ -7,6 +7,7 @@ let $currentSliderPosition;
 const $cones = document.querySelectorAll('.cones');
 const $coneIndicators = document.querySelectorAll('.cone-indicator');
 
+const $throwMessage = document.querySelectorAll('.throw-message');
 const $firstThrow = document.getElementById('first-throw');
 const $secondThrow = document.getElementById('second-throw');
 const $totalScore = document.getElementById('total-score');
@@ -22,25 +23,36 @@ let totalThrowScore = 0;
 
 let canThrow = true;
 
-const setScoring = score => {
-  //
+const setAttributeMultiple = ($nodes, attribute, value) => {
+  Array.from($nodes).forEach($node => $node.setAttribute(attribute, value));
+};
 
+/* prettier-ignore */
+const map = (value, start1, stop1, start2, stop2) =>
+  start2 + ((stop2 - start2) * ((value - start1) / (stop1 - start1)));
+
+const setScoreValue = ($node, value) => {
+  $node.setAttribute('text', `width:6; align:center; value: ${value}`);
+};
+
+const setScoring = score => {
+  // this is our first throw
   if (currentThrow === 1) {
     currentThrowScore = score;
     totalThrowScore = currentThrowScore;
+    setScoreValue($firstThrow, score);
 
-    console.log('throw 1', score);
-    $firstThrow.setAttribute('text', `width:6; align:center; value: ${score}`);
+    if (score === 10) setScoreValue($firstThrow, 'X');
+    else setScoreValue($firstThrow, score);
   }
+
+  // this is our second throw
   if (currentThrow === 2) {
     totalThrowScore = score + firstThrowScore;
-
-    console.log('throw 2', score);
-    $secondThrow.setAttribute('text', `width:6; align:center; value: ${score}`);
+    setScoreValue($secondThrow, score);
   }
 
-  // update game
-  $totalScore.setAttribute('text', `width:6; align:center; value: ${totalThrowScore}`);
+  setScoreValue($totalScore, totalThrowScore);
 };
 
 const handleCollision = e => {
@@ -73,12 +85,14 @@ const generateScene = () => {
 };
 
 const removeBallAndHitCones = $ball => {
-  uniqueHits.forEach(id => {
-    $aframeScene.removeChild(document.getElementById(id));
-    uniqueHits.delete(id);
-  });
+  if (uniqueHits) {
+    uniqueHits.forEach(id => {
+      $aframeScene.removeChild(document.getElementById(id));
+      uniqueHits.delete(id);
+    });
 
-  uniqueHits.clear();
+    uniqueHits.clear();
+  }
 
   $aframeScene.removeChild($ball);
 };
@@ -108,8 +122,18 @@ const endOfThrowCallback = $ball => {
   // we will go to throw nr 2 here
   if (currentThrow === 1) {
     firstThrowScore = currentThrowScore;
-    canThrow = true;
-    currentThrow = 2;
+
+    if (firstThrowScore < 10) {
+      canThrow = true;
+      currentThrow = 2;
+
+      // ball is ready to be thrown again, show "throw" message
+      setAttributeMultiple($throwMessage, 'visible', true);
+    } else {
+      // we threw a strike, next player's turn
+      console.log("we threw a strike, next player's turn");
+      resetSceneForNextPlayer();
+    }
   }
 
   // we did our nr 2 throw, next player's turn
@@ -131,6 +155,9 @@ const generateBall = targetPosition => {
 
   $ball.addEventListener('collide', handleCollision);
 
+  // ball was thrown, hide "throw" message
+  setAttributeMultiple($throwMessage, 'visible', false);
+
   canThrow = false;
   setTimeout(() => endOfThrowCallback($ball), 3000);
 };
@@ -139,10 +166,13 @@ const generateInteractiveScene = () => {
   Array.from($cones).forEach(cone => {
     cone.addEventListener('collide', handleCollision);
   });
-  if (canThrow) generateBall($currentSliderPosition.x);
+  const position = map($currentSliderPosition.x, -1.45, 1.22, -3.45, 3.22);
+  if (canThrow) generateBall(position);
 };
 
 const handleLoadedScene = () => {
+  console.log('scene loaded');
+
   $button.addEventListener('click', generateInteractiveScene);
   generateScene();
 };
