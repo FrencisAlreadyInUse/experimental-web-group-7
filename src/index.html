@@ -7,19 +7,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <script>
-    WebFontConfig = {
-      custom: {
-        families: ['px-grotesk'],
-        urls: ['assets/fonts/px-grotesk/px-grotesk.css']
-      }
-    };
-    (function (d) {
-      var wf = d.createElement('script'), s = d.scripts[0];
-      wf.async = true;
-      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js';
-      s.parentNode.insertBefore(wf, s);
-    })(document);
-  </script>
+  WebFontConfig = {
+  custom: {
+    families: ['px-grotesk'],
+    urls: ['assets/fonts/px-grotesk/px-grotesk.css'],
+  },
+};
+(function (d) {
+  let wf = d.createElement('script'),
+    s = d.scripts[0];
+  wf.async = true;
+  wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js';
+  s.parentNode.insertBefore(wf, s);
+}(document));
+</script>
 
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
@@ -28,7 +29,7 @@
 </head>
 
 <body>
-  <div class="react-mount"></div>
+  <div class="react-mount main"></div>
 
   <a-scene class="section--off" physics="iterations: 20; gravity: -3.5; friction: 0.1; restitution: 0.5;">
 
@@ -55,11 +56,11 @@
 
     <!-- Text -->
     <!-- First Throw -->
-    <a-text id="first-throw" position="-0.446 3.9 -7" color="#d1b390" wrap-count="35" text="width:6; align:center; value: 8" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+    <a-text id="first-throw" position="-0.446 3.9 -7" color="#d1b390" wrap-count="35" text="width:6; align:center; value: -" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
     <!-- Second Throw -->
-    <a-text id="second-throw" position="0.008 3.9 -7" color="#d1b390" wrap-count="35" text="value:1; width: 6; align:center" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+    <a-text id="second-throw" position="0.008 3.9 -7" color="#d1b390" wrap-count="35" text="width: 6; align:center; value: -" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
     <!-- TOTAL -->
-    <a-text id="total-score" position="0 3.2 -7" color="#2A2A9B" wrap-count="15" text="width:6; align:center; value: 9" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+    <a-text id="total-score" position="0 3.2 -7" color="#2A2A9B" wrap-count="15" text="width:6; align:center; value: 0" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
 
 
     <!-- STRIKE -->
@@ -135,7 +136,6 @@
     <!-- Cones indicator triangle -->
     <a-collada-model position="4 -0.8 -3.4" scale="1.5 1.5 1.5" src="#triangle"></a-collada-model>
     <!-- Cones indicator sphere -->
-
     <a-sphere data-id="10" class="cone-indicator" position="3.7 .40 -3.75" radius=".05" color="white"></a-sphere>
     <a-sphere data-id="9" class="cone-indicator" position="3.9 .40 -3.75" radius=".05" color="white"></a-sphere>
     <a-sphere data-id="8" class="cone-indicator" position="4.1 .40 -3.75" radius=".05" color="white"></a-sphere>
