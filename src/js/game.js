@@ -16,6 +16,7 @@ const $conesHitSound = document.getElementById('cones-hit-sound');
 $conesHitSound.volume = 0.35;
 
 const $strikeMessage = document.getElementById('strike-msg');
+const $strikeMessageAnimation = document.createElement('a-animation');
 
 let uniqueHits;
 
@@ -27,19 +28,12 @@ let currentThrowScore = 0;
 let totalThrowScore = 0;
 
 let canThrow = true;
+let playedSound = false;
 
 const setAttributeMultiple = ($nodes, attribute, value) => {
   Array.from($nodes).forEach($node => {
     $node.setAttribute(attribute, value);
   });
-
-  // const $nodesAnimation = document.createElement('a-animation');
-  // $nodesAnimation.setAttribute('attribute', 'opacity');
-  // $nodesAnimation.setAttribute('to', '0');
-  // $nodesAnimation.setAttribute('dur', '1500');
-  // $nodesAnimation.setAttribute('repeat', '1');
-  // $nodesAnimation.setAttribute('easing', 'ease-in-out');
-  // $nodes.appendChild($nodesAnimation);
 };
 
 /* prettier-ignore */
@@ -60,6 +54,14 @@ const setScoring = score => {
     if (score === 10) {
       setScoreValue($firstThrow, 'X');
       $strikeMessage.setAttribute('visible', true);
+
+      $strikeMessageAnimation.setAttribute('attribute', 'position');
+      $strikeMessageAnimation.setAttribute('to', '-2.347 1.994 -8.793');
+      $strikeMessageAnimation.setAttribute('easing', 'ease-in-out');
+      $strikeMessageAnimation.setAttribute('fill', 'backwards');
+      $strikeMessageAnimation.setAttribute('direction', 'alternateReverse');
+      $strikeMessageAnimation.setAttribute('dur', '1500');
+      $strikeMessage.appendChild($strikeMessageAnimation);
     } else setScoreValue($firstThrow, score);
   }
 
@@ -85,7 +87,8 @@ const handleCollision = e => {
   uniqueHits.forEach(id => {
     $coneIndicators.forEach(indicator => {
       if (parseInt(indicator.dataset.id, 10) === id) {
-        $conesHitSound.play();
+        if (!playedSound) $conesHitSound.play();
+        playedSound = true;
         indicator.setAttribute('color', 'red');
         setScoring(uniqueHits.size);
       }
@@ -136,6 +139,7 @@ const resetSceneForNextPlayer = () => {
 
 const endOfThrowCallback = $ball => {
   removeBallAndHitCones($ball);
+  playedSound = false;
 
   // we will go to throw nr 2 here
   if (currentThrow === 1) {
