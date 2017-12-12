@@ -34,8 +34,9 @@
   <a-scene class="section--off" physics="iterations: 20; gravity: -3.5; friction: 0.1; restitution: 0.5;">
 
     <a-camera>
-      <a-cursor fuse="false" color="#2A2A9B" scale="1 1 1">
-        <a-animation begin="click" easing="ease-in-out" attribute="scale" fill="backwards" to="1.5 1.5 1.5"></a-animation>
+      <a-cursor fuse="true" fuse-timeout="10" color="#2A2A9B" scale="1 1 1">
+        <a-animation begin="click" easing="ease-in" attribute="scale" fill="backwards" to="0.1 0.1 0.1" dur="250"></a-animation>
+        <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale" dur="250" fill="backwards" to="0.1 0.1 0.1"></a-animation>
       </a-cursor>
     </a-camera>
 
