@@ -24,6 +24,7 @@
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/aframe@0.7.1/dist/aframe-master.min.js"></script>
+  <script type="text/javascript" src="js/vendor/aframe-glow.js"></script>
   <script type="text/javascript" src="https://cdn.rawgit.com/donmccurdy/aframe-physics-system/v2.1.0/dist/aframe-physics-system.min.js"></script>
 </head>
 
@@ -49,9 +50,12 @@
       <a-asset-item id="ball-slider" src="/assets/collada/ball-slider.dae"></a-asset-item>
       <a-asset-item id="ball-slider-indicator" src="/assets/collada/ball-slider-indicator.dae"></a-asset-item>
       <a-asset-item id="strike" src="/assets/collada/strike-msg.dae"></a-asset-item>
+      <a-asset-item id="arrow" src="/assets/collada/arrow.dae"></a-asset-item>
       <img id="face-ball" src="/assets/img/ball/ball-pic.jpg">
     </a-assets>
 
+    <!-- TRIGGER -->
+    <a-collada-model position="-0.437 4.723 -4.777" src="#arrow" rotation="-200 0 0" src="#arrow"></a-collada-model>
     <!-- Text -->
     <!-- First Throw -->
     <a-text id="first-throw" position="-0.446 3.9 -7" color="#d1b390" wrap-count="35" text="width:6; align:center; value: -" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
@@ -110,25 +114,17 @@
       <a-animation attribute="rotation" repeat="indefinite" to="10 360 15"></a-animation>
     </a-collada-model>
     <!-- score + playerhead  -->
-    <a-text rotation="0 180 0" position="-5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 130;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
-      <a-animation attribute="position" direction="alternate" easing="ease-in-out" dur="1800" repeat="indefinite" to="-5.3 2.2 6.5"></a-animation>
-    </a-text>
+    <a-text rotation="0 180 0" position="-5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 130;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
     <a-sphere src="#face-ball" position="-5.3 .5 6.5" rotation="0 100 0" glow="c:1;p:3;color:#3737dd;scale:1.1;" radius=".85"></a-sphere>
 
     <!-- 2 -->
-    <a-text rotation="0 180 0" position="-5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 63;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
-      <a-animation attribute="position" direction="alternate" easing="ease-in-out" dur="1500" repeat="indefinite" to="-5.3 2 9"></a-animation>
-    </a-text>
+    <a-text rotation="0 180 0" position="-5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 63;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
     <a-sphere src="#face-ball" position="-5.3 .5 9" rotation="0 100 0" radius=".85"></a-sphere>
     <!-- 3 -->
-    <a-text rotation="0 180 0" position="5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 90;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
-      <a-animation attribute="position" direction="alternate" easing="ease-in-out" dur="2000" repeat="indefinite" to="5.3 2 9"></a-animation>
-    </a-text>
+    <a-text rotation="0 180 0" position="5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 90;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
     <a-sphere src="#face-ball" position="5.3 .5 9" rotation="0 100 0" radius=".85"></a-sphere>
     <!-- 4 -->
-    <a-text rotation="0 180 0" position="5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 10;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt">
-      <a-animation attribute="position" direction="alternate" easing="ease-in-out" dur="1600" repeat="indefinite" to="5.3 2.2 6.5"></a-animation>
-    </a-text>
+    <a-text rotation="0 180 0" position="5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 10;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
     <a-sphere src="#face-ball" position="5.3 .5 6.5" rotation="0 100 0" radius=".85"></a-sphere>
 
     <!-- Cones indicator triangle -->
