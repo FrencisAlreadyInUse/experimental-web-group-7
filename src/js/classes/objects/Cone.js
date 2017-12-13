@@ -1,4 +1,4 @@
-import setAttributes from './../setAttributes.js';
+import setAttributes from './../../functions/setAttributes.js';
 
 export default class Cone {
   constructor(id, pos) {

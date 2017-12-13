@@ -48,7 +48,7 @@ const generateWebpackConfig = async () => {
 
   const config = {
     entry: {
-      bundle: [_`src/js/index.js`, _`src/js/game.js`, _`src/css/index.css`],
+      bundle: [_`src/js/index.js`, _`src/css/index.css`],
     },
     output: {
       filename: 'js/[name].js',

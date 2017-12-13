@@ -6,6 +6,7 @@ import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
 import Screen from './index.jsx';
+import thumbDataURI from './../../functions/thumbDataURI.js';
 
 const Title = styled.div`
   margin-bottom: 30px;
@@ -30,44 +31,56 @@ const Note = styled.aside`
   margin-top: 40px;
 `;
 
-const ScreenUserData = ({ channelStore }) => (
-  <Screen name="userData" className="around">
-    <header className="hide">
-      <h2>Player Setup</h2>
-    </header>
-    <div className="section__content flex column column-center">
-      <Title className="title">
-        Choose a <span className="stroke">username</span> &amp;{' '}
-        <span className="stroke">picture</span>*
-      </Title>
-      <Form className="dp-f ff-cnw form">
-        <FormRow>
-          <label className="label">username</label>
-          <input
-            className="input input--mini input--bordered"
-            type="text"
-            name="username"
-            placeholder="Yoda"
-          />
-        </FormRow>
-        <FormRow>
-          <label className="label">profile picture</label>
-          <div className="input input--file" data-text="Select your profile picture">
-            <input type="file" className="input--file--inner" />
-          </div>
-        </FormRow>
-      </Form>
-    </div>
-    <ButtonWrapper className="btn-wrapper flex column column-center">
-      <button className="btn" onClick={channelStore.userReady}>
-        Ready
-      </button>
-      <Note className="note">
-        *Please, upload a picture of your face. It will be funny, we promise
-      </Note>
-    </ButtonWrapper>
-  </Screen>
-);
+const ScreenUserData = ({ channelStore }) => {
+  let fileInput = null;
+
+  const handleUserReady = () => {
+    const imageFile = fileInput.files[0];
+    thumbDataURI(imageFile)
+      .then(uri => channelStore.userReady(uri))
+      .catch(console.error);
+  };
+
+  return (
+    <Screen name="userData" className="around">
+      <header className="hide">
+        <h2>Player Setup</h2>
+      </header>
+      <div className="section__content flex column column-center">
+        <Title className="title">
+          Choose a <span className="stroke">username</span> &amp;{' '}
+          <span className="stroke">picture</span>*
+        </Title>
+        <Form className="dp-f ff-cnw form">
+          <FormRow>
+            <label className="label">username</label>
+            <input
+              className="input input--mini input--bordered"
+              type="text"
+              name="username"
+              placeholder="Yoda"
+              onChange={channelStore.updateUserName}
+            />
+          </FormRow>
+          <FormRow>
+            <label className="label">profile picture</label>
+            <div className="input input--file" data-text="Select your profile picture">
+              <input ref={el => (fileInput = el)} type="file" className="input--file--inner" />
+            </div>
+          </FormRow>
+        </Form>
+      </div>
+      <ButtonWrapper className="btn-wrapper flex column column-center">
+        <button className="btn" onClick={handleUserReady}>
+          Ready
+        </button>
+        <Note className="note">
+          *Please, upload a picture of your face. It will be funny, we promise
+        </Note>
+      </ButtonWrapper>
+    </Screen>
+  );
+};
 
 ScreenUserData.propTypes = {
   channelStore: PropTypes.object.isRequired,

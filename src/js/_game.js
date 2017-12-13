@@ -243,9 +243,7 @@ const handleLoadedScene = () => {
   startFrame(true);
 };
 
-const init = () => {
+export default () => {
   $aframeScene.addEventListener('loaded', handleLoadedScene);
   window.startFrame = startFrame;
 };
-
-init();

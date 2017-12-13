@@ -1,7 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Provider, observer } from 'mobx-react';
 
-import channelStore from './../stores/channelStore.js';
 import Start from './Screens/Start.jsx';
 import Create from './Screens/RoomCreate.jsx';
 import Created from './Screens/RoomCreated.jsx';
@@ -9,7 +9,7 @@ import Join from './Screens/RoomJoin.jsx';
 import Joined from './Screens/RoomJoined.jsx';
 import UserData from './Screens/UserData.jsx';
 
-const App = () => (
+const App = ({ channelStore }) => (
   <Provider channelStore={channelStore}>
     <main className="wrapper">
       <header className="main__header">
@@ -24,5 +24,9 @@ const App = () => (
     </main>
   </Provider>
 );
+
+App.propTypes = {
+  channelStore: PropTypes.object.isRequired,
+};
 
 export default observer(App);

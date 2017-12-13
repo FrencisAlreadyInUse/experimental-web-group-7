@@ -1,12 +1,9 @@
 import { observable, computed, action } from 'mobx';
 
-import DataChannel from './../lib/DataChannel.js';
-
-class DataChannelStore {
+export default class DataChannelStore {
   //
-  constructor() {
-    this.dataChannel = new DataChannel();
-    window.peers = this.dataChannel.peers;
+  constructor(dataChannel) {
+    this.dataChannel = dataChannel;
 
     this.dataChannel
       .addEventListener('roomError', console.warn)
@@ -21,6 +18,12 @@ class DataChannelStore {
     name: '',
     size: 5,
     userCount: 0,
+  };
+
+  @observable
+  user = {
+    name: 'anonymous',
+    uri: null,
   };
 
   @observable
@@ -124,8 +127,8 @@ class DataChannelStore {
   };
 
   @action
-  userReady = () => {
-    console.log('store: userReady. Waiting for game to start');
+  userReady = (uri) => {
+    this.dataChannel.signalReady(this.user.name, uri);
   };
 
   @action
@@ -137,6 +140,11 @@ class DataChannelStore {
   @action
   updateRoomName = event => {
     this.room.name = event.target.value;
+  };
+
+  @action
+  updateUserName = event => {
+    this.user.name = event.target.value;
   };
 
   dataChannelOnRoomSuccess = event => {
@@ -174,8 +182,3 @@ class DataChannelStore {
     }
   };
 }
-
-const channelStore = new DataChannelStore();
-window.store = channelStore;
-
-export default channelStore;
