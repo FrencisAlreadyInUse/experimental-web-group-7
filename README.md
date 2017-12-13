@@ -1,9 +1,9 @@
-# VR Bowling
+# Virtual Lanes — WebVR Bowling
 
 School group assignment for Experimental Web
 
-- Francis Declercq
-- Jasper Van Gestel
+- Francis De Clercq (https://github.com/FrencisAlreadyInUse)
+- Jasper Van Gestel (https://github.com/vgesteljasper)
 
 ## Play It
 
