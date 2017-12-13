@@ -19,4 +19,9 @@ module.exports = function userReady(data) {
   otherUsers.forEach((peerId) => {
     this.ss.to(peerId, 'peerUpdate', clientId, data);
   });
+
+  // if the room is full and all users are ready send a message to the rest
+  if (room.isFull && room.allUsersReady) {
+    this.ss.emit('signalingServerMessage', 'allUsersReady');
+  }
 };

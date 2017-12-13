@@ -8,7 +8,7 @@ export default class Game {
   constructor(dataChannel) {
     this.dataChannel = dataChannel;
 
-    // add a listener to changes that occure to the datachannel users map
+    /* add a listener to changes that occure to the datachannel users map */
     this.dataChannel.users.observe(this.dataChannelUserObserverListener);
 
     this.uniqueHits = new Set();

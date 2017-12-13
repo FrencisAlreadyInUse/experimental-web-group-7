@@ -7,10 +7,9 @@ export default class DataChannelStore {
 
     this.dataChannel
       .addEventListener('roomError', console.warn)
-      .addEventListener('roomSuccess', this.dataChannelOnRoomSuccess)
-      .addEventListener('dataChannelMessage', this.dataChannelOnMessage)
       .addEventListener('peerUpdate', console.log)
-      .addEventListener('gameStart', console.log);
+      .addEventListener('roomSuccess', this.dataChannelOnRoomSuccess)
+      .addEventListener('dataChannelMessage', this.dataChannelOnMessage);
   }
 
   @observable
@@ -169,7 +168,7 @@ export default class DataChannelStore {
     if (eventAction === 'peerConnect') {
       this.room.userCount += 1;
 
-      if (this.room.userCount == this.room.size) {
+      if (this.room.userCount === parseInt(this.room.size, 10)) {
         this.dataChannel.roomFull(this.room.name);
         this.goToSection('userData');
       }

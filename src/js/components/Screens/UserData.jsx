@@ -36,6 +36,8 @@ const ScreenUserData = ({ channelStore }) => {
 
   const handleUserReady = () => {
     const imageFile = fileInput.files[0];
+    if (!imageFile) return;
+
     thumbDataURI(imageFile)
       .then(uri => channelStore.userReady(uri))
       .catch(console.error);

@@ -29,7 +29,7 @@ module.exports = class Room {
       currentRoomNames.indexOf(roomName) !== -1 ||
       roomName.indexOf('-') !== -1 ||
       roomName.indexOf(' ') !== -1 ||
-      roomName.length > 6
+      roomName.length > 10
     ) {
       return Room.generateName(currentRoomNames);
     }
@@ -47,6 +47,15 @@ module.exports = class Room {
 
   get isFull() {
     return this.amountUsers === this.maxUsers;
+  }
+
+  get allUsersReady() {
+    // eslint-disable-next-line guard-for-in
+    for (const id in this.users) {
+      if (!this.users[id].ready) return false;
+    }
+
+    return true;
   }
 
   addUser(userId, name = null, uri = null) {

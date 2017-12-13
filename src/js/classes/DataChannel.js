@@ -252,6 +252,12 @@ export default class DataChannel extends EventTarget {
         }),
       );
     }
+
+    if (label === 'allUsersReady') {
+      this.dispatchEvent(
+        new CustomEvent('startGame', { detail: null }),
+      );
+    }
   };
 
   createRoom = () => {
