@@ -12,6 +12,11 @@ export default class DataChannel extends EventTarget {
 
     this.peers = {};
 
+    this.me = {
+      name: 'anonimous',
+      uri: null,
+    };
+
     this.newPeer = {
       connection: null,
       channel: null,
@@ -278,10 +283,9 @@ export default class DataChannel extends EventTarget {
   };
 
   signalReady = (name, uri) => {
-    this.signalingServer.emit('userReady', JSON.stringify({ name, uri }));
-  };
+    this.me.name = name;
+    this.me.uri = uri;
 
-  startGame = () => {
-    //
+    this.signalingServer.emit('userReady', JSON.stringify({ name, uri }));
   };
 }

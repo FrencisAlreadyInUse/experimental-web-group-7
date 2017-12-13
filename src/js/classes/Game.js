@@ -228,7 +228,10 @@ export default class Game {
   };
 
   generateBall = pos => {
-    this.$ball = new Ball({ position: `${pos} -1.25 -10` });
+    const position = `${pos} -1.25 -10`;
+    const src = this.dataChannel.me.uri;
+
+    this.$ball = new Ball({ position, src });
     this.$ball.addEventListener('collide', this.handleConeCollosion);
 
     this.$aframeScene.appendChild(this.$ball);
