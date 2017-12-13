@@ -3,7 +3,7 @@ yarn-error.log
 .vscode
 
 node_modules
-
+server/public
 server/config/sslcerts
 
 .env
