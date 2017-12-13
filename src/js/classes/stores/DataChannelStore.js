@@ -27,30 +27,13 @@ export default class DataChannelStore {
 
   @observable
   sections = {
-    start: {
-      active: true,
-      last: false,
-    },
-    roomCreate: {
-      active: false,
-      last: false,
-    },
-    roomCreated: {
-      active: false,
-      last: false,
-    },
-    roomJoin: {
-      active: false,
-      last: false,
-    },
-    roomJoined: {
-      active: false,
-      last: false,
-    },
-    userData: {
-      active: false,
-      last: false,
-    },
+    start: { active: true, last: false },
+    roomCreate: { active: false, last: false },
+    roomCreated: { active: false, last: false },
+    roomJoin: { active: false, last: false },
+    roomJoined: { active: false, last: false },
+    userData: { active: false, last: false },
+    waiting: { active: false, last: false },
   };
 
   @computed
@@ -128,6 +111,7 @@ export default class DataChannelStore {
   @action
   userReady = (uri) => {
     this.dataChannel.signalReady(this.user.name, uri);
+    this.goToSection('waiting');
   };
 
   @action

@@ -8,6 +8,7 @@ import Created from './Screens/RoomCreated.jsx';
 import Join from './Screens/RoomJoin.jsx';
 import Joined from './Screens/RoomJoined.jsx';
 import UserData from './Screens/UserData.jsx';
+import Waiting from './Screens/Waiting.jsx';
 
 const App = ({ channelStore }) => (
   <Provider channelStore={channelStore}>
@@ -21,6 +22,7 @@ const App = ({ channelStore }) => (
       <Join />
       <Joined />
       <UserData />
+      <Waiting />
     </main>
   </Provider>
 );
