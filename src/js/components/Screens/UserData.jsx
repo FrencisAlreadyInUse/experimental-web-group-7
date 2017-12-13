@@ -32,10 +32,18 @@ const Note = styled.aside`
 `;
 
 const ScreenUserData = ({ channelStore }) => {
-  let fileInput = null;
+  let $fileInputWrapper = null;
+  let $fileInput = null;
+
+  const handleFileInputChange = () => {
+    const imageFile = $fileInput.files[0];
+    if (!imageFile || !$fileInputWrapper) return;
+
+    $fileInputWrapper.dataset.text = imageFile.name;
+  };
 
   const handleUserReady = () => {
-    const imageFile = fileInput.files[0];
+    const imageFile = $fileInput.files[0];
     if (!imageFile) return;
 
     thumbDataURI(imageFile)
@@ -53,7 +61,7 @@ const ScreenUserData = ({ channelStore }) => {
           Choose a <span className="stroke">username</span> &amp;{' '}
           <span className="stroke">picture</span>*
         </Title>
-        <Form className="dp-f ff-cnw form">
+        <Form className="dp-f ff-cnw form" autoComplete="off">
           <FormRow>
             <label className="label">username</label>
             <input
@@ -62,12 +70,23 @@ const ScreenUserData = ({ channelStore }) => {
               name="username"
               placeholder="Yoda"
               onChange={channelStore.updateUserName}
+              autoCorrect="off"
+              autoCapitalize="off"
             />
           </FormRow>
           <FormRow>
             <label className="label">profile picture</label>
-            <div className="input input--file" data-text="Select your profile picture">
-              <input ref={el => (fileInput = el)} type="file" className="input--file--inner" />
+            <div
+              ref={el => ($fileInputWrapper = el)}
+              className="input input--file"
+              data-text="Select your profile picture"
+            >
+              <input
+                ref={el => ($fileInput = el)}
+                type="file"
+                className="input--file--inner"
+                onChange={handleFileInputChange}
+              />
             </div>
           </FormRow>
         </Form>

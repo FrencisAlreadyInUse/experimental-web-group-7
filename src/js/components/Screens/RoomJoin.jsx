@@ -12,7 +12,7 @@ const ScreenRoomJoin = ({ channelStore }) => (
     <div className="section__content">
       <div className="title">
         You&#39;re about to join the{' '}
-        <div className="blobs">
+        <form className="blobs" autoComplete="off">
           <input
             className="input stroke input--text input--stroke input--underline"
             type="text"
@@ -21,7 +21,7 @@ const ScreenRoomJoin = ({ channelStore }) => (
             autoCorrect="off"
             autoCapitalize="off"
           />
-        </div>{' '}
+        </form>{' '}
         room
       </div>
     </div>
