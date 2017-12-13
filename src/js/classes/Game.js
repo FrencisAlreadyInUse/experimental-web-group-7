@@ -1,11 +1,17 @@
-import Cone from './objects/Cone.js';
-import Ball from './objects/Ball.js';
+import Cone from './nodes/Cone.js';
+import Ball from './nodes/Ball.js';
+import AssetItem from './nodes/AssetItem.js';
+import User from './nodes/User.js';
 import map from './../functions/map.js';
 
 export default class Game {
-  constructor() {
-    this.uniqueHits = new Set();
+  constructor(dataChannel) {
+    this.dataChannel = dataChannel;
 
+    // add a listener to changes that occure to the datachannel users map
+    this.dataChannel.users.observe(this.dataChannelUserObserverListener);
+
+    this.uniqueHits = new Set();
     this.sliderPosition = 0;
     this.currentFrame = 1;
     this.currentThrow = 1;
@@ -15,13 +21,17 @@ export default class Game {
     this.playedSound = false;
 
     this.initializeDOMElements();
+
     this.$conesHitSound.volume = 0.35;
     this.$aframeScene.addEventListener('loaded', this.handleLoadedScene);
   }
 
   initializeDOMElements = () => {
     this.$ball = null;
+
     this.$aframeScene = document.querySelector('a-scene');
+    this.$aframeAssets = document.getElementById('assets');
+
     this.$button = document.getElementById('start-button');
     this.$indicatorSlider = document.getElementById('ball-pos');
     this.$coneIndicators = document.querySelectorAll('.cone-indicator');
@@ -30,7 +40,30 @@ export default class Game {
     this.$secondThrow = document.getElementById('second-throw');
     this.$totalScore = document.getElementById('total-score');
     this.$conesHitSound = document.getElementById('cones-hit-sound');
-  }
+  };
+
+  dataChannelUserObserverListener = change => {
+    if (change.type === 'add') {
+      this.addFaceBallAsset(change);
+      this.addFaceBallUser(change);
+    }
+  };
+
+  addFaceBallAsset = change => {
+    const id = `face-ball-${change.name}`;
+    const src = change.newValue.uri;
+
+    const $asset = new AssetItem({ id, src });
+    this.$aframeAssets.appendChild($asset);
+  };
+
+  addFaceBallUser = change => {
+    const userCount = this.dataChannel.users.size;
+    const src = `#face-ball-${change.name}`;
+
+    const $user = new User(userCount, { src });
+    this.$aframeScene.appendChild($user);
+  };
 
   setAttributeMultiple = ($nodes, attribute, value) => {
     Array.from($nodes).forEach($node => {
@@ -115,8 +148,8 @@ export default class Game {
     }
   };
 
-  createCone = (pos, index) => {
-    const $cone = new Cone(index + 1, pos);
+  createCone = (position, index) => {
+    const $cone = new Cone({ id: index + 1, position });
     this.$aframeScene.appendChild($cone);
   };
 
@@ -193,16 +226,16 @@ export default class Game {
     }
   };
 
-  generateBall = targetPosition => {
-    this.$ball = new Ball(targetPosition);
+  generateBall = pos => {
+    this.$ball = new Ball({ position: `${pos} -1.25 -10` });
     this.$ball.addEventListener('collide', this.handleConeCollosion);
 
-    this.$aframeScene$aframeScene.appendChild(this.$ball);
+    this.$aframeScene.appendChild(this.$ball);
 
     this.playerCanThrow = false;
 
     /* hide throw button */
-    this.setAttributeMultiple(this.$aframeScene$throwButton, 'opacity', 0);
+    this.setAttributeMultiple(this.$throwButton, 'opacity', 0);
 
     /* wait for throw to "complete" */
     setTimeout(this.endOfThrowCallback, 3000);

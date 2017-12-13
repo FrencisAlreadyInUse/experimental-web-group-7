@@ -38,14 +38,14 @@
   <a-scene class="section--off" physics="iterations: 20; gravity: -3.5; friction: 0.1; restitution: 0.5;">
 
     <a-camera>
-      <a-cursor fuse="true" fuse-timeout="10" color="#2A2A9B" scale="1 1 1">
+      <a-cursor fuse="false" fuse-timeout="10" color="#2A2A9B" scale="1 1 1">
         <a-animation begin="click" easing="ease-in" attribute="scale" fill="backwards" to="0.1 0.1 0.1" dur="250"></a-animation>
         <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale" dur="250" fill="backwards" to="0.1 0.1 0.1"></a-animation>
       </a-cursor>
     </a-camera>
 
     <!-- all assets -->
-    <a-assets>
+    <a-assets id="assets">
       <a-asset-item id="cone" src="/assets/collada/bowling-cone.dae"></a-asset-item>
       <a-asset-item id="triangle" src="/assets/collada/cones-indicator-triangle.dae"></a-asset-item>
       <a-asset-item id="bowling-alley" src="/assets/collada/bowling-alley.dae"></a-asset-item>
@@ -97,25 +97,27 @@
       3 | | 2
       4 | | 1
     -->
-    <!-- table + players -->
+
+    <!-- table -->
     <a-collada-model position="-4 0 12" scale="7.6 5 4.5" src="#players-table"></a-collada-model>
+
     <!-- 1 + Crown -->
-    <a-collada-model position="-5.28 1.082 6.474" rotation="10 0 15" scale="1.4 1 1.4" src="#winners-crown">
+    <!-- <a-collada-model position="-5.28 1.082 6.474" rotation="10 0 15" scale="1.4 1 1.4" src="#winners-crown">
       <a-animation attribute="rotation" repeat="indefinite" to="10 360 15"></a-animation>
-    </a-collada-model>
-    <!-- score + playerhead  -->
-    <a-text rotation="0 180 0" position="-5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 130;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
-    <a-sphere src="#face-ball" position="-5.3 .5 6.5" rotation="0 100 0" glow="c:1;p:3;color:#3737dd;scale:1.1;" radius=".85"></a-sphere>
+    </a-collada-model> -->
+
+    <!-- <a-text rotation="0 180 0" position="-5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 130;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+    <a-sphere src="#face-ball" position="-5.3 .5 6.5" rotation="0 100 0" glow="c:1;p:3;color:#3737dd;scale:1.1;" radius=".85"></a-sphere> -->
 
     <!-- 2 -->
-    <a-text rotation="0 180 0" position="-5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 63;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
-    <a-sphere src="#face-ball" position="-5.3 .5 9" rotation="0 100 0" radius=".85"></a-sphere>
+    <!-- <a-text rotation="0 180 0" position="-5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 63;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+    <a-sphere src="#face-ball" position="-5.3 .5 9" rotation="0 100 0" radius=".85"></a-sphere> -->
     <!-- 3 -->
-    <a-text rotation="0 180 0" position="5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 90;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
-    <a-sphere src="#face-ball" position="5.3 .5 9" rotation="0 100 0" radius=".85"></a-sphere>
+    <!-- <a-text rotation="0 180 0" position="5.3 2.5 9" wrap-count="20" text="align: center; width: 6; value: 90;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+    <a-sphere src="#face-ball" position="5.3 .5 9" rotation="0 100 0" radius=".85"></a-sphere> -->
     <!-- 4 -->
-    <a-text rotation="0 180 0" position="5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 10;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
-    <a-sphere src="#face-ball" position="5.3 .5 6.5" rotation="0 100 0" radius=".85"></a-sphere>
+    <!-- <a-text rotation="0 180 0" position="5.3 2.5 6.5" wrap-count="20" text="align: center; width: 6; value: 10;" font="https://cdn.aframe.io/fonts/KelsonSans.fnt"></a-text>
+    <a-sphere src="#face-ball" position="5.3 .5 6.5" rotation="0 100 0" radius=".85"></a-sphere> -->
 
     <!-- Cones indicator triangle -->
     <a-collada-model position="4 -0.8 -3.4" scale="1.5 1.5 1.5" src="#triangle"></a-collada-model>

@@ -1,6 +1,12 @@
+import { observable } from 'mobx';
+
 import EventTarget from './EventTarget.js';
 
 export default class DataChannel extends EventTarget {
+  //
+  @observable
+  users = new Map();
+
   constructor() {
     super();
 
@@ -9,7 +15,6 @@ export default class DataChannel extends EventTarget {
     this.newPeer = {
       connection: null,
       channel: null,
-      data: null,
     };
 
     this.RTCPeerConnectionOptions = {
@@ -180,10 +185,10 @@ export default class DataChannel extends EventTarget {
 
     const userData = JSON.parse(data);
 
-    this.peers[peerId].data = {
+    this.users.set(peerId, {
       name: userData.name,
       uri: userData.uri,
-    };
+    });
 
     this.dispatchEvent(
       new CustomEvent('peerUpdate', {
