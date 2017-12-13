@@ -71,7 +71,7 @@ const handleConeCollosion = e => {
   else uniqueHits = new Set([hit]);
 
   uniqueHits.forEach(id => {
-    const $indicator = document.querySelector(`.cone-indicator[data-id='${id}`);
+    const $indicator = document.querySelector(`.cone-indicator[data-id='${id}']`);
     if ($indicator) {
       $indicator.setAttribute('color', 'red');
     }
@@ -212,11 +212,9 @@ const generateBall = targetPosition => {
 
 const handleThrowBall = () => {
   /* add hit collision to cones */
-
   Array.from(document.querySelectorAll('.cone')).forEach($cone => {
     $cone.addEventListener('collide', handleConeCollosion);
   });
-  console.log('added hit collision');
 
   if (playerCanThrow) {
     const position = map(sliderPosition.x, -1.45, 1.22, -3.45, 3.22);
