@@ -5,6 +5,10 @@ School group assignment for Experimental Web
 - Francis Declercq
 - Jasper Van Gestel
 
+## Play It
+
+[https://virtual-lanes.herokuapp.com](https://virtual-lanes.herokuapp.com)
+
 ## Installation
 
 Download
