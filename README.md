@@ -1,4 +1,4 @@
-# Virtual Lanes — WebVR Bowling
+# Virtual Lanes — Multiplayer WebVR Bowling Game
 
 School group assignment for Experimental Web
 
