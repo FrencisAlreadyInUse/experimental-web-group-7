@@ -148,10 +148,7 @@ export default class Game {
     }
   };
 
-  createCone = (position, index) => {
-    const $cone = new Cone({ id: index + 1, position });
-    this.$aframeScene.appendChild($cone);
-  };
+  createCone = (position, index) => new Cone({ id: index + 1, position });
 
   generateCones = () => {
     const coneData = [
@@ -166,7 +163,11 @@ export default class Game {
       '-.5 -2 -38',
       '-1.5 -2 -38',
     ];
-    coneData.forEach(this.createCone);
+
+    const $fragment = new DocumentFragment();
+    coneData.map(this.createCone).forEach($cone => $fragment.appendChild($cone));
+
+    this.$aframeScene.appendChild($fragment);
   };
 
   resetConeIndicators = () => {
