@@ -1,13 +1,16 @@
+import Cone from './lib/Objects/Cone.js';
+import Ball from './lib/Objects/Ball.js';
+import map from './lib/map.js';
+
 const $aframeScene = document.querySelector('a-scene');
 const $button = document.getElementById('start-button');
 
 const $indicatorSlider = document.getElementById('ball-pos');
-let $currentSliderPosition;
+let sliderPosition;
 
-const $cones = document.querySelectorAll('.cones');
 const $coneIndicators = document.querySelectorAll('.cone-indicator');
 
-const $throwMessage = document.querySelectorAll('.throw-message');
+const $throwButton = document.querySelectorAll('.throw-message');
 const $firstThrow = document.getElementById('first-throw');
 const $secondThrow = document.getElementById('second-throw');
 const $totalScore = document.getElementById('total-score');
@@ -18,16 +21,17 @@ $conesHitSound.volume = 0.35;
 // const $strikeMessage = document.getElementById('strike-msg');
 // const $strikeMessageAnimation = document.createElement('a-animation');
 
+let $ball;
+
 let uniqueHits;
 
 let currentFrame = 1;
 let currentThrow = 1;
 
-let firstThrowScore = 0;
 let currentThrowScore = 0;
 let totalThrowScore = 0;
 
-let canThrow = true;
+let playerCanThrow = true;
 let playedSound = false;
 
 const setAttributeMultiple = ($nodes, attribute, value) => {
@@ -36,191 +40,214 @@ const setAttributeMultiple = ($nodes, attribute, value) => {
   });
 };
 
-/* prettier-ignore */
-const map = (value, start1, stop1, start2, stop2) =>
-  start2 + ((stop2 - start2) * ((value - start1) / (stop1 - start1)));
-
 const setScoreValue = ($node, value) => {
   $node.setAttribute('text', `width:6; align:center; value: ${value}`);
 };
 
 const setScoring = score => {
-  // this is our first throw
+  //
+  currentThrowScore = score;
+
   if (currentThrow === 1) {
-    currentThrowScore = score;
-    totalThrowScore = currentThrowScore;
     setScoreValue($firstThrow, score);
-
-    if (score === 10) {
-      setScoreValue($firstThrow, 'X');
-      // $strikeMessage.setAttribute('visible', true);
-
-      // $strikeMessageAnimation.setAttribute('attribute', 'position');
-      // $strikeMessageAnimation.setAttribute('to', '-2.347 1.994 -8.793');
-      // $strikeMessageAnimation.setAttribute('easing', 'ease-in-out');
-      // $strikeMessageAnimation.setAttribute('fill', 'backwards');
-      // $strikeMessageAnimation.setAttribute('direction', 'alternate');
-      // $strikeMessageAnimation.setAttribute('delay', '1000');
-      // $strikeMessageAnimation.setAttribute('dur', '1500');
-      // $strikeMessage.appendChild($strikeMessageAnimation);
-    } else setScoreValue($firstThrow, score);
   }
-
-  // this is our second throw
   if (currentThrow === 2) {
-    totalThrowScore = score + firstThrowScore;
     setScoreValue($secondThrow, score);
   }
 
-  setScoreValue($totalScore, totalThrowScore);
+  setScoreValue($totalScore, totalThrowScore + score);
 };
 
-const handleCollision = e => {
-  console.log('[handleCollision]', 'I Got Called Again');
+const resetDisplayScores = () => {
+  setScoreValue($firstThrow, '-');
+  setScoreValue($secondThrow, '-');
+};
+
+const handleConeCollosion = e => {
   const hit = parseInt(e.detail.body.el.id, 10);
   if (isNaN(hit)) return;
 
-  if (uniqueHits) {
-    uniqueHits.add(hit);
-  } else {
-    uniqueHits = new Set([hit]);
-  }
+  if (uniqueHits) uniqueHits.add(hit);
+  else uniqueHits = new Set([hit]);
 
   uniqueHits.forEach(id => {
-    $coneIndicators.forEach(indicator => {
-      if (parseInt(indicator.dataset.id, 10) === id) {
-        if (!playedSound) $conesHitSound.play();
-        playedSound = true;
-        indicator.setAttribute('color', 'red');
-        setScoring(uniqueHits.size);
-      }
-    });
+    const $indicator = document.querySelector(`.cone-indicator[data-id='${id}`);
+    if ($indicator) {
+      $indicator.setAttribute('color', 'red');
+    }
+
+    if (!playedSound) {
+      $conesHitSound.play();
+      playedSound = true;
+    }
+
+    setScoring(uniqueHits.size);
   });
 };
 
 const getAttributes = () => {
-  $currentSliderPosition = $indicatorSlider.getAttribute('position');
+  sliderPosition = $indicatorSlider.getAttribute('position');
   requestAnimationFrame(getAttributes);
 };
 
-const generateScene = () => {
-  getAttributes();
+const removeBallFromScene = () => {
+  if ($ball) {
+    $aframeScene.removeChild($ball);
+    $ball = null;
+  }
 };
 
-const removeBallAndHitCones = $ball => {
+const removeConesFromScene = (all = false) => {
+  /* remove all cones fro scene */
+  if (all) {
+    Array.from(document.querySelectorAll('.cone')).forEach($cone =>
+      $aframeScene.removeChild($cone),
+    );
+
+    return;
+  }
+
+  /* remove only hit cones from scene */
   if (uniqueHits) {
     uniqueHits.forEach(id => {
       $aframeScene.removeChild(document.getElementById(id));
       uniqueHits.delete(id);
     });
-
     uniqueHits.clear();
   }
-
-  $aframeScene.removeChild($ball);
 };
 
-const generateCone = (id, pos) => {
-  const $cone = document.createElement('a-collada-model');
-  $cone.setAttribute('id', id);
-  $cone.setAttribute('src', '#cone');
-  $cone.setAttribute('position', pos);
-  $cone.setAttribute('radius', '.75');
-  $cone.setAttribute('dynamic-body', 'shape: box; mass: 1;');
+const createCone = (pos, index) => {
+  const $cone = new Cone(index + 1, pos);
   $aframeScene.appendChild($cone);
 };
 
-const regenerateCones = () => {
-  //
-  // only set new cones for hit ones
-  //
-  generateCone('1', '0 -2 -29');
-  generateCone('2', '.5 -2 -32');
-  generateCone('3', '-.5 -2 -32');
-  generateCone('4', '1 -2 -35');
-  generateCone('5', '0 -2 -35');
-  generateCone('6', '-1 -2 -35');
-  generateCone('7', '1.5 -2 -38');
-  generateCone('8', '.5 -2 -38');
-  generateCone('9', '-.5 -2 -38');
-  generateCone('10', '-1.5 -2 -38');
+const generateCones = () => {
+  const coneData = [
+    '0 -2 -29',
+    '.5 -2 -32',
+    '-.5 -2 -32',
+    '1 -2 -35',
+    '0 -2 -35',
+    '-1 -2 -35',
+    '1.5 -2 -38',
+    '.5 -2 -38',
+    '-.5 -2 -38',
+    '-1.5 -2 -38',
+  ];
+  coneData.forEach(createCone);
 };
 
-const resetSceneForNextPlayer = () => {
-  console.log('[resetSceneForNextPlayer] — I Got Called');
-  canThrow = true;
+const resetConeIndicators = () => {
+  $coneIndicators.forEach(indicator => {
+    indicator.setAttribute('color', 'white');
+  });
+};
+
+const endFrame = () => {
+  playerCanThrow = false;
   currentThrow = 1;
-  firstThrowScore = 0;
-  currentThrowScore = 0;
   playedSound = false;
-  uniqueHits = '';
-  setAttributeMultiple($throwMessage, 'opacity', 1);
-  regenerateCones();
+
+  uniqueHits.clear();
+
+  setAttributeMultiple($throwButton, 'opacity', 0);
+
+  removeBallFromScene();
+  removeConesFromScene(true);
+
+  resetDisplayScores();
+  resetConeIndicators();
+
+  generateCones();
+
+  currentFrame += 1;
 };
 
-const endOfThrowCallback = $ball => {
-  removeBallAndHitCones($ball);
+const firstThrowCallback = () => {
+  removeBallFromScene();
+  removeConesFromScene();
+
+  if (currentThrowScore < 10) {
+    playerCanThrow = true;
+    currentThrow += 1;
+
+    /* show throw button */
+    setAttributeMultiple($throwButton, 'opacity', 1);
+  } else {
+    /* we threw a strike, next player's turn */
+    endFrame();
+  }
+};
+
+const secondThrowCallback = () => {
+  endFrame();
+};
+
+const endOfThrowCallback = () => {
   playedSound = false;
+  totalThrowScore += currentThrowScore;
 
-  // we will go to throw nr 2 here
   if (currentThrow === 1) {
-    firstThrowScore = currentThrowScore;
-
-    if (firstThrowScore < 10) {
-      canThrow = true;
-      currentThrow = 2;
-
-      // ball is ready to be thrown again, show "throw" message
-      setAttributeMultiple($throwMessage, 'opacity', 1);
-    } else {
-      // we threw a strike, next player's turn
-      console.log("we threw a strike, next player's turn");
-      resetSceneForNextPlayer();
-    }
+    firstThrowCallback();
   } else if (currentThrow === 2) {
-    // we did our nr 2 throw, next player's turn
-    console.log('[currentThrow] — 2 // reset game after');
-    currentFrame += 1;
-    resetSceneForNextPlayer();
+    secondThrowCallback();
   }
 };
 
 const generateBall = targetPosition => {
-  const $ball = document.createElement('a-sphere');
-  $ball.setAttribute('id', 'bowlingBall');
-  $ball.setAttribute('src', '#face-ball');
-  $ball.setAttribute('position', `${targetPosition} -1.25 -10`);
-  $ball.setAttribute('radius', '.75');
-  $ball.setAttribute('dynamic-body', 'shape: sphere; sphereRadius: .77; mass: 50;');
-  $ball.setAttribute('velocity', '0 0 -35');
+  $ball = new Ball(targetPosition);
+  $ball.addEventListener('collide', handleConeCollosion);
+
   $aframeScene.appendChild($ball);
 
-  $ball.addEventListener('collide', handleCollision);
+  playerCanThrow = false;
 
-  // ball was thrown, hide "throw" message
-  setAttributeMultiple($throwMessage, 'opacity', 0);
+  /* hide throw button */
+  setAttributeMultiple($throwButton, 'opacity', 0);
 
-  canThrow = false;
-  setTimeout(() => endOfThrowCallback($ball), 3000);
+  /* wait for throw to "complete" */
+  setTimeout(endOfThrowCallback, 3000);
 };
 
-const generateInteractiveScene = () => {
-  Array.from($cones).forEach(cone => {
-    cone.addEventListener('collide', handleCollision);
+const handleThrowBall = () => {
+  /* add hit collision to cones */
+
+  Array.from(document.querySelectorAll('.cone')).forEach($cone => {
+    $cone.addEventListener('collide', handleConeCollosion);
   });
-  const position = map($currentSliderPosition.x, -1.45, 1.22, -3.45, 3.22);
-  if (canThrow) generateBall(position);
+  console.log('added hit collision');
+
+  if (playerCanThrow) {
+    const position = map(sliderPosition.x, -1.45, 1.22, -3.45, 3.22);
+    generateBall(position);
+  }
+};
+
+const startFrame = (init = false) => {
+  playerCanThrow = true;
+  setAttributeMultiple($throwButton, 'opacity', 1);
+
+  if (init) {
+    $button.addEventListener('click', handleThrowBall);
+  }
+};
+
+const generateScene = () => {
+  getAttributes();
+  generateCones();
 };
 
 const handleLoadedScene = () => {
   console.log('scene loaded');
 
-  $button.addEventListener('click', generateInteractiveScene);
   generateScene();
+  startFrame(true);
 };
 
 const init = () => {
   $aframeScene.addEventListener('loaded', handleLoadedScene);
+  window.startFrame = startFrame;
 };
 
 init();
