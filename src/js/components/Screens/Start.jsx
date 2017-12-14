@@ -35,7 +35,7 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-const ScreenStart = ({ channelStore }) => (
+const ScreenStart = ({ dataChannelStore }) => (
   <Screen name="start" className="around">
     <Header className="flex">
       <h1 className="flex column title--big">
@@ -46,10 +46,10 @@ const ScreenStart = ({ channelStore }) => (
     <article className="section__content flex column column-center">
       <SubTitle className="title--sub">A multiplayer virtual reality bowling game</SubTitle>
       <ButtonWrapper className="flex between">
-        <button className="btn" onClick={() => channelStore.createRoom()}>
+        <button className="btn" onClick={() => dataChannelStore.createRoom()}>
           Create Room
         </button>
-        <button className="btn" onClick={() => channelStore.goToSection('roomJoin')}>
+        <button className="btn" onClick={() => dataChannelStore.goToSection('roomJoin')}>
           Join Room
         </button>
       </ButtonWrapper>
@@ -58,7 +58,7 @@ const ScreenStart = ({ channelStore }) => (
 );
 
 ScreenStart.propTypes = {
-  channelStore: PropTypes.object.isRequired,
+  dataChannelStore: PropTypes.object.isRequired,
 };
 
-export default inject('channelStore')(observer(ScreenStart));
+export default inject('dataChannelStore')(observer(ScreenStart));

@@ -158,7 +158,7 @@ export default class DataChannelStore {
       }
     }
     if (eventAction === 'peerDisconnect') {
-      this.room.userCount -= 1;
+      this.room.userCount = this.room.userCount > 0 ? this.room.userCount - 1 : 0;
     }
     if (eventAction === 'roomFull') {
       this.goToSection('userData');

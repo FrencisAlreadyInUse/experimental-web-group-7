@@ -9,14 +9,14 @@ const Waiting = styled.div`
   margin-top: 140px;
 `;
 
-const ScreenRoomJoined = ({ channelStore }) => (
+const ScreenRoomJoined = ({ dataChannelStore }) => (
   <Screen name="roomJoined" className="around">
     <header className="hide">
       <h2>Joined Room</h2>
     </header>
     <div className="section__content flex column column-center">
       <div className="title">
-        You&#39;ve joined the <span className="stroke blobs">{channelStore.room.name}</span> room
+        You&#39;ve joined the <span className="stroke blobs">{dataChannelStore.room.name}</span> room
       </div>
       <Waiting className="title--small">
         Waiting for more player(s)
@@ -26,7 +26,7 @@ const ScreenRoomJoined = ({ channelStore }) => (
 );
 
 ScreenRoomJoined.propTypes = {
-  channelStore: PropTypes.object.isRequired,
+  dataChannelStore: PropTypes.object.isRequired,
 };
 
-export default inject('channelStore')(observer(ScreenRoomJoined));
+export default inject('dataChannelStore')(observer(ScreenRoomJoined));

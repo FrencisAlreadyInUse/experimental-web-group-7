@@ -2,8 +2,8 @@
 
 School group assignment for Experimental Web
 
-- Francis De Clercq (https://github.com/FrencisAlreadyInUse)
-- Jasper Van Gestel (https://github.com/vgesteljasper)
+- Francis De Clercq [FrencisAlreadyInUse](https://github.com/FrencisAlreadyInUse)
+- Jasper Van Gestel [vgesteljasper](https://github.com/vgesteljasper)
 
 ## Play It
 

@@ -10,8 +10,8 @@ import Joined from './Screens/RoomJoined.jsx';
 import UserData from './Screens/UserData.jsx';
 import Waiting from './Screens/Waiting.jsx';
 
-const App = ({ channelStore }) => (
-  <Provider channelStore={channelStore}>
+const App = ({ dataChannelStore }) => (
+  <Provider dataChannelStore={dataChannelStore}>
     <main className="wrapper">
       <header className="main__header">
         <h1 className="main-title hide">Virtual Lanes — VR Bowling Game</h1>
@@ -28,7 +28,7 @@ const App = ({ channelStore }) => (
 );
 
 App.propTypes = {
-  channelStore: PropTypes.object.isRequired,
+  dataChannelStore: PropTypes.object.isRequired,
 };
 
 export default observer(App);

@@ -31,7 +31,7 @@ const Note = styled.aside`
   margin-top: 40px;
 `;
 
-const ScreenUserData = ({ channelStore }) => {
+const ScreenUserData = ({ dataChannelStore }) => {
   let $fileInputWrapper = null;
   let $fileInput = null;
 
@@ -47,7 +47,7 @@ const ScreenUserData = ({ channelStore }) => {
     if (!imageFile) return;
 
     thumbDataURI(imageFile)
-      .then(uri => channelStore.userReady(uri))
+      .then(uri => dataChannelStore.userReady(uri))
       .catch(console.error);
   };
 
@@ -69,7 +69,7 @@ const ScreenUserData = ({ channelStore }) => {
               type="text"
               name="username"
               placeholder="Yoda"
-              onChange={channelStore.updateUserName}
+              onChange={dataChannelStore.updateUserName}
               autoCorrect="off"
               autoCapitalize="off"
             />
@@ -104,7 +104,7 @@ const ScreenUserData = ({ channelStore }) => {
 };
 
 ScreenUserData.propTypes = {
-  channelStore: PropTypes.object.isRequired,
+  dataChannelStore: PropTypes.object.isRequired,
 };
 
-export default inject('channelStore')(observer(ScreenUserData));
+export default inject('dataChannelStore')(observer(ScreenUserData));

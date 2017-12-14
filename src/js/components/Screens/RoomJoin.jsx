@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 
 import Screen from './index.jsx';
 
-const ScreenRoomJoin = ({ channelStore }) => (
+const ScreenRoomJoin = ({ dataChannelStore }) => (
   <Screen name="roomJoin" className="around">
     <header className="hide">
       <h2>Joining Room</h2>
@@ -17,7 +17,7 @@ const ScreenRoomJoin = ({ channelStore }) => (
             className="input stroke input--text input--stroke input--underline"
             type="text"
             placeholder="room name"
-            onChange={channelStore.updateRoomName}
+            onChange={dataChannelStore.updateRoomName}
             autoCorrect="off"
             autoCapitalize="off"
           />
@@ -26,7 +26,7 @@ const ScreenRoomJoin = ({ channelStore }) => (
       </div>
     </div>
     <div className="btn-wrapper">
-      <button className="btn" onClick={channelStore.joinRoom}>
+      <button className="btn" onClick={dataChannelStore.joinRoom}>
         Join Room
       </button>
     </div>
@@ -34,7 +34,7 @@ const ScreenRoomJoin = ({ channelStore }) => (
 );
 
 ScreenRoomJoin.propTypes = {
-  channelStore: PropTypes.object.isRequired,
+  dataChannelStore: PropTypes.object.isRequired,
 };
 
-export default inject('channelStore')(observer(ScreenRoomJoin));
+export default inject('dataChannelStore')(observer(ScreenRoomJoin));

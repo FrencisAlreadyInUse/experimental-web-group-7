@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 
 const Screen = ({
-  channelStore, name, className, children,
+  dataChannelStore, name, className, children,
 }) => {
   //
   let classes = 'current';
@@ -11,7 +11,7 @@ const Screen = ({
 
   const {
     sections, sectionNames, lastSectionIndex, currentSectionIndex,
-  } = channelStore;
+  } = dataChannelStore;
 
   const forward = lastSectionIndex < currentSectionIndex;
   const thisSectionIndex = sectionNames.indexOf(name);
@@ -50,10 +50,10 @@ const Screen = ({
 };
 
 Screen.propTypes = {
-  channelStore: PropTypes.object.isRequired,
+  dataChannelStore: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
   className: PropTypes.string.isRequired,
   children: PropTypes.array.isRequired,
 };
 
-export default inject('channelStore')(observer(Screen));
+export default inject('dataChannelStore')(observer(Screen));

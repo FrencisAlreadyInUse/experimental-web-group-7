@@ -22,7 +22,7 @@ const init = () => {
 
   /* prettier-ignore */
   render(
-    <App channelStore={dataChannelStore} />,
+    <App dataChannelStore={dataChannelStore} />,
     $reactMount,
   );
 
