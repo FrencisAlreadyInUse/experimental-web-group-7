@@ -35,7 +35,10 @@ export default class DataChannel extends EventTarget {
     };
 
     this.signalingServer = io.connect('/');
-    window.signalingServer = this.signalingServer;
+
+    if (process.env.NODE_ENV === 'development') {
+      window.signalingServer = this.signalingServer;
+    }
 
     this.setSignalingSocketEventHandlers();
   }

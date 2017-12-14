@@ -28,9 +28,11 @@ const init = () => {
 
   const game = new Game(dataChannel);
 
-  window.channel = dataChannel;
-  window.store = dataChannelStore;
-  window.game = game;
+  if (process.env.NODE_ENV === 'development') {
+    window.channel = dataChannel;
+    window.store = dataChannelStore;
+    window.game = game;
+  }
 };
 
 init();

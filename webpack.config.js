@@ -98,7 +98,7 @@ const generateWebpackConfig = async () => {
         template: _`src/index.html`,
         filename: _`server/public/index.html`,
       }),
-
+      new webpack.EnvironmentPlugin(['NODE_ENV']),
       ifProduction(new UglifyJsPlugin({ sourceMap: true, comments: false })),
       ifProduction(new HotModuleReplacementPlugin()),
       ifProduction(extractCss),
