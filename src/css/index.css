@@ -354,6 +354,7 @@ body,
 
   .section {
     overflow: scroll;
+    -webkit-overflow-scrolling: touch;
   }
 
   .section__content {
