@@ -33,6 +33,11 @@ mv ./.env-example ./.env
 vim ./.env
 ```
 
+```Bash
+HOST= 0.0.0.0 (will connect to your IP — makes it possible to connect with your phone)
+PORT= 3000
+```
+
 ## Run
 
 Development
