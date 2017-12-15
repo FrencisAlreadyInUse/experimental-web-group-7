@@ -14,10 +14,10 @@ const ScreenRoomJoin = ({ dataChannelStore }) => {
   return (
     <Screen name="roomJoin" className="around">
       <header className="hide">
-        <h2>Joining Room</h2>
+        <h1>Joining Room</h1>
       </header>
       <div className="section__content">
-        <div className="title">
+        <h2 className="title">
           You&#39;re about to join the{' '}
           <form className="blobs" autoComplete="off" onSubmit={handleJoinRoom}>
             <input
@@ -31,7 +31,7 @@ const ScreenRoomJoin = ({ dataChannelStore }) => {
             />
           </form>{' '}
           room
-        </div>
+        </h2>
       </div>
       <div className="btn-wrapper">
         <button className="btn" onClick={handleJoinRoom}>

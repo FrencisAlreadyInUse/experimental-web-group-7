@@ -100,7 +100,7 @@ const ScreenUserData = ({ dataChannelStore }) => {
           Ready
         </button>
         <Note className="note">
-          *Please, upload a picture of your face. <br/>
+          *Please, upload a picture of your face. <br />
           It will be funny, we promise!
         </Note>
       </ButtonWrapper>

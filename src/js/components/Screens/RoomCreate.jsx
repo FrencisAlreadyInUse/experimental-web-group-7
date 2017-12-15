@@ -7,10 +7,10 @@ import Screen from './index.jsx';
 const ScreenRoomCreate = ({ dataChannelStore }) => (
   <Screen name="roomCreate" className="around">
     <header className="hide">
-      <h2>Create Room</h2>
+      <h1>Create Room</h1>
     </header>
     <div className="section__content">
-      <div className="title">
+      <h2 className="title">
         <span>You&#39;re about to create the </span>
         <span className="stroke blobs">{dataChannelStore.room.name}</span>
         <span> room for </span>
@@ -26,7 +26,7 @@ const ScreenRoomCreate = ({ dataChannelStore }) => (
           />
         </span>
         <span>players</span>
-      </div>
+      </h2>
     </div>
     <div className="btn-wrapper">
       <button className="btn" onClick={dataChannelStore.openRoom}>

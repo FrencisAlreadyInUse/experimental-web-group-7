@@ -26,14 +26,14 @@ const Waiting = styled.div`
 const ScreenRoomCreated = ({ dataChannelStore }) => (
   <Screen name="roomCreated" className="around">
     <header className="hide">
-      <h2>Created Room</h2>
+      <h1>Created Room</h1>
     </header>
     <div className="section__content flex column column-center">
-      <div className="title">
+      <h2 className="title">
         You&#39;ve just created the{' '}
         <span className="input stroke input--stroke blobs">{dataChannelStore.room.name}</span> room for{' '}
         <span className="input stroke input--stroke blob">{dataChannelStore.room.size}</span> players
-      </div>
+      </h2>
       <Share className="title--small">
         Share this <span className="stroke">room name</span> with friends!
       </Share>
