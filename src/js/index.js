@@ -2,52 +2,53 @@
 
 import React from 'react';
 import { render } from 'react-dom';
+import { toJS } from 'mobx';
 
 import DataChannel from './classes/DataChannel.js';
-import DataChannelStore from './classes/stores/DataChannelStore.js';
-import App from './components/App.jsx';
-import Game from './classes/Game.js';
+import SetupStore from './stores/SetupStore.js';
+import GameStore from './stores/GameStore.js';
+
+import Setup from './containers/Setup.jsx';
+import Game from './containers/Game.jsx';
 
 const $deferredScripts = Array.from(document.getElementsByClassName('deferred-script'));
-const $reactMount = document.querySelector('.react-mount');
-let gameLoaded = false;
+const $setupMount = document.querySelector('.setup-mount');
+const $gameMount = document.querySelector('.game-mount');
 
 const loadGame = () => {
   $deferredScripts.forEach($script => {
     $script.src = $script.dataset.src;
   });
-  console.log('scripts loaded');
-  gameLoaded = true;
+
+  document.body.removeChild($setupMount);
 };
 
-const startGame = () => {
-  if (!gameLoaded) loadGame();
+const renderGame = gameStore => {
+  $gameMount.addEventListener('loaded', () => {
+    gameStore.init();
+  });
 
-  document.body.removeChild($reactMount);
+  render(<Game gameStore={gameStore} />, $gameMount, loadGame);
+};
+
+const renderSetup = setupStore => {
+  render(<Setup setupStore={setupStore} />, $setupMount);
 };
 
 const init = () => {
   const dataChannel = new DataChannel();
-  const dataChannelStore = new DataChannelStore(dataChannel);
+  const setupStore = new SetupStore(dataChannel);
+  const gameStore = new GameStore(dataChannel);
 
-  dataChannel
-    .on('dataChannelLoadGame', loadGame)
-    .on('dataChannelStartGame', startGame);
+  renderSetup(setupStore);
 
-  /* prettier-ignore */
-  render(
-    <App dataChannelStore={dataChannelStore} />,
-    $reactMount,
-  );
-
-  const game = new Game(dataChannel);
+  dataChannel.on('dataChannelStartGame', () => renderGame(gameStore));
 
   if (process.env.NODE_ENV === 'development') {
-    window.channel = dataChannel;
-    window.ss = dataChannel.signalingServer;
-    window.store = dataChannelStore;
-    window.game = game;
-    window.start = startGame;
+    window.start = () => renderGame(gameStore);
+    window.setupStore = setupStore;
+    window.gameStore = gameStore;
+    window.toJS = toJS;
   }
 };
 

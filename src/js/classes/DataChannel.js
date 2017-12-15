@@ -286,8 +286,6 @@ export default class DataChannel extends EventTarget {
   };
 
   userReady = (name, uri) => {
-    this.dispatchEvent(new CustomEvent('dataChannelLoadGame'));
-
     this.me.name = name;
     this.me.uri = uri;
 
