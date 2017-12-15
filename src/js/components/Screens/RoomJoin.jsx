@@ -23,6 +23,7 @@ const ScreenRoomJoin = ({ dataChannelStore }) => {
             <input
               className="input stroke input--text input--stroke input--underline"
               type="text"
+              autoFocus
               placeholder="room name"
               onChange={dataChannelStore.updateRoomName}
               autoCorrect="off"

@@ -311,6 +311,71 @@ body,
   top: 2rem;
 }
 
+.beige {
+  fill: var(--color-beige-light);
+}
+
+@keyframes wave {
+  
+  0% {
+   transform: translateY(2rem);
+  }
+
+  25% {
+   transform: translateY(1rem);
+  }
+
+  50% {
+   transform: translateY(2rem);
+  }
+
+  100% {
+   transform: translateY(2rem);
+  }
+}
+
+.logo-cone:nth-child(1) {
+  animation: wave 1.8s cubic-bezier(0,0,.58,1);
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  animation-delay: .05s;
+}
+
+.logo-cone:nth-child(2) {
+  animation: wave 1.8s cubic-bezier(0,0,.58,1);
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  animation-delay: .1s;
+}
+
+.logo-cone:nth-child(3) {
+  animation: wave 1.8s cubic-bezier(0,0,.58,1);
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  animation-delay: .15s;
+}
+
+.logo-cone:nth-child(4) {
+  animation: wave 1.8s cubic-bezier(0,0,.58,1);
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  animation-delay: .2s;
+}
+
+.logo-cone:nth-child(5) {
+  animation: wave 1.8s cubic-bezier(0,0,.58,1);
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  animation-delay: .25s;
+}
+
+.logo-cone:nth-child(6) {
+  animation: wave 1.8s cubic-bezier(0,0,.58,1);
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  animation-delay: .3s;
+}
+
 @media (hover: hover) {
 
   .input--file--inner:hover {
@@ -357,9 +422,35 @@ body,
     -webkit-overflow-scrolling: touch;
   }
 
+  .blobs::before {
+    width: 10rem;
+    height: 10rem;
+    left: 8rem;
+    top: -4rem;
+  }
+
+  .blobs::after {
+    width: 12rem;
+    height: 12rem;
+    left: 0;
+    top: -5rem;
+  }
+
+  .blob::after {
+    width: 5rem;
+    height: 5rem;
+    left: -1rem;
+    top: 2rem;
+  }
+
   .section__content {
     max-width: 90%;
     display: block;
+  }
+
+  .note {
+    line-height: 120%;
+    padding: 0 0 2rem;
   }
 
   .title {
@@ -392,6 +483,10 @@ body,
 
   .input--file {
     font-size: var(--title--mini-mobile);
+  }
+
+  .t-center {
+    text-align: center;
   }
 
 }

@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import Screen from './index.jsx';
 import thumbDataURI from './../../functions/thumbDataURI.js';
 
-const Title = styled.div`
+const Title = styled.h1`
   margin-bottom: 30px;
 `;
 
@@ -27,7 +27,7 @@ const ButtonWrapper = styled.div`
   margin-top: 20px;
 `;
 
-const Note = styled.aside`
+const Note = styled.div`
   margin-top: 40px;
 `;
 
@@ -56,9 +56,9 @@ const ScreenUserData = ({ dataChannelStore }) => {
   return (
     <Screen name="userData" className="around">
       <header className="hide">
-        <h2>Player Setup</h2>
+        <h1>Player Setup</h1>
       </header>
-      <div className="section__content flex column column-center">
+      <article className="section__content flex column column-center">
         <Title className="title">
           Choose a <span className="stroke">username</span> &amp;{' '}
           <span className="stroke">picture</span>*
@@ -74,6 +74,7 @@ const ScreenUserData = ({ dataChannelStore }) => {
               onChange={dataChannelStore.updateUserName}
               autoCorrect="off"
               autoCapitalize="off"
+              autoFocus
             />
           </FormRow>
           <FormRow>
@@ -92,13 +93,14 @@ const ScreenUserData = ({ dataChannelStore }) => {
             </div>
           </FormRow>
         </Form>
-      </div>
+      </article>
       <ButtonWrapper className="btn-wrapper flex column column-center">
         <button className="btn" onClick={handleUserReady}>
           Ready
         </button>
         <Note className="note">
-          *Please, upload a picture of your face. It will be funny, we promise
+          *Please, upload a picture of your face. <br/>
+          It will be funny, we promise!
         </Note>
       </ButtonWrapper>
     </Screen>

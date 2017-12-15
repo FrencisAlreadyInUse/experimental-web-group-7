@@ -22,6 +22,7 @@ const ScreenRoomCreate = ({ dataChannelStore }) => (
             min="2"
             max="5"
             onChange={dataChannelStore.updateRoomSize}
+            autoFocus
           />
         </span>
         <span>players</span>
