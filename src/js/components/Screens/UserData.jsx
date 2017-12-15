@@ -54,6 +54,14 @@ const ScreenUserData = ({ dataChannelStore }) => {
       .catch(console.error);
   };
 
+  let $input;
+
+  if (dataChannelStore.sections.userData.active) {
+    setTimeout(() => {
+      $input.focus();
+    }, 500);
+  }
+
   return (
     <Screen name="userData" className="around">
       <header className="hide">
@@ -75,7 +83,7 @@ const ScreenUserData = ({ dataChannelStore }) => {
               onChange={dataChannelStore.updateUserName}
               autoCorrect="off"
               autoCapitalize="off"
-              autoFocus
+              ref={el => $input = el}
             />
           </FormRow>
           <FormRow>
