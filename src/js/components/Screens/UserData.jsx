@@ -42,7 +42,9 @@ const ScreenUserData = ({ dataChannelStore }) => {
     $fileInputWrapper.dataset.text = imageFile.name;
   };
 
-  const handleUserReady = () => {
+  const handleUserReady = event => {
+    event.preventDefault();
+
     const imageFile = $fileInput.files[0];
     if (!imageFile) return;
 
@@ -61,7 +63,7 @@ const ScreenUserData = ({ dataChannelStore }) => {
           Choose a <span className="stroke">username</span> &amp;{' '}
           <span className="stroke">picture</span>*
         </Title>
-        <Form className="dp-f ff-cnw form" autoComplete="off">
+        <Form className="dp-f ff-cnw form" autoComplete="off" onSubmit={handleUserReady}>
           <FormRow>
             <label className="label">username</label>
             <input
