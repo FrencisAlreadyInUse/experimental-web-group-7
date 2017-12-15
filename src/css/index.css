@@ -353,6 +353,7 @@ body,
 @media only screen and (width <= 768px) {
 
   .section {
+    overflow: scroll;
     -webkit-overflow-scrolling: touch;
   }
 
