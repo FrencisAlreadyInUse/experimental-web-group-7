@@ -7,7 +7,6 @@ export default class DataChannelStore {
 
     this.dataChannel
       .addEventListener('roomError', console.warn)
-      .addEventListener('peerUpdate', console.log)
       .addEventListener('roomSuccess', this.dataChannelOnRoomSuccess)
       .addEventListener('dataChannelMessage', this.dataChannelOnMessage);
   }
