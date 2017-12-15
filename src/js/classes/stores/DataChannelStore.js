@@ -2,16 +2,6 @@ import { observable, computed, action } from 'mobx';
 
 export default class DataChannelStore {
   //
-  constructor(dataChannel) {
-    this.dataChannel = dataChannel;
-
-    this.dataChannel
-      .addEventListener('roomError', console.warn)
-      .addEventListener('peerUpdate', console.log)
-      .addEventListener('roomSuccess', this.dataChannelOnRoomSuccess)
-      .addEventListener('dataChannelMessage', this.dataChannelOnMessage);
-  }
-
   @observable
   room = {
     name: '',
@@ -35,6 +25,17 @@ export default class DataChannelStore {
     userData: { active: false, last: false },
     waiting: { active: false, last: false },
   };
+
+  constructor(dataChannel) {
+    this.dataChannel = dataChannel;
+    this.roomCanSwitch = true;
+    this.minimumRoomVisible = 1000;
+
+    this.dataChannel
+      .on('dataChannelError', console.error)
+      .on('dataChannelSuccess', this.dataChannelOnSuccess)
+      .on('dataChannelMessage', this.dataChannelOnMessage);
+  }
 
   @computed
   get currentSection() {
@@ -76,6 +77,24 @@ export default class DataChannelStore {
   goToSection = sectionName => {
     if (!this.sections[sectionName]) return;
 
+    if (!this.roomCanSwitch) {
+      this.interval = window.setInterval(() => {
+        if (this.roomCanSwitch) {
+          this.goToSection(sectionName);
+
+          window.clearInterval(this.interval);
+          this.interval = null;
+        }
+      }, 30);
+
+      return;
+    }
+
+    this.roomCanSwitch = false;
+    window.setTimeout(() => {
+      this.roomCanSwitch = true;
+    }, this.minimumRoomVisible);
+
     if (this.sections[this.lastSection]) {
       this.sections[this.lastSection].last = false;
     }
@@ -110,7 +129,7 @@ export default class DataChannelStore {
 
   @action
   userReady = (uri) => {
-    this.dataChannel.signalReady(this.user.name, uri);
+    this.dataChannel.userReady(this.user.name, uri);
     this.goToSection('waiting');
   };
 
@@ -130,18 +149,22 @@ export default class DataChannelStore {
     this.user.name = event.target.value;
   };
 
-  dataChannelOnRoomSuccess = event => {
+  dataChannelOnSuccess = event => {
     const { action: eventAction } = event.detail;
 
-    if (eventAction === 'created') {
+    if (eventAction === 'roomCreated') {
       this.room.userCount += 1;
+      console.log(event.detail.room.name);
       this.room.name = event.detail.room.name;
+
       this.goToSection('roomCreate');
     }
-    if (eventAction === 'joined') {
+
+    if (eventAction === 'roomJoined') {
       this.goToSection('roomJoined');
     }
-    if (eventAction === 'opened') {
+
+    if (eventAction === 'roomOpened') {
       this.goToSection('roomCreated');
     }
   };
@@ -157,9 +180,11 @@ export default class DataChannelStore {
         this.goToSection('userData');
       }
     }
+
     if (eventAction === 'peerDisconnect') {
       this.room.userCount = this.room.userCount > 0 ? this.room.userCount - 1 : 0;
     }
+
     if (eventAction === 'roomFull') {
       this.goToSection('userData');
     }

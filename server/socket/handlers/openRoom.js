@@ -11,5 +11,5 @@ module.exports = function openRoom(roomName, roomSize) {
   roomInstance.open = true;
   roomInstance.maxUsers = parseInt(roomSize, 10);
 
-  this.ss.to(clientId, 'signalingServerMessage', 'roomOpened', roomName);
+  this.ss.to(clientId, 'signalingServerMessage', 'roomOpened', { room: roomName });
 };

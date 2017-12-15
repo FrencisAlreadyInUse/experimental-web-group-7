@@ -1,11 +1,13 @@
 module.exports = params => ({
-  createRoom: require('./createRoom').bind(params),
-  joinRoom: require('./joinRoom').bind(params),
-  openRoom: require('./openRoom').bind(params),
-  roomFull: require('./roomFull').bind(params),
-  userReady: require('./userReady').bind(params),
-  peerOffer: require('./peerOffer').bind(params),
-  peerAnswer: require('./peerAnswer').bind(params),
-  peerIce: require('./peerIce').bind(params),
-  disconnect: require('./disconnect').bind(params),
+  handleCreateRoom: require('./createRoom').bind(params),
+  handleJoinRoom: require('./joinRoom').bind(params),
+  handleOpenRoom: require('./openRoom').bind(params),
+  handleRoomFull: require('./roomFull').bind(params),
+  handleUserReady: require('./userReady').bind(params),
+
+  handlePeerOffer: require('./peerOffer').bind(params),
+  handlePeerAnswer: require('./peerAnswer').bind(params),
+  handlePeerIce: require('./peerIce').bind(params),
+
+  handleDisconnect: require('./disconnect').bind(params),
 });
