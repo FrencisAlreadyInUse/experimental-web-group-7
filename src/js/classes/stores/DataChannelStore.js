@@ -2,15 +2,6 @@ import { observable, computed, action } from 'mobx';
 
 export default class DataChannelStore {
   //
-  constructor(dataChannel) {
-    this.dataChannel = dataChannel;
-
-    this.dataChannel
-      .on('dataChannelError', console.error)
-      .on('dataChannelSuccess', this.dataChannelOnSuccess)
-      .on('dataChannelMessage', this.dataChannelOnMessage);
-  }
-
   @observable
   room = {
     name: '',
@@ -34,6 +25,17 @@ export default class DataChannelStore {
     userData: { active: false, last: false },
     waiting: { active: false, last: false },
   };
+
+  constructor(dataChannel) {
+    this.dataChannel = dataChannel;
+    this.roomCanSwitch = true;
+    this.minimumRoomVisible = 1000;
+
+    this.dataChannel
+      .on('dataChannelError', console.error)
+      .on('dataChannelSuccess', this.dataChannelOnSuccess)
+      .on('dataChannelMessage', this.dataChannelOnMessage);
+  }
 
   @computed
   get currentSection() {
@@ -74,6 +76,24 @@ export default class DataChannelStore {
   @action
   goToSection = sectionName => {
     if (!this.sections[sectionName]) return;
+
+    if (!this.roomCanSwitch) {
+      this.interval = window.setInterval(() => {
+        if (this.roomCanSwitch) {
+          this.goToSection(sectionName);
+
+          window.clearInterval(this.interval);
+          this.interval = null;
+        }
+      }, 30);
+
+      return;
+    }
+
+    this.roomCanSwitch = false;
+    window.setTimeout(() => {
+      this.roomCanSwitch = true;
+    }, this.minimumRoomVisible);
 
     if (this.sections[this.lastSection]) {
       this.sections[this.lastSection].last = false;
