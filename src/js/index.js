@@ -32,6 +32,7 @@ const init = () => {
     window.channel = dataChannel;
     window.store = dataChannelStore;
     window.game = game;
+    window.start = startGame;
   }
 };
 

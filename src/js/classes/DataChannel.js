@@ -4,18 +4,18 @@ import EventTarget from './EventTarget.js';
 
 export default class DataChannel extends EventTarget {
   //
+  @observable users = new Map();
+
   @observable
-  users = new Map();
+  me = {
+    name: 'anonimous',
+    uri: null,
+  };
 
   constructor() {
     super();
 
     this.peers = {};
-
-    this.me = {
-      name: 'anonimous',
-      uri: null,
-    };
 
     this.newPeer = {
       connection: null,
@@ -262,9 +262,7 @@ export default class DataChannel extends EventTarget {
     }
 
     if (label === 'allUsersReady') {
-      this.dispatchEvent(
-        new CustomEvent('startGame', { detail: null }),
-      );
+      this.dispatchEvent(new CustomEvent('startGame', { detail: null }));
     }
   };
 

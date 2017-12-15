@@ -1,7 +1,11 @@
-import Cone from './nodes/Cone.js';
-import Ball from './nodes/Ball.js';
-import AssetItem from './nodes/AssetItem.js';
-import User from './nodes/User.js';
+import { observe } from 'mobx';
+import { mount, unmount } from 'redom';
+
+import Cone from './components/Cone.js';
+import Ball from './components/Ball.js';
+import AssetItem from './components/AssetItem.js';
+import UserScore from './components/User/Score.js';
+import UserSphere from './components/User/Sphere.js';
 import map from './../functions/map.js';
 
 export default class Game {
@@ -11,7 +15,9 @@ export default class Game {
     /* add a listener to changes that occure to the datachannel users map */
     this.dataChannel.users.observe(this.dataChannelUserObserverListener);
 
-    this.uniqueHits = new Set();
+    /* add a listener to changes that occure to the datachannel users map */
+    observe(this.dataChannel.me, this.dataChannelMeObjectListener);
+
     this.sliderPosition = 0;
     this.currentFrame = 1;
     this.currentThrow = 1;
@@ -19,6 +25,12 @@ export default class Game {
     this.totalThrowScore = 0;
     this.playerCanThrow = false;
     this.playedSound = false;
+
+    this.uniqueHits = new Set();
+    this.userData = new Set();
+
+    this.Users = {};
+    this.Cones = [];
 
     this.initializeDOMElements();
 
@@ -44,25 +56,51 @@ export default class Game {
 
   dataChannelUserObserverListener = change => {
     if (change.type === 'add') {
-      this.addFaceBallAsset(change);
-      this.addFaceBallUser(change);
+      const { name, uri } = change.newValue;
+
+      this.userData.add({
+        id: change.name,
+        name,
+        uri,
+      });
+
+      this.addUsersToScene();
+    }
+    if (change.type === 'remove') {
+      console.log('remove', change);
     }
   };
 
-  addFaceBallAsset = change => {
-    const id = `face-ball-${change.name}`;
-    const src = change.newValue.uri;
+  dataChannelMeObjectListener = change => {
+    if (change.name === 'uri') {
+      const Asset = new AssetItem({ id: 'face-ball-me', src: change.newValue });
+      mount(this.$aframeAssets, Asset);
+    }
+  }
 
-    const $asset = new AssetItem({ id, src });
-    this.$aframeAssets.appendChild($asset);
-  };
+  addUsersToScene = () => {
+    this.userData.forEach((key, value) => {
+      const { id, name, uri: src } = value;
 
-  addFaceBallUser = change => {
-    const userCount = this.dataChannel.users.size;
-    const src = `#face-ball-${change.name}`;
+      /* check if the user id exists in this.Users */
+      /* this.Users is a collection of redom elements */
+      if (!this.Users[id]) {
+        /* it doesn't exist so add it */
 
-    const $user = new User(userCount, { src });
-    this.$aframeScene.appendChild($user);
+        /* create the DOM elements */
+        const Asset = new AssetItem({ id: `face-ball-peer-${name}`, src });
+        const Score = new UserScore({ id: this.userData.size });
+        const Sphere = new UserSphere({ id: this.userData.size, src: `#face-ball-peer-${name}` });
+
+        /* mount them */
+        mount(this.$aframeAssets, Asset);
+        mount(this.$aframeScene, Score);
+        mount(this.$aframeScene, Sphere);
+
+        /* save them */
+        this.Users[id] = { Asset, Score, Sphere };
+      }
+    });
   };
 
   setAttributeMultiple = ($nodes, attribute, value) => {
@@ -123,7 +161,7 @@ export default class Game {
 
   removeBallFromScene = () => {
     if (this.$ball) {
-      this.$aframeScene.removeChild(this.$ball);
+      unmount(this.$aframeScene, this.$ball);
       this.$ball = null;
     }
   };
@@ -131,19 +169,20 @@ export default class Game {
   removeConesFromScene = (all = false) => {
     /* remove all cones fro scene */
     if (all) {
-      Array.from(document.querySelectorAll('.cone')).forEach($cone =>
-        this.$aframeScene.removeChild($cone),
-      );
-
+      this.Cones.forEach($el => unmount(this.$aframeScene, $el));
+      this.Cones = [];
       return;
     }
 
     /* remove only hit cones from scene */
     if (this.uniqueHits) {
-      this.uniqueHits.forEach(id => {
-        this.$aframeScene.removeChild(document.getElementById(id));
-        this.uniqueHits.delete(id);
+      /* get all the cones with an id that's in the uniqueHits array and unmount them */
+      /* then delete the cone from the array */
+      this.Cones.filter($el => this.uniqueHits.has($el.id)).forEach(($el, index) => {
+        unmount(this.$aframeScene, $el);
+        this.Cones.splice(index, 1);
       });
+
       this.uniqueHits.clear();
     }
   };
@@ -164,10 +203,8 @@ export default class Game {
       '-1.5 -2 -38',
     ];
 
-    const $fragment = new DocumentFragment();
-    coneData.map(this.createCone).forEach($cone => $fragment.appendChild($cone));
-
-    this.$aframeScene.appendChild($fragment);
+    this.Cones = coneData.map(this.createCone);
+    this.Cones.forEach($el => mount(this.$aframeScene, $el));
   };
 
   resetConeIndicators = () => {
@@ -228,13 +265,17 @@ export default class Game {
   };
 
   generateBall = pos => {
-    const position = `${pos} -1.25 -10`;
     const src = this.dataChannel.me.uri;
+    const attributes = {
+      position: `${pos} -1.25 -10`,
+    };
 
-    this.$ball = new Ball({ position, src });
-    this.$ball.addEventListener('collide', this.handleConeCollosion);
+    if (src) attributes.src = src;
 
-    this.$aframeScene.appendChild(this.$ball);
+    this.$ball = new Ball(attributes);
+    this.$ball.addCollisionDetection(this.handleConeCollosion);
+
+    mount(this.$aframeScene, this.$ball);
 
     this.playerCanThrow = false;
 
@@ -247,9 +288,7 @@ export default class Game {
 
   handleThrowBall = () => {
     /* add hit collision to cones */
-    Array.from(document.querySelectorAll('.cone')).forEach($cone => {
-      $cone.addEventListener('collide', this.handleConeCollosion);
-    });
+    this.Cones.forEach($el => $el.addCollisionDetection(this.handleConeCollosion));
 
     if (this.playerCanThrow) {
       const position = map(this.sliderPosition.x, -1.45, 1.22, -3.45, 3.22);
