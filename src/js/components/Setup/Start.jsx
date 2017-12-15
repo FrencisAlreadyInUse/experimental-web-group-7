@@ -39,12 +39,14 @@ const ScreenStart = ({ setupStore }) => (
   <Screen name="start" className="around">
     <Header className="flex">
       <h1 className="flex column title--big">
-        <span>Virtual</span>
+        <span>Virtual</span> {''}
         <Lanes className="flex">Lanes</Lanes>
       </h1>
     </Header>
     <article className="section__content flex column column-center">
-      <SubTitle className="title--sub">A multiplayer virtual reality bowling game</SubTitle>
+      <header>
+        <SubTitle className="title--sub">A multiplayer virtual reality bowling game</SubTitle>
+      </header>
       <ButtonWrapper className="flex between">
         <button className="btn" onClick={() => setupStore.createRoom()}>
           Create Room
