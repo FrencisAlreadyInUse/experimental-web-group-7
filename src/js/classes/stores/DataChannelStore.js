@@ -6,9 +6,9 @@ export default class DataChannelStore {
     this.dataChannel = dataChannel;
 
     this.dataChannel
-      .addEventListener('roomError', console.warn)
-      .addEventListener('roomSuccess', this.dataChannelOnRoomSuccess)
-      .addEventListener('dataChannelMessage', this.dataChannelOnMessage);
+      .on('dataChannelError', console.error)
+      .on('dataChannelSuccess', this.dataChannelOnSuccess)
+      .on('dataChannelMessage', this.dataChannelOnMessage);
   }
 
   @observable
@@ -129,18 +129,22 @@ export default class DataChannelStore {
     this.user.name = event.target.value;
   };
 
-  dataChannelOnRoomSuccess = event => {
+  dataChannelOnSuccess = event => {
     const { action: eventAction } = event.detail;
 
-    if (eventAction === 'created') {
+    if (eventAction === 'roomCreated') {
       this.room.userCount += 1;
+      console.log(event.detail.room.name);
       this.room.name = event.detail.room.name;
+
       this.goToSection('roomCreate');
     }
-    if (eventAction === 'joined') {
+
+    if (eventAction === 'roomJoined') {
       this.goToSection('roomJoined');
     }
-    if (eventAction === 'opened') {
+
+    if (eventAction === 'roomOpened') {
       this.goToSection('roomCreated');
     }
   };
@@ -156,9 +160,11 @@ export default class DataChannelStore {
         this.goToSection('userData');
       }
     }
+
     if (eventAction === 'peerDisconnect') {
       this.room.userCount = this.room.userCount > 0 ? this.room.userCount - 1 : 0;
     }
+
     if (eventAction === 'roomFull') {
       this.goToSection('userData');
     }

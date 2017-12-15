@@ -29,23 +29,19 @@ export default class DataChannel extends EventTarget {
 
     this.signalingServer = io.connect('/');
 
-    if (process.env.NODE_ENV === 'development') {
-      window.signalingServer = this.signalingServer;
-    }
-
     this.setSignalingSocketEventHandlers();
   }
 
   setSignalingSocketEventHandlers = () => {
     this.signalingServer
-      .on('connect', this.onConnection)
-      .on('peerIce', this.onPeerIce)
-      .on('peerAnswer', this.onPeerAnswer)
-      .on('peerOffer', this.onPeerOffer)
-      .on('peerWantsACall', this.onPeerWantsACall)
-      .on('peerUpdate', this.onPeerUpdate)
-      .on('peerDisconnect', this.onPeerDisconnect)
-      .on('signalingServerMessage', this.onSignalingServerMessage);
+      .on('connect', this.ssOnConnection)
+      .on('peerIce', this.ssOnPeerIce)
+      .on('peerAnswer', this.ssOnPeerAnswer)
+      .on('peerOffer', this.ssOnPeerOffer)
+      .on('peerWantsACall', this.ssOnPeerWantsACall)
+      .on('peerUpdate', this.ssOnPeerUpdate)
+      .on('peerDisconnect', this.ssOnPeerDisconnect)
+      .on('signalingServerMessage', this.ssOnSignalingServerMessage);
   };
 
   sendMessage = (label, ...input) => {
@@ -61,24 +57,24 @@ export default class DataChannel extends EventTarget {
     });
   };
 
-  onConnection = () => {
+  ssOnConnection = () => {
     console.log(this.signalingServer.id);
   };
 
-  onPeerIce = (peerId, RTCIceCandidate) => {
+  ssOnPeerIce = (peerId, RTCIceCandidate) => {
     if (!RTCIceCandidate.candidate) return;
     if (!this.peers[peerId]) return;
 
     this.peers[peerId].connection.addIceCandidate(RTCIceCandidate);
   };
 
-  onPeerAnswer = (peerId, RemoteRTCSessionDescription) => {
+  ssOnPeerAnswer = (peerId, RemoteRTCSessionDescription) => {
     if (!this.peers[peerId]) return;
 
     this.peers[peerId].connection.setRemoteDescription(RemoteRTCSessionDescription);
   };
 
-  onPeerOffer = (peerId, RemoteRTCSessionDescription) => {
+  ssOnPeerOffer = (peerId, RemoteRTCSessionDescription) => {
     if (!this.peers[peerId]) {
       // if there is no peer yet, create an empty one
       this.peers[peerId] = { ...this.newPeerTemplate };
@@ -109,8 +105,10 @@ export default class DataChannel extends EventTarget {
       })
       .catch(() => {
         this.dispatchEvent(
-          new CustomEvent('connectionError', {
-            detail: { message: 'Failed to connect to another users' },
+          new ErrorEvent('dataChannelError', {
+            message: 'Failed to connect to another users',
+            filename: 'DataChannel.js',
+            error: new Error('Failed to connect to another users'),
           }),
         );
       });
@@ -143,7 +141,7 @@ export default class DataChannel extends EventTarget {
     });
   };
 
-  onPeerWantsACall = peerId => {
+  ssOnPeerWantsACall = peerId => {
     if (this.peers[peerId]) return;
 
     this.peers[peerId] = { ...this.newPeerTemplate };
@@ -185,8 +183,10 @@ export default class DataChannel extends EventTarget {
         })
         .catch(() => {
           this.dispatchEvent(
-            new CustomEvent('connectionError', {
-              detail: { message: 'Failed to connect to another users' },
+            new ErrorEvent('dataChannelError', {
+              message: 'Failed to connect to another users',
+              filename: 'DataChannel.js',
+              error: new Error('Failed to connect to another users'),
             }),
           );
         });
@@ -209,7 +209,7 @@ export default class DataChannel extends EventTarget {
     });
   };
 
-  onPeerUpdate = (peerId, data) => {
+  ssOnPeerUpdate = (peerId, data) => {
     /* the peer might not exists yet becaouse 'peerUpdate' can occure before 'peerOffer' */
     if (!this.peers[peerId]) {
       /* create the user */
@@ -224,7 +224,7 @@ export default class DataChannel extends EventTarget {
     });
   };
 
-  onPeerDisconnect = peerId => {
+  ssOnPeerDisconnect = peerId => {
     if (!this.peers[peerId]) return;
 
     this.peers[peerId].channel.close();
@@ -238,50 +238,34 @@ export default class DataChannel extends EventTarget {
     );
   };
 
-  onSignalingServerMessage = (label, data) => {
+  ssOnSignalingServerMessage = (label, data) => {
     //
-    if (label === 'roomCreated') {
+    if (label === 'roomCreated' || label === 'roomJoined' || label === 'roomOpened') {
       this.dispatchEvent(
-        new CustomEvent('roomSuccess', {
-          detail: { action: 'created', room: { name: data } },
-        }),
-      );
-    }
-
-    if (label === 'roomJoined') {
-      this.dispatchEvent(
-        new CustomEvent('roomSuccess', {
-          detail: { action: 'joined', room: data },
-        }),
-      );
-    }
-
-    if (label === 'roomOpened') {
-      this.dispatchEvent(
-        new CustomEvent('roomSuccess', {
-          detail: { action: 'opened', room: { name: data } },
-        }),
-      );
-    }
-
-    if (label === 'roomFull') {
-      this.dispatchEvent(
-        new CustomEvent('dataChannelMessage', {
-          detail: { action: 'roomFull' },
+        new CustomEvent('dataChannelSuccess', {
+          detail: { action: label, room: data },
         }),
       );
     }
 
     if (label === 'roomError') {
       this.dispatchEvent(
-        new CustomEvent('roomError', {
-          detail: { message: data },
+        new ErrorEvent('dataChannelError', {
+          message: data,
+          filename: 'DataChannel.js',
+          error: new Error(data),
         }),
       );
     }
 
+    if (label === 'roomFull') {
+      this.dispatchEvent(new CustomEvent('dataChannelMessage', {
+        detail: { action: 'roomFull' },
+      }));
+    }
+
     if (label === 'allUsersReady') {
-      this.dispatchEvent(new CustomEvent('startGame', { detail: null }));
+      this.dispatchEvent(new CustomEvent('dataChannelStartGame'));
     }
   };
 
@@ -290,7 +274,6 @@ export default class DataChannel extends EventTarget {
   };
 
   joinRoom = roomName => {
-    console.log('DataChannel: joinRoom', roomName);
     this.signalingServer.emit('joinRoom', roomName);
   };
 
@@ -303,6 +286,8 @@ export default class DataChannel extends EventTarget {
   };
 
   signalReady = (name, uri) => {
+    this.dispatchEvent(new CustomEvent('dataChannelLoadGame'));
+
     this.me.name = name;
     this.me.uri = uri;
 

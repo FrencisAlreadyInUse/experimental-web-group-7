@@ -24,5 +24,5 @@ module.exports = function createRoom() {
   this.store.users[clientId] = roomName;
 
   // send room name to user
-  this.ss.to(clientId, 'signalingServerMessage', 'roomCreated', roomName);
+  this.ss.to(clientId, 'signalingServerMessage', 'roomCreated', { name: roomName });
 };
