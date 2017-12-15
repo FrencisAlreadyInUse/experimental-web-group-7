@@ -19,18 +19,12 @@ const Screen = ({
   if (thisSectionIndex !== currentSectionIndex) {
     if (thisSectionIndex < currentSectionIndex) {
       classes = 'left';
-      if (sections[name].last) {
-        zIndex = 1;
-      } else {
-        zIndex = 0;
-      }
+      if (sections[name].last) zIndex = 1;
+      else zIndex = 0;
     } else {
       classes = 'right';
-      if (sections[name].last) {
-        zIndex = 1;
-      } else {
-        zIndex = 0;
-      }
+      if (sections[name].last) zIndex = 1;
+      else zIndex = 0;
     }
   } else if (forward) {
     zIndex = 2;

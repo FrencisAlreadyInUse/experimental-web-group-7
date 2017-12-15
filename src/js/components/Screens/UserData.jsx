@@ -29,6 +29,7 @@ const ButtonWrapper = styled.div`
 
 const Note = styled.aside`
   margin-top: 40px;
+  padding: 0 10px 10px;
 `;
 
 const ScreenUserData = ({ dataChannelStore }) => {
