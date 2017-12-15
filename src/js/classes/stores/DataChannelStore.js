@@ -109,7 +109,7 @@ export default class DataChannelStore {
 
   @action
   userReady = (uri) => {
-    this.dataChannel.signalReady(this.user.name, uri);
+    this.dataChannel.userReady(this.user.name, uri);
     this.goToSection('waiting');
   };
 

@@ -285,7 +285,7 @@ export default class DataChannel extends EventTarget {
     this.signalingServer.emit('roomFull', roomName);
   };
 
-  signalReady = (name, uri) => {
+  userReady = (name, uri) => {
     this.dispatchEvent(new CustomEvent('dataChannelLoadGame'));
 
     this.me.name = name;

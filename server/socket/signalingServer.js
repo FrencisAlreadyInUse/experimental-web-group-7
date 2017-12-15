@@ -27,17 +27,37 @@ module.exports = (
     cs,
   });
 
-  if (enableLogging) log(`[${chalk.blue('SIGNALING-SERVER')}] ↓ received "${chalk.yellow('connect')}" from "${chalk.yellow(clientSocket.id)}"`);
+  const {
+    handleCreateRoom,
+    handleJoinRoom,
+    handleOpenRoom,
+    handleRoomFull,
+    handleUserReady,
+    handlePeerOffer,
+    handlePeerAnswer,
+    handlePeerIce,
+    handleDisconnect,
+  } = handlers;
 
-  cs.on('createRoom', handlers.createRoom);
-  cs.on('joinRoom', handlers.joinRoom);
-  cs.on('openRoom', handlers.openRoom);
-  cs.on('roomFull', handlers.roomFull);
-  cs.on('userReady', handlers.userReady);
+  if (enableLogging) {
+    log(
+      `[${chalk.blue('SIGNALING-SERVER')}] ↓ received "${chalk.yellow(
+        'connect',
+      )}" from "${chalk.yellow(clientSocket.id)}"`,
+    );
+  }
 
-  cs.on('peerOffer', handlers.peerOffer);
-  cs.on('peerAnswer', handlers.peerAnswer);
-  cs.on('peerIce', handlers.peerIce);
+  // start listening to events */
 
-  cs.on('disconnect', handlers.disconnect);
+  cs.on('createRoom', handleCreateRoom);
+  cs.on('joinRoom', handleJoinRoom);
+  cs.on('openRoom', handleOpenRoom);
+  cs.on('roomFull', handleRoomFull);
+  cs.on('userReady', handleUserReady);
+
+  cs.on('peerOffer', handlePeerOffer);
+  cs.on('peerAnswer', handlePeerAnswer);
+  cs.on('peerIce', handlePeerIce);
+
+  cs.on('disconnect', handleDisconnect);
 };
