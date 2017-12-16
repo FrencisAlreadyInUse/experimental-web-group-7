@@ -1,4 +1,4 @@
-export default (image, dSize = 256) =>
+export default (image, dSize = 64) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
     const img = new Image();
@@ -24,7 +24,7 @@ export default (image, dSize = 256) =>
               dSize,
             );
         }
-        resolve(canvas.toDataURL());
+        resolve(canvas.toDataURL('image/jpeg', 0.01));
       });
       img.addEventListener('error', reject);
       img.src = reader.result;
