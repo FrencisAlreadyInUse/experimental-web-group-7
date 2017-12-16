@@ -254,6 +254,8 @@ body,
 
 .note {
   color: var(--color-purple-light);
+  line-height: 120%;
+  text-align: center;
 }
 
 .btn {
@@ -420,7 +422,7 @@ body,
 @media only screen and (width <= 768px) {
 
   .section {
-    overflow: scroll;
+    overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -447,11 +449,6 @@ body,
 
   .section__content {
     max-width: 90%;
-  }
-
-  .note {
-    line-height: 120%;
-    text-align: center;
   }
 
   .title {

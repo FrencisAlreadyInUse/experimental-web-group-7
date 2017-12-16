@@ -13,8 +13,8 @@ import Waiting from './../components/Setup/Waiting.jsx';
 const Setup = ({ setupStore }) => (
   <Provider setupStore={setupStore}>
     <Fragment>
-      <header className="main__header">
-        <h1 className="main-title hide">Virtual Lanes — VR Bowling Game</h1>
+      <header className="main__header hide">
+        <h1 className="main-title">Virtual Lanes — VR Bowling Game</h1>
       </header>
       <Start />
       <Create />

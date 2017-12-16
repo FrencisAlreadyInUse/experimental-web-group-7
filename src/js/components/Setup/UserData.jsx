@@ -10,12 +10,21 @@ import Screen from './Screen.jsx';
 import thumbDataURI from './../../functions/thumbDataURI.js';
 
 const Title = styled.h1`
-  margin-bottom: 30px;
+  margin-bottom: 8rem;
+
+  @media only screen and (max-width: 768px) {
+    margin-bottom: 3rem;
+  }
 `;
 
 const Form = styled.form`
   width: 100%;
   max-width: 40rem;
+  margin-bottom: 6rem;
+
+  @media only screen and (max-width: 768px) {
+    margin-bottom: 0;
+  }
 `;
 
 const FormRow = styled.div`
