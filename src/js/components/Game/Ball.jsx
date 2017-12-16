@@ -31,7 +31,7 @@ class Ball extends Component {
         color="black"
         dynamic-body="shape: sphere; sphereRadius: .77; mass: 50;"
         velocity="0 0 -35"
-        src={`#${this.props.gameStore.me.uri}`}
+        src="#myball"
         position={`${this.props.gameStore.ballDirection} -1.25 -6`}
         ref={el => (this.$node = el)}
       />

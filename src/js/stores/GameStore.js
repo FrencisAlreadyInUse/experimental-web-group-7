@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, computed, action } from 'mobx';
 
 import EventTarget from './../classes/EventTarget.js';
 import map from './../functions/map.js';
@@ -57,11 +57,21 @@ export default class GameStore extends EventTarget {
     tempTotal: 0,
   };
 
+  @observable peers = new Map();
+
+  @observable
+  me = {
+    name: 'anonymous',
+    uri: null,
+  };
+
   constructor(dataChannel) {
     super();
 
     this.dataChannel = dataChannel;
-    this.dataChannel.on('dataChannelPeerData', this.peerDataUpdate);
+    this.dataChannel
+      .on('dataChannelPeerData', this.ssOnPeerData)
+      .on('dataChannelMessage', this.ssOnMessage);
 
     this.currentFrame = 1;
     this.currentShot = 1;
@@ -69,12 +79,65 @@ export default class GameStore extends EventTarget {
 
     this.soundCanPlay = true;
     this.$conesHitSound = document.getElementById('cones-hit-sound');
+
+    this.defaultBallDataURI =
+      'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+
+    if (process.env.NODE_ENV === 'development') {
+      window.peers = this.peers;
+      window.me = this.me;
+    }
+  }
+
+  @computed
+  get shotOne() {
+    return this.currentShot === 1;
+  }
+
+  @computed
+  get strike() {
+    return this.shotOne && this.scores.current === 10;
+  }
+
+  @computed
+  get peersArray() {
+    const array = [];
+    for (const [key, value] of this.peers) {
+      array.push({ ...value, id: key });
+    }
+    return array;
   }
 
   @action
-  peerDataUpdate = event => {
-    const { peer } = event.detail;
-    console.log(peer);
+  ssOnPeerData = event => {
+    const peerData = event.detail.peer;
+
+    if (peerData.me) {
+      // it's me
+
+      this.me.name = peerData.name;
+      this.me.uri = peerData.uri;
+    } else {
+      // it's a friend
+
+      const peerId = peerData.id;
+
+      const currentPeer = this.peers.get(peerId) || {};
+      const updatedPeer = {
+        ...currentPeer,
+        ...peerData,
+      };
+      this.peers.set(peerId, updatedPeer);
+    }
+  };
+
+  @action
+  ssOnMessage = event => {
+    const eventAction = event.detail.action;
+
+    if (eventAction === 'peerDisconnect') {
+      this.peers.delete(event.detail.peerId);
+    }
   }
 
   @action
@@ -152,20 +215,15 @@ export default class GameStore extends EventTarget {
 
     this.removeHitCones();
 
-    // if this was the first shot AND we didn't throw a strike
-    if (this.currentShot === 1 && this.scores.current < 10) {
-      //
+    if (this.strike) {
+      this.scores.two = 'X';
+      this.endFrame();
+    } else if (this.shotOne) {
       this.renderThrowButton = true;
       this.renderDirectionIndicator = true;
       this.playerCanThrow = true;
-
       this.currentShot += 1;
-    } else if (this.scores.current === 10) {
-      //
-      this.scores.two = 'X';
-      this.endFrame();
     } else {
-      //
       this.endFrame();
     }
   };
