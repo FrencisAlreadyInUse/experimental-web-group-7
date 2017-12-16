@@ -153,7 +153,6 @@ export default class SetupStore {
 
     if (eventAction === 'roomCreated') {
       this.room.userCount += 1;
-      console.log(event.detail.room.name);
       this.room.name = event.detail.room.name;
 
       this.goToSection('roomCreate');

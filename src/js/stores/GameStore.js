@@ -1,69 +1,24 @@
 import { observable, computed, action } from 'mobx';
 
 import EventTarget from './../classes/EventTarget.js';
+import Peer from './../models/Peer.js';
+
 import map from './../functions/map.js';
 import wait from './../functions/wait.js';
 
 export default class GameStore extends EventTarget {
-  //
   @observable renderBall = false;
   @observable renderCones = false;
   @observable renderThrowButton = false;
   @observable renderDirectionIndicator = false;
-
   @observable playerCanThrow = false;
-  @observable ballDirection = 0.2;
 
-  @observable
-  coneIndicators = [
-    { id: 1, position: '4.0 -0.05 -3.75', hit: false },
-    { id: 2, position: '4.1 0.10 -3.75', hit: false },
-    { id: 3, position: '3.9 0.10 -3.75', hit: false },
-    { id: 4, position: '4.2 0.25 -3.75', hit: false },
-    { id: 5, position: '4.0 0.25 -3.75', hit: false },
-    { id: 6, position: '3.8 0.25 -3.75', hit: false },
-    { id: 7, position: '4.3 0.40 -3.75', hit: false },
-    { id: 8, position: '4.1 0.40 -3.75', hit: false },
-    { id: 9, position: '3.9 0.40 -3.75', hit: false },
-    { id: 10, position: '3.7 0.40 -3.75', hit: false },
-  ];
-
-  @observable
-  cones = [
-    { id: 1, position: '0 -2 -29', rendered: true },
-    { id: 2, position: '.5 -2 -32', rendered: true },
-    { id: 3, position: '-.5 -2 -32', rendered: true },
-    { id: 4, position: '1 -2 -35', rendered: true },
-    { id: 5, position: '0 -2 -35', rendered: true },
-    { id: 6, position: '-1 -2 -35', rendered: true },
-    { id: 7, position: '1.5 -2 -38', rendered: true },
-    { id: 8, position: '.5 -2 -38', rendered: true },
-    { id: 9, position: '-.5 -2 -38', rendered: true },
-    { id: 10, position: '-1.5 -2 -38', rendered: true },
-  ];
-
-  @observable
-  me = {
-    name: 'anonymous',
-    uri: null,
-  };
-
-  @observable
-  scores = {
-    one: '-',
-    two: '-',
-    current: 0,
-    total: 0,
-    tempTotal: 0,
-  };
-
-  @observable peers = new Map();
-
-  @observable
-  me = {
-    name: 'anonymous',
-    uri: null,
-  };
+  @observable ballDirection;
+  @observable coneIndicators;
+  @observable cones;
+  @observable me;
+  @observable scores;
+  @observable peers;
 
   constructor(dataChannel) {
     super();
@@ -79,6 +34,47 @@ export default class GameStore extends EventTarget {
 
     this.soundCanPlay = true;
     this.$conesHitSound = document.getElementById('cones-hit-sound');
+
+    this.cones = [
+      { id: 1, position: '0 -2 -29', rendered: true },
+      { id: 2, position: '.5 -2 -32', rendered: true },
+      { id: 3, position: '-.5 -2 -32', rendered: true },
+      { id: 4, position: '1 -2 -35', rendered: true },
+      { id: 5, position: '0 -2 -35', rendered: true },
+      { id: 6, position: '-1 -2 -35', rendered: true },
+      { id: 7, position: '1.5 -2 -38', rendered: true },
+      { id: 8, position: '.5 -2 -38', rendered: true },
+      { id: 9, position: '-.5 -2 -38', rendered: true },
+      { id: 10, position: '-1.5 -2 -38', rendered: true },
+    ];
+
+    this.coneIndicators = [
+      { id: 1, position: '4.0 -0.05 -3.75', hit: false },
+      { id: 2, position: '4.1 0.10 -3.75', hit: false },
+      { id: 3, position: '3.9 0.10 -3.75', hit: false },
+      { id: 4, position: '4.2 0.25 -3.75', hit: false },
+      { id: 5, position: '4.0 0.25 -3.75', hit: false },
+      { id: 6, position: '3.8 0.25 -3.75', hit: false },
+      { id: 7, position: '4.3 0.40 -3.75', hit: false },
+      { id: 8, position: '4.1 0.40 -3.75', hit: false },
+      { id: 9, position: '3.9 0.40 -3.75', hit: false },
+      { id: 10, position: '3.7 0.40 -3.75', hit: false },
+    ];
+
+    this.me = {
+      name: 'anonymous',
+      uri: null,
+    };
+
+    this.scores = {
+      one: '-',
+      two: '-',
+      current: 0,
+      total: 0,
+      tempTotal: 0,
+    };
+
+    this.peers = new Map();
 
     this.peerPositions = [
       { ball: '-5.3 .5 6.5', score: '-5.3 .5 6.5', crown: '-5.3 .5 6.5' },
@@ -106,11 +102,35 @@ export default class GameStore extends EventTarget {
   @computed
   get peersArray() {
     const array = [];
-    for (const [key, value] of this.peers) {
-      array.push({ ...value, id: key });
+    for (const [, value] of this.peers) {
+      array.push(value);
     }
     return array;
   }
+
+  @computed
+  get currentLeaders() {
+    const peers = this.peersArray;
+
+    // push a fake Peer class of myself in the peers array to compare my score as well
+    peers.push({ id: 'me', score: this.scores.total });
+
+    const { score: leaderScore } = peers.reduce((prev, current) => ((prev.score > current.score) ? prev : current));
+
+    // return an array with all the id's of peers with the leaderScore (in case of multiple same scores)
+    return peers.filter(peer => peer.score === leaderScore).map(peer => peer.id);
+  }
+
+  @action
+  addPeer = peerData => {
+    const positions = this.peerPositions[this.peers.size];
+    const { ball: ballPosition, score: scorePosition, crown: crownPosition } = positions;
+
+    const { id, name, uri } = peerData;
+    const peer = new Peer(id, name, uri, ballPosition, scorePosition, crownPosition);
+
+    this.peers.set(id, peer);
+  };
 
   @action
   ssOnPeerData = event => {
@@ -124,21 +144,16 @@ export default class GameStore extends EventTarget {
     } else {
       // it's a friend
 
-      const nthPeer = this.peers.size;
-      const peerId = peerData.id;
+      const { id, name, uri } = peerData;
 
-      const currentPeer = this.peers.get(peerId) || {};
-      const position = this.peerPositions[nthPeer];
-
-      // is observable
-      const updatedPeer = observable({
-        ...currentPeer,
-        ...peerData,
-        ball: position.ball,
-        crown: position.crown,
-        score: { position: position.score, value: 0 },
-      });
-      this.peers.set(peerId, updatedPeer);
+      if (!this.peers.has(id)) {
+        // generate peer
+        this.addPeer(peerData);
+      } else {
+        // update peer
+        const peer = this.peers.get(id);
+        peer.update({ name, uri });
+      }
     }
   };
 

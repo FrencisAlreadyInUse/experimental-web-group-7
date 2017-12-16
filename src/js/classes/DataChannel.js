@@ -37,18 +37,18 @@ export default class DataChannel extends EventTarget {
       .on('signalingServerMessage', this.ssOnSignalingServerMessage);
   };
 
-  sendMessage = (label, ...input) => {
-    const data = input.length === 1 ? input[0] : input;
+  sendMessage = (message) => {
     const peerKeys = Object.keys(this.peers);
 
     peerKeys.forEach(peerId => {
       if (!this.peers[peerId].channel) return;
       if (this.peers[peerId].channel.readyState !== 'open') return;
 
-      const message = JSON.stringify({ label, data });
-      this.peers[peerId].channel.send(message);
+      this.peers[peerId].channel.send(JSON.stringify(message));
     });
   };
+
+  onMessage = message => console.log(message);
 
   ssOnConnection = () => {
     console.log(this.signalingServer.id);
