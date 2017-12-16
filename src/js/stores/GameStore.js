@@ -61,10 +61,7 @@ export default class GameStore extends EventTarget {
       { id: 10, position: '3.7 0.40 -3.75', hit: false },
     ];
 
-    this.me = {
-      name: 'anonymous',
-      uri: null,
-    };
+    this.me = new Peer('me');
 
     this.scores = {
       one: '-',
@@ -77,10 +74,10 @@ export default class GameStore extends EventTarget {
     this.peers = new Map();
 
     this.peerPositions = [
-      { ball: '-5.3 .5 6.5', score: '-5.3 .5 6.5', crown: '-5.3 .5 6.5' },
-      { ball: '-5.3 .5 9', score: '-5.3 2.5 9', crown: '-5.3 2.5 9' },
-      { ball: '5.3 .5 9', score: '5.3 2.5 9', crown: '5.3 2.5 9' },
-      { ball: '5.3 .5 6.5', score: '5.3 2.5 6.5', crown: '5.3 2.5 6.5' },
+      { ball: '-5.3 .5 6.5', score: '-5.3 2.5 6.5', crown: '-5.3 1.2 6.5' },
+      { ball: '-5.3 .5 9', score: '-5.3 2.5 9', crown: '-5.3 1.2 9' },
+      { ball: '5.3 .5 9', score: '5.3 2.5 9', crown: '5.3 1.2 9' },
+      { ball: '5.3 .5 6.5', score: '5.3 2.5 6.5', crown: '5.3 1.2 6.5' },
     ];
 
     if (process.env.NODE_ENV === 'development') {
@@ -110,10 +107,12 @@ export default class GameStore extends EventTarget {
 
   @computed
   get currentLeaders() {
-    const peers = this.peersArray;
+    const peers = [];
+    for (const [, value] of this.peers) {
+      peers.push(value);
+    }
 
-    // push a fake Peer class of myself in the peers array to compare my score as well
-    peers.push({ id: 'me', score: this.scores.total });
+    peers.push(this.me);
 
     const { score: leaderScore } = peers.reduce((prev, current) => ((prev.score > current.score) ? prev : current));
 
@@ -139,8 +138,8 @@ export default class GameStore extends EventTarget {
     if (peerData.me) {
       // it's me
 
-      this.me.name = peerData.name;
-      this.me.uri = peerData.uri;
+      this.me.setName(peerData.name);
+      this.me.setUri(peerData.uri);
     } else {
       // it's a friend
 

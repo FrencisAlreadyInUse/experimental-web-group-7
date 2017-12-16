@@ -44,11 +44,6 @@ const ScreenRoomCreated = ({ setupStore }) => (
         <span>players joined</span>
       </Waiting>
     </div>
-    <div className="btn-wrapper">
-      <button className="btn" onClick={setupStore.registeredRoom}>
-        Let&#39;s Play
-      </button>
-    </div>
   </Screen>
 );
 

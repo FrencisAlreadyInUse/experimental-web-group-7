@@ -11,6 +11,7 @@ import ThrowButton from './../components/Game/ThrowButton.jsx';
 import Crown from './../components/Game/Crown.jsx';
 import Ball from './../components/Game/Ball.jsx';
 import Cones from './../components/Game/Cones.jsx';
+import Peers from './../components/Game/Peers.jsx';
 import Sky from './../components/Game/Sky.jsx';
 
 const Game = ({ gameStore }) => (
@@ -25,6 +26,7 @@ const Game = ({ gameStore }) => (
       <Crown position="-0.118 3.908 -7.022" />
       <Ball />
       <Cones />
+      <Peers />
       <Sky />
 
       <a-collada-model position="-0.437 4.723 -4.777" rotation="-200 0 0" src="#arrow" />
