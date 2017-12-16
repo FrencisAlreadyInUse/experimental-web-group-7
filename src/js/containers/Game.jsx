@@ -22,7 +22,7 @@ const Game = ({ gameStore }) => (
       <DirectionIndicator />
       <ConeIndicators />
       <ThrowButton />
-      <Crown />
+      <Crown position="-0.118 3.908 -7.022" />
       <Ball />
       <Cones />
       <Sky />
