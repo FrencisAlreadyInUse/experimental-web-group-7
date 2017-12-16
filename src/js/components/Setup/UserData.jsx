@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
-import Screen from './index.jsx';
+import wait from './../../functions/wait.js';
+import Screen from './Screen.jsx';
 import thumbDataURI from './../../functions/thumbDataURI.js';
 
 const Title = styled.h1`
@@ -32,7 +33,7 @@ const Note = styled.div`
   padding: 0 0 2rem;
 `;
 
-const ScreenUserData = ({ dataChannelStore }) => {
+const ScreenUserData = ({ setupStore }) => {
   let $fileInputWrapper = null;
   let $fileInput = null;
 
@@ -50,16 +51,14 @@ const ScreenUserData = ({ dataChannelStore }) => {
     if (!imageFile) return;
 
     thumbDataURI(imageFile)
-      .then(uri => dataChannelStore.userReady(uri))
+      .then(uri => setupStore.userReady(uri))
       .catch(console.error);
   };
 
   let $input;
 
-  if (dataChannelStore.sections.userData.active) {
-    setTimeout(() => {
-      $input.focus();
-    }, 500);
+  if (setupStore.sections.userData.active) {
+    wait(500, () => $input.focus());
   }
 
   return (
@@ -80,7 +79,7 @@ const ScreenUserData = ({ dataChannelStore }) => {
               type="text"
               name="username"
               placeholder="Yoda"
-              onChange={dataChannelStore.updateUserName}
+              onChange={setupStore.updateUserName}
               autoCorrect="off"
               autoCapitalize="off"
               ref={el => $input = el}
@@ -117,7 +116,7 @@ const ScreenUserData = ({ dataChannelStore }) => {
 };
 
 ScreenUserData.propTypes = {
-  dataChannelStore: PropTypes.object.isRequired,
+  setupStore: PropTypes.object.isRequired,
 };
 
-export default inject('dataChannelStore')(observer(ScreenUserData));
+export default inject('setupStore')(observer(ScreenUserData));

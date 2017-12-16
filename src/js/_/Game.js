@@ -35,7 +35,7 @@ export default class Game {
     this.initializeDOMElements();
 
     this.$conesHitSound.volume = 0.35;
-    this.$aframeScene.addEventListener('loaded', this.handleLoadedScene);
+    // this.$aframeScene.addEventListener('loaded', this.handleLoadedScene);
   }
 
   initializeDOMElements = () => {
@@ -306,7 +306,7 @@ export default class Game {
   };
 
   generateScene = () => {
-    this.getAttributes();
+    // this.getAttributes();
     this.generateCones();
   };
 

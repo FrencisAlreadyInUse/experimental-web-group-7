@@ -34,8 +34,8 @@ const cleanPublicDirectory = async () => {
  * Copy needed directories to server/public
  */
 const copyToPublicDirectory = async () => {
-  await cp(_`src/assets`, _`server/public/assets`);
-  await cp(_`src/js/vendor`, _`server/public/js/vendor`);
+  await cp(_`src/assets`, _`server/public/assets`).catch(console.error);
+  // await cp(_`src/js/vendor`, _`server/public/js/vendor`).catch(console.error);
 };
 
 /**
@@ -49,6 +49,7 @@ const generateWebpackConfig = async () => {
   const config = {
     entry: {
       bundle: [_`src/js/index.js`, _`src/css/index.css`],
+      vendors: [_`src/js/vendors.js`],
     },
     output: {
       filename: 'js/[name].js',
@@ -97,6 +98,7 @@ const generateWebpackConfig = async () => {
       new HtmlWebpackPlugin({
         template: _`src/index.html`,
         filename: _`server/public/index.html`,
+        inject: false,
       }),
       new webpack.EnvironmentPlugin(['NODE_ENV']),
       ifProduction(new UglifyJsPlugin({ sourceMap: true, comments: false })),

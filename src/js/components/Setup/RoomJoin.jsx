@@ -2,18 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 
-import Screen from './index.jsx';
+import Screen from './Screen.jsx';
 
-const ScreenRoomJoin = ({ dataChannelStore }) => {
+const ScreenRoomJoin = ({ setupStore }) => {
   let $input;
 
   const handleJoinRoom = event => {
     event.preventDefault();
 
-    dataChannelStore.joinRoom();
+    setupStore.joinRoom();
   };
 
-  if (dataChannelStore.sections.roomJoin.active) {
+  if (setupStore.sections.roomJoin.active) {
     setTimeout(() => {
       $input.focus();
     }, 500);
@@ -32,7 +32,7 @@ const ScreenRoomJoin = ({ dataChannelStore }) => {
               className="input stroke input--text input--stroke input--underline"
               type="text"
               placeholder="room name"
-              onChange={dataChannelStore.updateRoomName}
+              onChange={setupStore.updateRoomName}
               autoCorrect="off"
               autoCapitalize="off"
               ref={el => $input = el}
@@ -51,7 +51,7 @@ const ScreenRoomJoin = ({ dataChannelStore }) => {
 };
 
 ScreenRoomJoin.propTypes = {
-  dataChannelStore: PropTypes.object.isRequired,
+  setupStore: PropTypes.object.isRequired,
 };
 
-export default inject('dataChannelStore')(observer(ScreenRoomJoin));
+export default inject('setupStore')(observer(ScreenRoomJoin));

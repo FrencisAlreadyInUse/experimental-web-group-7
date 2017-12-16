@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
-import Screen from './index.jsx';
+import Screen from './Screen.jsx';
 
 const Header = styled.header`
   width: 64.5rem;
@@ -35,7 +35,7 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-const ScreenStart = ({ dataChannelStore }) => (
+const ScreenStart = ({ setupStore }) => (
   <Screen name="start" className="around">
     <Header className="flex">
       <h1 className="flex column title--big">
@@ -48,10 +48,10 @@ const ScreenStart = ({ dataChannelStore }) => (
         <SubTitle className="title--sub">A multiplayer virtual reality bowling game</SubTitle>
       </header>
       <ButtonWrapper className="flex between">
-        <button className="btn" onClick={() => dataChannelStore.createRoom()}>
+        <button className="btn" onClick={() => setupStore.createRoom()}>
           Create Room
         </button>
-        <button className="btn" onClick={() => dataChannelStore.goToSection('roomJoin')}>
+        <button className="btn" onClick={() => setupStore.goToSection('roomJoin')}>
           Join Room
         </button>
       </ButtonWrapper>
@@ -60,7 +60,7 @@ const ScreenStart = ({ dataChannelStore }) => (
 );
 
 ScreenStart.propTypes = {
-  dataChannelStore: PropTypes.object.isRequired,
+  setupStore: PropTypes.object.isRequired,
 };
 
-export default inject('dataChannelStore')(observer(ScreenStart));
+export default inject('setupStore')(observer(ScreenStart));

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 
-import Screen from './index.jsx';
+import Screen from './Screen.jsx';
 
 const Share = styled.div`
   margin-top: 140px;
@@ -23,7 +23,7 @@ const Waiting = styled.div`
   }
 `;
 
-const ScreenRoomCreated = ({ dataChannelStore }) => (
+const ScreenRoomCreated = ({ setupStore }) => (
   <Screen name="roomCreated" className="around">
     <header className="hide">
       <h1>Created Room</h1>
@@ -31,21 +31,21 @@ const ScreenRoomCreated = ({ dataChannelStore }) => (
     <div className="section__content flex column column-center">
       <h2 className="title">
         You&#39;ve just created the{' '}
-        <span className="input stroke input--stroke blobs">{dataChannelStore.room.name}</span> room for{' '}
-        <span className="input stroke input--stroke blob">{dataChannelStore.room.size}</span> players
+        <span className="input stroke input--stroke blobs">{setupStore.room.name}</span> room for{' '}
+        <span className="input stroke input--stroke blob">{setupStore.room.size}</span> players
       </h2>
       <Share className="title--small">
         Share this <span className="stroke">room name</span> with friends!
       </Share>
       <Waiting className="title--small">
         <span className="stroke">
-          <span>{dataChannelStore.room.userCount}</span> / <span>{dataChannelStore.room.size}</span>{' '}
+          <span>{setupStore.room.userCount}</span> / <span>{setupStore.room.size}</span>{' '}
         </span>
         <span>players joined</span>
       </Waiting>
     </div>
     <div className="btn-wrapper">
-      <button className="btn" onClick={dataChannelStore.registeredRoom}>
+      <button className="btn" onClick={setupStore.registeredRoom}>
         Let&#39;s Play
       </button>
     </div>
@@ -53,7 +53,7 @@ const ScreenRoomCreated = ({ dataChannelStore }) => (
 );
 
 ScreenRoomCreated.propTypes = {
-  dataChannelStore: PropTypes.object.isRequired,
+  setupStore: PropTypes.object.isRequired,
 };
 
-export default inject('dataChannelStore')(observer(ScreenRoomCreated));
+export default inject('setupStore')(observer(ScreenRoomCreated));
