@@ -8,6 +8,7 @@ import Scores from './../components/Game/Scores.jsx';
 import ConeIndicators from './../components/Game/ConeIndicators.jsx';
 import DirectionIndicator from './../components/Game/DirectionIndicator.jsx';
 import ThrowButton from './../components/Game/ThrowButton.jsx';
+import Crown from './../components/Game/Crown.jsx';
 import Ball from './../components/Game/Ball.jsx';
 import Cones from './../components/Game/Cones.jsx';
 import Sky from './../components/Game/Sky.jsx';
@@ -21,6 +22,7 @@ const Game = ({ gameStore }) => (
       <DirectionIndicator />
       <ConeIndicators />
       <ThrowButton />
+      <Crown />
       <Ball />
       <Cones />
       <Sky />
