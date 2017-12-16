@@ -14,22 +14,22 @@ const Title = styled.h1`
 
 const Form = styled.form`
   width: 100%;
-  max-width: 400px;
+  max-width: 40rem;
 `;
 
 const FormRow = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 42px;
+  margin-bottom: 3rem;
 `;
 
 const ButtonWrapper = styled.div`
-  margin-top: 20px;
+  margin-top: 2rem;
 `;
 
 const Note = styled.div`
-  margin-top: 40px;
-  padding: 0 10px 10px;
+  margin-top: 2rem;
+  padding: 0 0 2rem;
 `;
 
 const ScreenUserData = ({ dataChannelStore }) => {
@@ -87,7 +87,7 @@ const ScreenUserData = ({ dataChannelStore }) => {
             />
           </FormRow>
           <FormRow>
-            <label className="label">profile picture</label>
+            <label className="label">profile picture*</label>
             <div
               ref={el => ($fileInputWrapper = el)}
               className="input input--file"
@@ -102,16 +102,16 @@ const ScreenUserData = ({ dataChannelStore }) => {
             </div>
           </FormRow>
         </Form>
+        <ButtonWrapper className="btn-wrapper flex column column-center">
+          <button className="btn" onClick={handleUserReady}>
+            Ready
+          </button>
+          <Note className="note">
+            *Please, upload a picture of your face. <br />
+            It will be funny, we promise!
+          </Note>
+        </ButtonWrapper>
       </article>
-      <ButtonWrapper className="btn-wrapper flex column column-center">
-        <button className="btn" onClick={handleUserReady}>
-          Ready
-        </button>
-        <Note className="note">
-          *Please, upload a picture of your face. <br />
-          It will be funny, we promise!
-        </Note>
-      </ButtonWrapper>
     </Screen>
   );
 };

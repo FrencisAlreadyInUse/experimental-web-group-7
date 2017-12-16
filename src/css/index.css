@@ -121,7 +121,7 @@ body,
   font-size: var(--title);
   font-weight: 700;
   position: relative;
-  line-height: 135%;
+  line-height: 120%;
 }
 
 .title--big {
@@ -451,7 +451,7 @@ body,
 
   .note {
     line-height: 120%;
-    padding: 0 0 2rem;
+    text-align: center;
   }
 
   .title {
