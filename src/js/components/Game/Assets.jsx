@@ -17,7 +17,7 @@ const Assets = ({ gameStore }) => (
     <Asset id="strike" src="/assets/collada/strike-msg.dae" />
     <Asset id="arrow" src="/assets/collada/arrow.dae" />
 
-    <Asset id="bowling-ball-me" src={gameStore.me.uri || gameStore.defaultBallDataURI} />
+    {gameStore.me.uri ? <Asset id="bowling-ball-me" src={gameStore.me.uri} /> : null}
 
     {gameStore.peersArray.map(peer => (
       <Asset

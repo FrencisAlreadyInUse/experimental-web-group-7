@@ -144,7 +144,10 @@ export default class GameStore extends EventTarget {
   updateScores = score => {
     this.scores.current = score;
 
-    if (this.currentShot === 1) {
+    if (this.strike) {
+      this.scores.one = score;
+      this.scores.two = 'X';
+    } else if (this.currentShot === 1) {
       this.scores.one = score;
     } else {
       this.scores.two = score;
@@ -216,7 +219,6 @@ export default class GameStore extends EventTarget {
     this.removeHitCones();
 
     if (this.strike) {
-      this.scores.two = 'X';
       this.endFrame();
     } else if (this.shotOne) {
       this.renderThrowButton = true;
@@ -232,13 +234,13 @@ export default class GameStore extends EventTarget {
   throwBall = () => {
     if (!this.playerCanThrow) return;
 
-    this.ballDirection = map(this.diractionIndicatorPosition, -1.45, 1.22, -3.45, 3.22);
     this.renderBall = true;
+
+    this.ballDirection = map(this.diractionIndicatorPosition, -1.45, 1.22, -3.45, 3.22);
     this.renderThrowButton = false;
     this.renderDirectionIndicator = false;
 
     this.playerCanThrow = false;
-
     this.dispatchEvent(new Event('addCollisionDetection'));
 
     wait(4000, this.throwComplete);
