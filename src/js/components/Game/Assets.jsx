@@ -17,12 +17,12 @@ const Assets = ({ gameStore }) => (
     <Asset id="strike" src="/assets/collada/strike-msg.dae" />
     <Asset id="arrow" src="/assets/collada/arrow.dae" />
 
-    <Asset id="myball" src={gameStore.me.uri || gameStore.defaultBallDataURI} />
+    <Asset id="bowling-ball-me" src={gameStore.me.uri || gameStore.defaultBallDataURI} />
 
     {gameStore.peersArray.map(peer => (
       <Asset
         key={peer.id}
-        id={`peer-ball-${peer.id}`}
+        id={`bowling-ball-peer-${peer.id}`}
         src={peer.uri || gameStore.defaultBallDataURI}
       />
     ))}

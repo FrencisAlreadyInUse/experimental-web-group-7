@@ -28,10 +28,9 @@ class Ball extends Component {
       <a-sphere
         id="bowlingBall"
         radius=".75"
-        color="black"
         dynamic-body="shape: sphere; sphereRadius: .77; mass: 50;"
         velocity="0 0 -35"
-        src="#myball"
+        src="#bowling-ball-me"
         position={`${this.props.gameStore.ballDirection} -1.25 -6`}
         ref={el => (this.$node = el)}
       />
