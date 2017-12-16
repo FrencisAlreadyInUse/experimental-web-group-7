@@ -7,23 +7,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <script>
     WebFontConfig = {
-    custom: {
-      families: ['px-grotesk'],
-      urls: ['assets/fonts/px-grotesk/px-grotesk.css'],
-    },
-  };
-  (function (d) {
-    let wf = d.createElement('script'),
-      s = d.scripts[0];
-    wf.async = true;
-    wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js';
-    s.parentNode.insertBefore(wf, s);
-  }(document));
+      custom: {
+        families: ['px-grotesk'],
+        urls: ['assets/fonts/px-grotesk/px-grotesk.css'],
+      },
+    };
+    (function (d) {
+      let wf = d.createElement('script'),
+        s = d.scripts[0];
+      wf.async = true;
+      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js';
+      s.parentNode.insertBefore(wf, s);
+    }(document));
   </script>
 
   <meta name="theme-color" content="#3737dd">
   <meta name="msapplication-navbutton-color" content="#3737dd">
-  <meta name="apple-mobile-web-app-status-bar-style" content="#3737dd">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
 
   <link rel="apple-touch-icon" sizes="57x57" href="assets/img/favicon/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="assets/img/favicon/apple-icon-60x60.png">
@@ -39,14 +41,9 @@
   <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon/favicon-96x96.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon/favicon-16x16.png">
   <link rel="manifest" href="assets/img/favicon/manifest.json">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-  <meta name="theme-color" content="#ffffff">
 
-  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-  <script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-
-  <script class="deferred-script" type="text/javascript" data-src="/js/vendors.js"></script>
+  <script type="text/javascript" src="/js/vendors-channel.js"></script>
+  <script type="text/javascript" data-src="/js/vendors-game.js" class="deferred-script"></script>
 </head>
 
 <body>

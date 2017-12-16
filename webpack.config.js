@@ -35,7 +35,6 @@ const cleanPublicDirectory = async () => {
  */
 const copyToPublicDirectory = async () => {
   await cp(_`src/assets`, _`server/public/assets`).catch(console.error);
-  // await cp(_`src/js/vendor`, _`server/public/js/vendor`).catch(console.error);
 };
 
 /**
@@ -49,7 +48,8 @@ const generateWebpackConfig = async () => {
   const config = {
     entry: {
       bundle: [_`src/js/index.js`, _`src/css/index.css`],
-      vendors: [_`src/js/vendors.js`],
+      'vendors-game': [_`src/js/vendors.game.js`],
+      'vendors-channel': [_`src/js/vendors.channel.js`],
     },
     output: {
       filename: 'js/[name].js',

@@ -1,19 +1,12 @@
-import { observable } from 'mobx';
-
 import EventTarget from './EventTarget.js';
 
 export default class DataChannel extends EventTarget {
   constructor() {
     super();
 
-    this.users = observable(new Map());
-    this.me = observable({
-      name: 'anonymous',
-      uri: null,
-    });
     this.peers = {};
 
-    this.newPeerTemplate = {
+    this.newRTCPeerTemplate = {
       connection: null,
       channel: null,
     };
@@ -77,7 +70,13 @@ export default class DataChannel extends EventTarget {
   ssOnPeerOffer = (peerId, RemoteRTCSessionDescription) => {
     if (!this.peers[peerId]) {
       // if there is no peer yet, create an empty one
-      this.peers[peerId] = { ...this.newPeerTemplate };
+      this.peers[peerId] = { ...this.newRTCPeerTemplate };
+
+      this.dispatchEvent(
+        new CustomEvent('dataChannelPeerData', {
+          detail: { peer: { id: peerId } },
+        }),
+      );
     } else if (this.peers[peerId].connection) {
       // else if the peer did exists
       // check if there is no connection yet
@@ -87,18 +86,18 @@ export default class DataChannel extends EventTarget {
       return;
     }
 
-    const Peer = this.peers[peerId];
+    const PEER = this.peers[peerId];
 
     /* create a new peer connection */
-    Peer.connection = new RTCPeerConnection(this.RTCPeerConnectionOptions, null);
+    PEER.connection = new RTCPeerConnection(this.RTCPeerConnectionOptions, null);
 
     /* create answer description */
-    Peer.connection
+    PEER.connection
       .setRemoteDescription(RemoteRTCSessionDescription)
-      .then(() => Peer.connection.createAnswer())
+      .then(() => PEER.connection.createAnswer())
       .then(LocalRTCSessionDescription => {
         /* set local description */
-        Peer.connection.setLocalDescription(LocalRTCSessionDescription);
+        PEER.connection.setLocalDescription(LocalRTCSessionDescription);
 
         /* sending answer description to peer */
         this.signalingServer.emit('peerAnswer', peerId, LocalRTCSessionDescription);
@@ -108,13 +107,12 @@ export default class DataChannel extends EventTarget {
           new ErrorEvent('dataChannelError', {
             message: 'Failed to connect to another users',
             filename: 'DataChannel.js',
-            error: new Error('Failed to connect to another users'),
           }),
         );
       });
 
     /* on ice candidate */
-    Peer.connection.addEventListener('icecandidate', RTCPeerConnectionIceEvent => {
+    PEER.connection.addEventListener('icecandidate', RTCPeerConnectionIceEvent => {
       if (!RTCPeerConnectionIceEvent.candidate) return;
 
       /* send ice candidate to peer */
@@ -122,20 +120,20 @@ export default class DataChannel extends EventTarget {
     });
 
     /* on data channel */
-    Peer.connection.addEventListener('datachannel', RTCDataChannelEvent => {
+    PEER.connection.addEventListener('datachannel', RTCDataChannelEvent => {
       if (!RTCDataChannelEvent.channel) return;
 
       /* set data channel */
-      Peer.channel = RTCDataChannelEvent.channel;
+      PEER.channel = RTCDataChannelEvent.channel;
 
       /* handle channel opening */
-      Peer.channel.addEventListener('open', () => {
+      PEER.channel.addEventListener('open', () => {
         /* listen to messages from other peer */
-        Peer.channel.addEventListener('message', this.onMessage);
+        PEER.channel.addEventListener('message', this.onMessage);
       });
 
       /* handle channel closing */
-      Peer.channel.addEventListener('close', () => {
+      PEER.channel.addEventListener('close', () => {
         console.log(peerId, 'data channel closes');
       });
     });
@@ -144,25 +142,31 @@ export default class DataChannel extends EventTarget {
   ssOnPeerWantsACall = peerId => {
     if (this.peers[peerId]) return;
 
-    this.peers[peerId] = { ...this.newPeerTemplate };
-    const Peer = this.peers[peerId];
+    this.peers[peerId] = { ...this.newRTCPeerTemplate };
+    const PEER = this.peers[peerId];
+
+    this.dispatchEvent(
+      new CustomEvent('dataChannelPeerData', {
+        detail: { peer: { id: peerId } },
+      }),
+    );
 
     /* create a new peer connection */
-    Peer.connection = new RTCPeerConnection(this.RTCPeerConnectionOptions, null);
+    PEER.connection = new RTCPeerConnection(this.RTCPeerConnectionOptions, null);
 
     /* create the data channel */
-    Peer.channel = Peer.connection.createDataChannel('datachannel', this.RTCDataChannelOptions);
+    PEER.channel = PEER.connection.createDataChannel('datachannel', this.RTCDataChannelOptions);
 
     /* on data channel */
-    Peer.connection.addEventListener('datachannel', RTCDataChannelEvent => {
+    PEER.connection.addEventListener('datachannel', RTCDataChannelEvent => {
       if (!RTCDataChannelEvent.channel) return;
 
       /* set data channel */
-      Peer.channel = RTCDataChannelEvent.channel;
+      PEER.channel = RTCDataChannelEvent.channel;
     });
 
     /* on ice candidate */
-    Peer.connection.addEventListener('icecandidate', RTCPeerConnectionIceEvent => {
+    PEER.connection.addEventListener('icecandidate', RTCPeerConnectionIceEvent => {
       if (!RTCPeerConnectionIceEvent.candidate) return;
 
       /* send ice candidate to peer */
@@ -170,13 +174,13 @@ export default class DataChannel extends EventTarget {
     });
 
     /* negotiation needed */
-    Peer.connection.addEventListener('negotiationneeded', () => {
+    PEER.connection.addEventListener('negotiationneeded', () => {
       /* create offer description */
-      Peer.connection
+      PEER.connection
         .createOffer()
         .then(LocalRTCSessionDescription => {
           /* set local description */
-          Peer.connection.setLocalDescription(LocalRTCSessionDescription);
+          PEER.connection.setLocalDescription(LocalRTCSessionDescription);
 
           /* send offer description to peer */
           this.signalingServer.emit('peerOffer', peerId, LocalRTCSessionDescription);
@@ -186,25 +190,24 @@ export default class DataChannel extends EventTarget {
             new ErrorEvent('dataChannelError', {
               message: 'Failed to connect to another users',
               filename: 'DataChannel.js',
-              error: new Error('Failed to connect to another users'),
             }),
           );
         });
     });
 
     /* handle data channel opening */
-    Peer.channel.addEventListener('open', () => {
+    PEER.channel.addEventListener('open', () => {
       this.dispatchEvent(
         new CustomEvent('dataChannelMessage', {
           detail: { action: 'peerConnect', peerId },
         }),
       );
 
-      Peer.channel.addEventListener('message', this.onMessage);
+      PEER.channel.addEventListener('message', this.onMessage);
     });
 
     /* handle data channel closing */
-    Peer.channel.addEventListener('close', () => {
+    PEER.channel.addEventListener('close', () => {
       console.log(peerId, 'data channel closes');
     });
   };
@@ -213,15 +216,16 @@ export default class DataChannel extends EventTarget {
     /* the peer might not exists yet becaouse 'peerUpdate' can occure before 'peerOffer' */
     if (!this.peers[peerId]) {
       /* create the user */
-      this.peers[peerId] = { ...this.newPeerTemplate };
+      this.peers[peerId] = { ...this.newRTCPeerTemplate };
     }
 
-    const userData = JSON.parse(data);
+    const { name, uri } = JSON.parse(data);
 
-    this.users.set(peerId, {
-      name: userData.name,
-      uri: userData.uri,
-    });
+    this.dispatchEvent(
+      new CustomEvent('dataChannelPeerData', {
+        detail: { peer: { id: peerId, name, uri } },
+      }),
+    );
   };
 
   ssOnPeerDisconnect = peerId => {
@@ -253,15 +257,16 @@ export default class DataChannel extends EventTarget {
         new ErrorEvent('dataChannelError', {
           message: data,
           filename: 'DataChannel.js',
-          error: new Error(data),
         }),
       );
     }
 
     if (label === 'roomFull') {
-      this.dispatchEvent(new CustomEvent('dataChannelMessage', {
-        detail: { action: 'roomFull' },
-      }));
+      this.dispatchEvent(
+        new CustomEvent('dataChannelMessage', {
+          detail: { action: 'roomFull' },
+        }),
+      );
     }
 
     if (label === 'allUsersReady') {
@@ -286,8 +291,9 @@ export default class DataChannel extends EventTarget {
   };
 
   userReady = (name, uri) => {
-    this.me.name = name;
-    this.me.uri = uri;
+    this.dispatchEvent(
+      new CustomEvent('dataChannelPeerData', { detail: { peer: { me: true, name, uri } } }),
+    );
 
     this.signalingServer.emit('userReady', JSON.stringify({ name, uri }));
   };
