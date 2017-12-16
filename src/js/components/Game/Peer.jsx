@@ -5,10 +5,10 @@ import { inject, observer } from 'mobx-react';
 import Crown from './Crown.jsx';
 
 const Peer = ({
-  id, sphere, score, crown, king,
+  gameStore, id, sphere, score, crown,
 }) => (
   <Fragment>
-    {king ? <Crown position={crown.position} /> : null}
+    {gameStore.currentLeaders.indexOf(id) !== -1 ? <Crown position={crown.position} /> : null}
     <a-text
       wrap-count="20"
       rotation="0 180 0"
@@ -21,11 +21,11 @@ const Peer = ({
 );
 
 Peer.propTypes = {
+  gameStore: PropTypes.object.isRequired,
   id: PropTypes.string.isRequired,
   sphere: PropTypes.string.isRequired,
   crown: PropTypes.string.isRequired,
   score: PropTypes.object.isRequired,
-  king: PropTypes.bool.isRequired,
 };
 
-export default inject('position')(observer(Peer));
+export default inject('gameStore')(observer(Peer));

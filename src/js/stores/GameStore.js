@@ -152,7 +152,8 @@ export default class GameStore extends EventTarget {
       } else {
         // update peer
         const peer = this.peers.get(id);
-        peer.update({ name, uri });
+        peer.setName(name);
+        peer.setUri(uri);
       }
     }
   };
