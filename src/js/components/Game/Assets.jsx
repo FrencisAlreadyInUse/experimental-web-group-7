@@ -23,7 +23,7 @@ const Assets = ({ gameStore }) => (
       <Asset
         key={peer.id}
         id={`bowling-ball-peer-${peer.id}`}
-        src={peer.uri || gameStore.defaultBallDataURI}
+        src={peer.uri}
       />
     ))}
   </a-assets>

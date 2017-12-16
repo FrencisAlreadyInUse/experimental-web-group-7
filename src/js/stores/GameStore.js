@@ -80,8 +80,12 @@ export default class GameStore extends EventTarget {
     this.soundCanPlay = true;
     this.$conesHitSound = document.getElementById('cones-hit-sound');
 
-    this.defaultBallDataURI =
-      'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+    this.peerPositions = [
+      { ball: '-5.3 .5 6.5', score: '-5.3 .5 6.5', crown: '-5.3 .5 6.5' },
+      { ball: '-5.3 .5 9', score: '-5.3 2.5 9', crown: '-5.3 2.5 9' },
+      { ball: '5.3 .5 9', score: '5.3 2.5 9', crown: '5.3 2.5 9' },
+      { ball: '5.3 .5 6.5', score: '5.3 2.5 6.5', crown: '5.3 2.5 6.5' },
+    ];
 
     if (process.env.NODE_ENV === 'development') {
       window.peers = this.peers;
@@ -120,13 +124,20 @@ export default class GameStore extends EventTarget {
     } else {
       // it's a friend
 
+      const nthPeer = this.peers.size;
       const peerId = peerData.id;
 
       const currentPeer = this.peers.get(peerId) || {};
-      const updatedPeer = {
+      const position = this.peerPositions[nthPeer];
+
+      // is observable
+      const updatedPeer = observable({
         ...currentPeer,
         ...peerData,
-      };
+        ball: position.ball,
+        crown: position.crown,
+        score: { position: position.score, value: 0 },
+      });
       this.peers.set(peerId, updatedPeer);
     }
   };
@@ -138,7 +149,7 @@ export default class GameStore extends EventTarget {
     if (eventAction === 'peerDisconnect') {
       this.peers.delete(event.detail.peerId);
     }
-  }
+  };
 
   @action
   updateScores = score => {
