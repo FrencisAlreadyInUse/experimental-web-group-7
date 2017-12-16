@@ -32,7 +32,6 @@ export default class SetupStore {
     this.minimumRoomVisible = 1000;
 
     this.dataChannel
-      .on('dataChannelError', console.error)
       .on('dataChannelSuccess', this.dataChannelOnSuccess)
       .on('dataChannelMessage', this.dataChannelOnMessage);
   }

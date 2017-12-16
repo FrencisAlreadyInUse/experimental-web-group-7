@@ -48,8 +48,8 @@ const generateWebpackConfig = async () => {
   const config = {
     entry: {
       bundle: [_`src/js/index.js`, _`src/css/index.css`],
-      'vendors-game': [_`src/js/vendors.game.js`],
-      'vendors-channel': [_`src/js/vendors.channel.js`],
+      'vendors-game': [_`src/js/vendors/game.js`],
+      'vendors-channel': [_`src/js/vendors/channel.js`],
     },
     output: {
       filename: 'js/[name].js',

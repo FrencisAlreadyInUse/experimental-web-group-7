@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 
+import wait from './../../functions/wait.js';
 import Screen from './Screen.jsx';
 
 const ScreenRoomJoin = ({ setupStore }) => {
@@ -14,9 +15,9 @@ const ScreenRoomJoin = ({ setupStore }) => {
   };
 
   if (setupStore.sections.roomJoin.active) {
-    setTimeout(() => {
-      $input.focus();
-    }, 500);
+    wait(500, () => {
+      if ($input) $input.focus();
+    });
   }
 
   return (
@@ -26,7 +27,7 @@ const ScreenRoomJoin = ({ setupStore }) => {
       </header>
       <div className="section__content">
         <h2 className="title">
-            You&#39;re about to join the{' '}
+          You&#39;re about to join the{' '}
           <form className="blobs" autoComplete="off" onSubmit={handleJoinRoom}>
             <input
               className="input stroke input--text input--stroke input--underline"
@@ -35,15 +36,15 @@ const ScreenRoomJoin = ({ setupStore }) => {
               onChange={setupStore.updateRoomName}
               autoCorrect="off"
               autoCapitalize="off"
-              ref={el => $input = el}
+              ref={el => ($input = el)}
             />
           </form>{' '}
-            room
+          room
         </h2>
       </div>
       <div className="btn-wrapper">
         <button className="btn" onClick={handleJoinRoom}>
-            Join Room
+          Join Room
         </button>
       </div>
     </Screen>

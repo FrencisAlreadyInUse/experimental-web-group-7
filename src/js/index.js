@@ -42,7 +42,9 @@ const init = () => {
 
   renderSetup(setupStore);
 
-  dataChannel.on('dataChannelStartGame', () => renderGame(gameStore));
+  dataChannel
+    .on('dataChannelStartGame', () => renderGame(gameStore))
+    .on('dataChannelError', console.error);
 
   if (process.env.NODE_ENV === 'development') {
     window.start = () => renderGame(gameStore);

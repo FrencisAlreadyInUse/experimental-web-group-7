@@ -61,7 +61,7 @@ export default class GameStore extends EventTarget {
     super();
 
     this.dataChannel = dataChannel;
-    this.dataChannel.on('dataChannelError', console.error);
+    this.dataChannel.on('dataChannelPeerData', this.peerDataUpdate);
 
     this.currentFrame = 1;
     this.currentShot = 1;
@@ -69,6 +69,12 @@ export default class GameStore extends EventTarget {
 
     this.soundCanPlay = true;
     this.$conesHitSound = document.getElementById('cones-hit-sound');
+  }
+
+  @action
+  peerDataUpdate = event => {
+    const { peer } = event.detail;
+    console.log(peer);
   }
 
   @action
@@ -127,7 +133,7 @@ export default class GameStore extends EventTarget {
     this.cones.forEach(cone => {
       cone.rendered = true;
     });
-  }
+  };
 
   @action
   endFrame = () => {

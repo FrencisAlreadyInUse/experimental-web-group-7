@@ -10,7 +10,9 @@ const ScreenRoomCreate = ({ setupStore }) => {
   let $input;
 
   if (setupStore.sections.roomCreate.active) {
-    wait(500, () => $input.focus());
+    wait(500, () => {
+      if ($input) $input.focus();
+    });
   }
 
   return (
@@ -31,7 +33,7 @@ const ScreenRoomCreate = ({ setupStore }) => {
               min="2"
               max="5"
               onChange={setupStore.updateRoomSize}
-              ref={el => $input = el}
+              ref={el => ($input = el)}
             />
           </span>
           <span>players</span>
@@ -39,7 +41,7 @@ const ScreenRoomCreate = ({ setupStore }) => {
       </div>
       <div className="btn-wrapper">
         <button className="btn" onClick={setupStore.openRoom}>
-            Open Room
+          Open Room
         </button>
       </div>
     </Screen>
