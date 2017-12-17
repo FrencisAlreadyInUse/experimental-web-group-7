@@ -35,6 +35,18 @@ export default class GameStore extends EventTarget {
     this.soundCanPlay = true;
     this.$conesHitSound = document.getElementById('cones-hit-sound');
 
+    this.me = new Peer('me');
+
+    this.peers = new Map();
+
+    this.scores = {
+      one: '-',
+      two: '-',
+      current: 0,
+      total: 0,
+      tempTotal: 0,
+    };
+
     this.cones = [
       { id: 1, position: '0 -2 -29', rendered: true },
       { id: 2, position: '.5 -2 -32', rendered: true },
@@ -61,29 +73,12 @@ export default class GameStore extends EventTarget {
       { id: 10, position: '3.7 0.40 -3.75', hit: false },
     ];
 
-    this.me = new Peer('me');
-
-    this.scores = {
-      one: '-',
-      two: '-',
-      current: 0,
-      total: 0,
-      tempTotal: 0,
-    };
-
-    this.peers = new Map();
-
     this.peerPositions = [
       { ball: '-5.3 .5 6.5', score: '-5.3 2.5 6.5', crown: '-5.3 1.2 6.5' },
       { ball: '-5.3 .5 9', score: '-5.3 2.5 9', crown: '-5.3 1.2 9' },
       { ball: '5.3 .5 9', score: '5.3 2.5 9', crown: '5.3 1.2 9' },
       { ball: '5.3 .5 6.5', score: '5.3 2.5 6.5', crown: '5.3 1.2 6.5' },
     ];
-
-    if (process.env.NODE_ENV === 'development') {
-      window.peers = this.peers;
-      window.me = this.me;
-    }
   }
 
   @computed
@@ -114,7 +109,9 @@ export default class GameStore extends EventTarget {
 
     peers.push(this.me);
 
-    const { score: leaderScore } = peers.reduce((prev, current) => ((prev.score > current.score) ? prev : current));
+    const { score: leaderScore } = peers.reduce(
+      (prev, current) => (prev.score > current.score ? prev : current),
+    );
 
     // return an array with all the id's of peers with the leaderScore (in case of multiple same scores)
     return peers.filter(peer => peer.score === leaderScore).map(peer => peer.id);
@@ -180,6 +177,11 @@ export default class GameStore extends EventTarget {
     }
 
     this.scores.total = this.scores.tempTotal + score;
+
+    this.dataChannel.sendMessage('peerScoreUpdate', {
+      id: this.dataChannel.myId,
+      score: this.scores.total,
+    });
   };
 
   @action
@@ -265,6 +267,11 @@ export default class GameStore extends EventTarget {
     this.ballDirection = map(this.diractionIndicatorPosition, -1.45, 1.22, -3.45, 3.22);
     this.renderThrowButton = false;
     this.renderDirectionIndicator = false;
+
+    this.dataChannel.sendMessage('peerBallThrow', {
+      id: this.dataChannel.myId,
+      direction: this.ballDirection,
+    });
 
     this.playerCanThrow = false;
     this.dispatchEvent(new Event('addCollisionDetection'));

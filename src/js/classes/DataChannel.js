@@ -37,21 +37,25 @@ export default class DataChannel extends EventTarget {
       .on('signalingServerMessage', this.ssOnSignalingServerMessage);
   };
 
-  sendMessage = (message) => {
+  sendMessage = (label, message) => {
     const peerKeys = Object.keys(this.peers);
 
     peerKeys.forEach(peerId => {
       if (!this.peers[peerId].channel) return;
       if (this.peers[peerId].channel.readyState !== 'open') return;
 
-      this.peers[peerId].channel.send(JSON.stringify(message));
+      this.peers[peerId].channel.send(JSON.stringify({ label, message }));
     });
   };
 
-  onMessage = message => console.log(message);
+  onMessage = MessageEvent => {
+    const data = JSON.parse(MessageEvent.data);
+    console.log(data.label, data.message);
+  }
 
   ssOnConnection = () => {
-    console.log(this.signalingServer.id);
+    this.myId = this.signalingServer.id;
+    console.log(this.myId);
   };
 
   ssOnPeerIce = (peerId, RTCIceCandidate) => {
@@ -243,7 +247,6 @@ export default class DataChannel extends EventTarget {
   };
 
   ssOnSignalingServerMessage = (label, data) => {
-    //
     if (label === 'roomCreated' || label === 'roomJoined' || label === 'roomOpened') {
       this.dispatchEvent(
         new CustomEvent('dataChannelSuccess', {

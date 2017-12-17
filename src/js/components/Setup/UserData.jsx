@@ -104,6 +104,7 @@ const ScreenUserData = ({ setupStore }) => {
               <input
                 ref={el => ($fileInput = el)}
                 type="file"
+                accept="image/*"
                 className="input--file--inner"
                 onChange={handleFileInputChange}
               />
