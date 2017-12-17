@@ -9,6 +9,7 @@
   --color-beige-light: #fff9e6;
 
   --text: 2.5rem;
+  --text--small: 1.5rem;
 
   --title: 7.4rem;
   --title--big: 9.5rem;
@@ -278,6 +279,22 @@ body,
   opacity: .5;
 }
 
+.btn--about {
+  border: none;
+  position: absolute;
+  font-size: 2rem;
+  top: 1rem;
+  left: 1rem;
+}
+
+.about--content {
+  max-width: 60rem;
+}
+
+.about--sub {
+  line-height: 130%;
+}
+
 .blobs,
 .blob {
   position: relative;
@@ -485,6 +502,10 @@ body,
 
   .t-center {
     text-align: center;
+  }
+
+  .btn--about {
+    font-size: var(--text--small);
   }
 
 }

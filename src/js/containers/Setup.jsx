@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Provider, observer } from 'mobx-react';
 
+import About from './../components/Setup/About.jsx';
 import Start from './../components/Setup/Start.jsx';
 import Create from './../components/Setup/RoomCreate.jsx';
 import Created from './../components/Setup/RoomCreated.jsx';
@@ -17,6 +18,7 @@ const Setup = ({ setupStore }) => (
         <h1 className="main-title">Virtual Lanes — VR Bowling Game</h1>
       </header>
       <Start />
+      <About />
       <Create />
       <Created />
       <Join />
