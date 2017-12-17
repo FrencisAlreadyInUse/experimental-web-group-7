@@ -15,6 +15,10 @@ const $deferredScripts = Array.from(document.getElementsByClassName('deferred-sc
 const $setupMount = document.querySelector('.setup-mount');
 const $gameMount = document.querySelector('.game-mount');
 
+let dataChannel;
+let setupStore;
+let gameStore;
+
 const loadGame = () => {
   $deferredScripts.forEach($script => {
     $script.src = $script.dataset.src;
@@ -23,7 +27,7 @@ const loadGame = () => {
   document.body.removeChild($setupMount);
 };
 
-const renderGame = gameStore => {
+const renderGame = () => {
   $gameMount.addEventListener('loaded', () => {
     gameStore.init();
   });
@@ -31,23 +35,32 @@ const renderGame = gameStore => {
   render(<Game gameStore={gameStore} />, $gameMount, loadGame);
 };
 
-const renderSetup = setupStore => {
+const renderSetup = () => {
   render(<Setup setupStore={setupStore} />, $setupMount);
 };
 
+const logSocketId = () => {
+  console.log('%c socket id ', 'background:lightgreen', dataChannel.myId);
+};
+
+const logError = (...error) => {
+  console.error('%c error ', 'background:pink', ...error);
+};
+
 const init = () => {
-  const dataChannel = new DataChannel();
-  const setupStore = new SetupStore(dataChannel);
-  const gameStore = new GameStore(dataChannel);
+  dataChannel = new DataChannel();
+  setupStore = new SetupStore(dataChannel);
+  gameStore = new GameStore(dataChannel);
 
   renderSetup(setupStore);
 
   dataChannel
-    .on('dataChannelStartGame', () => renderGame(gameStore))
-    .on('dataChannelError', console.error);
+    .on('ssRoomUsersReady', renderGame)
+    .on('dcSocketConnection', logSocketId)
+    .on('dcError', logError);
 
   if (process.env.NODE_ENV === 'development') {
-    window.start = () => renderGame(gameStore);
+    window.start = renderGame;
     window.setupStore = setupStore;
     window.gameStore = gameStore;
     window.toJS = toJS;

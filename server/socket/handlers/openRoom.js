@@ -3,7 +3,7 @@ module.exports = function openRoom(roomName, roomSize) {
 
   // return if the room doesn't exist
   if (!this.store.roomExists(roomName)) {
-    this.ss.to(clientId, 'signalingServerMessage', 'roomError', "This room doesn't exist.");
+    this.ss.to(clientId, 'roomError', "This room doesn't exist.");
     return;
   }
 
@@ -11,5 +11,5 @@ module.exports = function openRoom(roomName, roomSize) {
   roomInstance.open = true;
   roomInstance.maxUsers = parseInt(roomSize, 10);
 
-  this.ss.to(clientId, 'signalingServerMessage', 'roomOpened', { room: roomName });
+  this.ss.to(clientId, 'roomOpened', { name: roomName });
 };

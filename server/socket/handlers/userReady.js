@@ -16,17 +16,17 @@ module.exports = function userReady(data) {
 
   // send user data to other user
   const otherUsers = room.otherUsers(clientId);
-  otherUsers.forEach((peerId) => {
+  otherUsers.forEach(peerId => {
     this.ss.to(peerId, 'peerUpdate', clientId, data);
 
     // if the room is full and all users are ready tell peers that game can start
     if (room.isFull && room.allUsersReady) {
-      this.ss.to(peerId, 'signalingServerMessage', 'allUsersReady');
+      this.ss.to(peerId, 'roomUsersReady');
     }
   });
 
   // also send to clientId that game can start
   if (room.isFull && room.allUsersReady) {
-    this.ss.to(clientId, 'signalingServerMessage', 'allUsersReady');
+    this.ss.to(clientId, 'roomUsersReady');
   }
 };

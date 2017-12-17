@@ -22,20 +22,23 @@ export default class DataChannel extends EventTarget {
 
     this.signalingServer = io.connect('/');
 
-    this.setSignalingSocketEventHandlers();
-  }
-
-  setSignalingSocketEventHandlers = () => {
     this.signalingServer
-      .on('connect', this.ssOnConnection)
-      .on('peerIce', this.ssOnPeerIce)
-      .on('peerAnswer', this.ssOnPeerAnswer)
-      .on('peerOffer', this.ssOnPeerOffer)
-      .on('peerWantsACall', this.ssOnPeerWantsACall)
-      .on('peerUpdate', this.ssOnPeerUpdate)
-      .on('peerDisconnect', this.ssOnPeerDisconnect)
-      .on('signalingServerMessage', this.ssOnSignalingServerMessage);
-  };
+      .on('connect', this.onSSConnect)
+
+      .on('peerIce', this.onSSPeerIce)
+      .on('peerAnswer', this.onSSPeerAnswer)
+      .on('peerOffer', this.onSSPeerOffer)
+      .on('peerWantsACall', this.onSSPeerWantsCall)
+      .on('peerUpdate', this.onSSPeerUpdate)
+      .on('peerDisconnect', this.onSSPeerDisconnect)
+
+      .on('roomError', this.onSSRoomError)
+      .on('roomFull', this.onSSRoomFull)
+      .on('roomUsersReady', this.onSSRoomUsersReady)
+      .on('roomCreated', this.onSSRoomCreated)
+      .on('roomJoined', this.onSSRoomJoined)
+      .on('roomOpened', this.onSSRoomOpened);
+  }
 
   sendMessage = (label, message) => {
     const peerKeys = Object.keys(this.peers);
@@ -44,41 +47,46 @@ export default class DataChannel extends EventTarget {
       if (!this.peers[peerId].channel) return;
       if (this.peers[peerId].channel.readyState !== 'open') return;
 
-      this.peers[peerId].channel.send(JSON.stringify({ label, message }));
+      this.peers[peerId].channel.send(JSON.stringify({ label, peerId: this.myId, message }));
     });
   };
 
   onMessage = MessageEvent => {
     const data = JSON.parse(MessageEvent.data);
-    console.log(data.label, data.message);
-  }
 
-  ssOnConnection = () => {
-    this.myId = this.signalingServer.id;
-    console.log(this.myId);
+    this.dispatchEvent(
+      new CustomEvent('rtcPeerMessage', {
+        detail: data,
+      }),
+    );
   };
 
-  ssOnPeerIce = (peerId, RTCIceCandidate) => {
+  onSSConnect = () => {
+    this.myId = this.signalingServer.id;
+    this.dispatchEvent(new CustomEvent('dcSocketConnection'));
+  };
+
+  onSSPeerIce = (peerId, RTCIceCandidate) => {
     if (!RTCIceCandidate.candidate) return;
     if (!this.peers[peerId]) return;
 
     this.peers[peerId].connection.addIceCandidate(RTCIceCandidate);
   };
 
-  ssOnPeerAnswer = (peerId, RemoteRTCSessionDescription) => {
+  onSSPeerAnswer = (peerId, RemoteRTCSessionDescription) => {
     if (!this.peers[peerId]) return;
 
     this.peers[peerId].connection.setRemoteDescription(RemoteRTCSessionDescription);
   };
 
-  ssOnPeerOffer = (peerId, RemoteRTCSessionDescription) => {
+  onSSPeerOffer = (peerId, RemoteRTCSessionDescription) => {
     if (!this.peers[peerId]) {
       // if there is no peer yet, create an empty one
       this.peers[peerId] = { ...this.newRTCPeerTemplate };
 
       this.dispatchEvent(
-        new CustomEvent('dataChannelPeerData', {
-          detail: { peer: { id: peerId } },
+        new CustomEvent('ssPeerData', {
+          detail: { id: peerId },
         }),
       );
     } else if (this.peers[peerId].connection) {
@@ -108,7 +116,7 @@ export default class DataChannel extends EventTarget {
       })
       .catch(() => {
         this.dispatchEvent(
-          new ErrorEvent('dataChannelError', {
+          new ErrorEvent('dcError', {
             message: 'Failed to connect to another users',
             filename: 'DataChannel.js',
           }),
@@ -138,20 +146,20 @@ export default class DataChannel extends EventTarget {
 
       /* handle channel closing */
       PEER.channel.addEventListener('close', () => {
-        console.log(peerId, 'data channel closes');
+        console.log(peerId, 'closed');
       });
     });
   };
 
-  ssOnPeerWantsACall = peerId => {
+  onSSPeerWantsCall = peerId => {
     if (this.peers[peerId]) return;
 
     this.peers[peerId] = { ...this.newRTCPeerTemplate };
     const PEER = this.peers[peerId];
 
     this.dispatchEvent(
-      new CustomEvent('dataChannelPeerData', {
-        detail: { peer: { id: peerId } },
+      new CustomEvent('ssPeerData', {
+        detail: { id: peerId },
       }),
     );
 
@@ -191,7 +199,7 @@ export default class DataChannel extends EventTarget {
         })
         .catch(() => {
           this.dispatchEvent(
-            new ErrorEvent('dataChannelError', {
+            new ErrorEvent('dcError', {
               message: 'Failed to connect to another users',
               filename: 'DataChannel.js',
             }),
@@ -201,22 +209,18 @@ export default class DataChannel extends EventTarget {
 
     /* handle data channel opening */
     PEER.channel.addEventListener('open', () => {
-      this.dispatchEvent(
-        new CustomEvent('dataChannelMessage', {
-          detail: { action: 'peerConnect', peerId },
-        }),
-      );
+      this.dispatchEvent(new CustomEvent('rtcPeerConnect'));
 
       PEER.channel.addEventListener('message', this.onMessage);
     });
 
     /* handle data channel closing */
     PEER.channel.addEventListener('close', () => {
-      console.log(peerId, 'data channel closes');
+      console.log(peerId, 'closed');
     });
   };
 
-  ssOnPeerUpdate = (peerId, data) => {
+  onSSPeerUpdate = (peerId, data) => {
     /* the peer might not exists yet becaouse 'peerUpdate' can occure before 'peerOffer' */
     if (!this.peers[peerId]) {
       /* create the user */
@@ -226,13 +230,13 @@ export default class DataChannel extends EventTarget {
     const { name, uri } = JSON.parse(data);
 
     this.dispatchEvent(
-      new CustomEvent('dataChannelPeerData', {
-        detail: { peer: { id: peerId, name, uri } },
+      new CustomEvent('ssPeerData', {
+        detail: { id: peerId, name, uri },
       }),
     );
   };
 
-  ssOnPeerDisconnect = peerId => {
+  onSSPeerDisconnect = peerId => {
     if (!this.peers[peerId]) return;
 
     this.peers[peerId].channel.close();
@@ -240,41 +244,51 @@ export default class DataChannel extends EventTarget {
     delete this.peers[peerId];
 
     this.dispatchEvent(
-      new CustomEvent('dataChannelMessage', {
-        detail: { action: 'peerDisconnect', peerId },
+      new CustomEvent('rtcPeerDisconnect', {
+        detail: { id: peerId },
       }),
     );
   };
 
-  ssOnSignalingServerMessage = (label, data) => {
-    if (label === 'roomCreated' || label === 'roomJoined' || label === 'roomOpened') {
-      this.dispatchEvent(
-        new CustomEvent('dataChannelSuccess', {
-          detail: { action: label, room: data },
-        }),
-      );
-    }
+  onSSRoomError = data => {
+    this.dispatchEvent(
+      new ErrorEvent('ssError', {
+        message: data,
+        filename: 'DataChannel.js',
+      }),
+    );
+  };
 
-    if (label === 'roomError') {
-      this.dispatchEvent(
-        new ErrorEvent('dataChannelError', {
-          message: data,
-          filename: 'DataChannel.js',
-        }),
-      );
-    }
+  onSSRoomCreated = room => {
+    this.dispatchEvent(
+      new CustomEvent('ssRoomCreated', {
+        detail: room.name,
+      }),
+    );
+  };
 
-    if (label === 'roomFull') {
-      this.dispatchEvent(
-        new CustomEvent('dataChannelMessage', {
-          detail: { action: 'roomFull' },
-        }),
-      );
-    }
+  onSSRoomJoined = room => {
+    this.dispatchEvent(
+      new CustomEvent('ssRoomJoined', {
+        detail: room.name,
+      }),
+    );
+  };
 
-    if (label === 'allUsersReady') {
-      this.dispatchEvent(new CustomEvent('dataChannelStartGame'));
-    }
+  onSSRoomOpened = room => {
+    this.dispatchEvent(
+      new CustomEvent('ssRoomOpened', {
+        detail: room.name,
+      }),
+    );
+  };
+
+  onSSRoomFull = () => {
+    this.dispatchEvent(new CustomEvent('ssRoomFull'));
+  };
+
+  onSSRoomUsersReady = () => {
+    this.dispatchEvent(new CustomEvent('ssRoomUsersReady'));
   };
 
   createRoom = () => {
@@ -294,9 +308,7 @@ export default class DataChannel extends EventTarget {
   };
 
   userReady = (name, uri) => {
-    this.dispatchEvent(
-      new CustomEvent('dataChannelPeerData', { detail: { peer: { me: true, name, uri } } }),
-    );
+    this.dispatchEvent(new CustomEvent('ssPeerData', { detail: { me: true, name, uri } }));
 
     this.signalingServer.emit('userReady', JSON.stringify({ name, uri }));
   };

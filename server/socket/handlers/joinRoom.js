@@ -3,7 +3,7 @@ module.exports = function joinRoom(roomName) {
 
   // return if the room doesn't exist
   if (!this.store.roomExists(roomName)) {
-    this.ss.to(clientId, 'signalingServerMessage', 'roomError', "This room doesn't exist.");
+    this.ss.to(clientId, 'roomError', "This room doesn't exist.");
     return;
   }
 
@@ -11,13 +11,13 @@ module.exports = function joinRoom(roomName) {
 
   // if the room is full return
   if (roomInstance.isFull) {
-    this.ss.to(clientId, 'signalingServerMessage', 'roomError', 'This room is full.');
+    this.ss.to(clientId, 'roomError', 'This room is full.');
     return;
   }
 
   // if the room is closed return
   if (!roomInstance.open) {
-    this.ss.to(clientId, 'signalingServerMessage', 'roomError', 'This room is closed.');
+    this.ss.to(clientId, 'roomError', 'This room is closed.');
     return;
   }
 
@@ -28,14 +28,10 @@ module.exports = function joinRoom(roomName) {
   this.store.users[clientId] = roomName;
 
   // send success message to user
-  this.ss.to(clientId, 'signalingServerMessage', 'roomJoined', {
-    name: roomName,
-    userCount: roomInstance.amountUsers,
-    maxUsers: roomInstance.maxUsers,
-  });
+  this.ss.to(clientId, 'roomJoined', { name: roomName });
 
   // get all the other users in the room
-  roomInstance.otherUsers(clientId).forEach((userId) => {
+  roomInstance.otherUsers(clientId).forEach(userId => {
     // send to all the users in the room that there is a new user
     this.ss.to(userId, 'peerWantsACall', this.clientSocket.id);
 

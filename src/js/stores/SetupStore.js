@@ -32,8 +32,13 @@ export default class SetupStore {
     this.minimumRoomVisible = 1000;
 
     this.dataChannel
-      .on('dataChannelSuccess', this.dataChannelOnSuccess)
-      .on('dataChannelMessage', this.dataChannelOnMessage);
+      .on('ssRoomCreated', this.onSSRoomCreated)
+      .on('ssRoomJoined', this.onSSRoomJoined)
+      .on('ssRoomOpened', this.onSSRoomOpened)
+      .on('ssRoomFull', this.onSSRoomFull)
+
+      .on('rtcPeerConnect', this.onRTCPeerConnect)
+      .on('rtcPeerDisconnect', this.onRTCPeerDisconnect);
   }
 
   @computed
@@ -127,7 +132,7 @@ export default class SetupStore {
   };
 
   @action
-  userReady = (uri) => {
+  userReady = uri => {
     this.dataChannel.userReady(this.user.name, uri);
     this.goToSection('waiting');
   };
@@ -148,43 +153,34 @@ export default class SetupStore {
     this.user.name = event.target.value;
   };
 
-  dataChannelOnSuccess = event => {
-    const { action: eventAction } = event.detail;
+  onSSRoomCreated = event => {
+    this.room.userCount += 1;
+    this.room.name = event.detail;
 
-    if (eventAction === 'roomCreated') {
-      this.room.userCount += 1;
-      this.room.name = event.detail.room.name;
+    this.goToSection('roomCreate');
+  };
 
-      this.goToSection('roomCreate');
-    }
+  onSSRoomJoined = () => {
+    this.goToSection('roomJoined');
+  };
 
-    if (eventAction === 'roomJoined') {
-      this.goToSection('roomJoined');
-    }
+  onSSRoomOpened = () => {
+    this.goToSection('roomCreated');
+  };
 
-    if (eventAction === 'roomOpened') {
-      this.goToSection('roomCreated');
+  onSSRoomFull = () => {
+    this.goToSection('userData');
+  };
+
+  onRTCPeerConnect = () => {
+    this.room.userCount += 1;
+
+    if (this.room.userCount === parseInt(this.room.size, 10)) {
+      this.dataChannel.roomFull(this.room.name);
     }
   };
 
-  dataChannelOnMessage = event => {
-    const { action: eventAction } = event.detail;
-
-    if (eventAction === 'peerConnect') {
-      this.room.userCount += 1;
-
-      if (this.room.userCount === parseInt(this.room.size, 10)) {
-        this.dataChannel.roomFull(this.room.name);
-        this.goToSection('userData');
-      }
-    }
-
-    if (eventAction === 'peerDisconnect') {
-      this.room.userCount = this.room.userCount > 0 ? this.room.userCount - 1 : 0;
-    }
-
-    if (eventAction === 'roomFull') {
-      this.goToSection('userData');
-    }
+  onRTCPeerDisconnect = () => {
+    this.room.userCount = this.room.userCount > 0 ? this.room.userCount - 1 : 0;
   };
 }

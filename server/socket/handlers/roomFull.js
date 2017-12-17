@@ -3,7 +3,7 @@ module.exports = function roomFull(roomName) {
 
   // return if the room doesn't exist
   if (!this.store.roomExists(roomName)) {
-    this.ss.to(clientId, 'signalingServerMessage', 'roomError', "This room doesn't exist.");
+    this.ss.to(clientId, 'roomError', "This room doesn't exist.");
     return;
   }
 
@@ -12,6 +12,9 @@ module.exports = function roomFull(roomName) {
   // get all the other users in the room
   roomInstance.otherUsers(clientId).forEach(userId => {
     // send to all the users in the room that they can go to user data section
-    this.ss.to(userId, 'signalingServerMessage', 'roomFull');
+    this.ss.to(userId, 'roomFull');
   });
+
+  // also send the client who triggered roomFull
+  this.ss.to(clientId, 'roomFull');
 };

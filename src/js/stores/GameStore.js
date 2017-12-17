@@ -25,8 +25,9 @@ export default class GameStore extends EventTarget {
 
     this.dataChannel = dataChannel;
     this.dataChannel
-      .on('dataChannelPeerData', this.ssOnPeerData)
-      .on('dataChannelMessage', this.ssOnMessage);
+      .on('ssPeerData', this.onSSPeerData)
+      .on('rtcPeerDisconnect', this.onRTCPeerDisconnect)
+      .on('rtcPeerMessage', this.onRTCPeerMessage);
 
     this.currentFrame = 1;
     this.currentShot = 1;
@@ -118,19 +119,10 @@ export default class GameStore extends EventTarget {
   }
 
   @action
-  addPeer = peerData => {
-    const positions = this.peerPositions[this.peers.size];
-    const { ball: ballPosition, score: scorePosition, crown: crownPosition } = positions;
+  onSSPeerData = event => {
+    const peerData = event.detail;
 
-    const { id, name, uri } = peerData;
-    const peer = new Peer(id, name, uri, ballPosition, scorePosition, crownPosition);
-
-    this.peers.set(id, peer);
-  };
-
-  @action
-  ssOnPeerData = event => {
-    const peerData = event.detail.peer;
+    console.log(peerData);
 
     if (peerData.me) {
       // it's me
@@ -155,12 +147,27 @@ export default class GameStore extends EventTarget {
   };
 
   @action
-  ssOnMessage = event => {
-    const eventAction = event.detail.action;
+  onRTCPeerDisconnect = event => {
+    this.peers.delete(event.detail.id);
+  };
 
-    if (eventAction === 'peerDisconnect') {
-      this.peers.delete(event.detail.peerId);
-    }
+  @action
+  onRTCPeerMessage = event => {
+    const data = event.detail;
+
+    if (data.label === 'peerBallThrow') console.log('peerBallUpdate');
+    if (data.label === 'peerScoreUpdate') console.log('peerScoreUpdate');
+  }
+
+  @action
+  addPeer = peerData => {
+    const positions = this.peerPositions[this.peers.size];
+    const { ball: ballPosition, score: scorePosition, crown: crownPosition } = positions;
+
+    const { id, name, uri } = peerData;
+    const peer = new Peer(id, name, uri, ballPosition, scorePosition, crownPosition);
+
+    this.peers.set(id, peer);
   };
 
   @action
@@ -179,7 +186,6 @@ export default class GameStore extends EventTarget {
     this.scores.total = this.scores.tempTotal + score;
 
     this.dataChannel.sendMessage('peerScoreUpdate', {
-      id: this.dataChannel.myId,
       score: this.scores.total,
     });
   };
@@ -269,7 +275,6 @@ export default class GameStore extends EventTarget {
     this.renderDirectionIndicator = false;
 
     this.dataChannel.sendMessage('peerBallThrow', {
-      id: this.dataChannel.myId,
       direction: this.ballDirection,
     });
 

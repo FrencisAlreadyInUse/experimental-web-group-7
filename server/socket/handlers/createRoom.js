@@ -6,7 +6,6 @@ module.exports = function createRoom() {
   if (this.store.roomsFull) {
     this.ss.to(
       clientId,
-      'signalingServerMessage',
       'roomError',
       "The server is at it's maximum amount of rooms. Try again later",
     );
@@ -24,5 +23,5 @@ module.exports = function createRoom() {
   this.store.users[clientId] = roomName;
 
   // send room name to user
-  this.ss.to(clientId, 'signalingServerMessage', 'roomCreated', { name: roomName });
+  this.ss.to(clientId, 'roomCreated', { name: roomName });
 };
