@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-111276613-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-111276613-1');
+  </script>
+  
+  <title>Virtual Lanes</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <script>
+    WebFontConfig = {
+      custom: {
+        families: ['px-grotesk'],
+        urls: ['assets/fonts/px-grotesk/px-grotesk.css'],
+      },
+    };
+    (function (d) {
+      let wf = d.createElement('script'),
+        s = d.scripts[0];
+      wf.async = true;
+      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js';
+      s.parentNode.insertBefore(wf, s);
+    }(document));
+  </script>
+
+  <meta name="theme-color" content="#3737dd">
+  <meta name="msapplication-navbutton-color" content="#3737dd">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="apple-touch-icon" sizes="57x57" href="assets/img/favicon/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="assets/img/favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="assets/img/favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="assets/img/favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="assets/img/favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="assets/img/favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon/favicon-16x16.png">
+  <link rel="manifest" href="assets/img/favicon/manifest.json">
+
+  <script type="text/javascript" src="/js/vendors-channel.js"></script>
+  <script type="text/javascript" data-src="/js/vendors-game.js" class="deferred-script"></script>
+  
+  <script async src="https://www.google-analytics.com/analytics.js"></script>
+</head>
+
+<body>
+  <audio id="cones-hit-sound" src="/assets/audio/cones-hit.mp3" preload='auto'></audio>
+  <section class="setup-mount"></section>
+  <a-scene class="game-mount" physics="iterations: 20; gravity: -3.5; friction: 0.1; restitution: 0.5;"></a-scene>
+  <script type="text/javascript" src="/js/bundle.js"></script>
+</body>
+
+</html>
