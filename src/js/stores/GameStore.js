@@ -114,6 +114,8 @@ export default class GameStore extends EventTarget {
       (prev, current) => (prev.score > current.score ? prev : current),
     );
 
+    if (leaderScore === 0) return [];
+
     // return an array with all the id's of peers with the leaderScore (in case of multiple same scores)
     return peers.filter(peer => peer.score === leaderScore).map(peer => peer.id);
   }
@@ -152,11 +154,33 @@ export default class GameStore extends EventTarget {
   };
 
   @action
+  onRTCPeerBallThrow = (peerId, message) => {
+    // ID (PERSON) , POS (ball)
+    console.log('[onRTCPeerBallThrow]', message);
+
+    //  @observable renderPeerBall = false;
+
+    // message.position
+  }
+
+  @action
+  onRTCPeerScoreUpdate = (peerId, message) => {
+    // ID (PERSON) , POS (ball)
+    console.log('[onRTCPeerScoreUpdate]', message);
+
+    // gets the ID of the Map()
+    const peer = this.peers.get(peerId);
+    if (!peer) return;
+
+    peer.setScore(message.score);
+  }
+
+  @action
   onRTCPeerMessage = event => {
     const data = event.detail;
 
-    if (data.label === 'peerBallThrow') console.log('peerBallUpdate');
-    if (data.label === 'peerScoreUpdate') console.log('peerScoreUpdate');
+    if (data.label === 'peerBallThrow') this.onRTCPeerBallThrow(data.peerId, data.message);
+    if (data.label === 'peerScoreUpdate') this.onRTCPeerScoreUpdate(data.peerId, data.message);
   }
 
   @action

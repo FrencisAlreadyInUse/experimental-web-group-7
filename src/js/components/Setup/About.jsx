@@ -7,19 +7,17 @@ import Screen from './Screen.jsx';
 
 const Header = styled.header`
   width: 64.5rem;
-  height: 20rem;
+  height: 48.5rem;
+  background: url(../assets/svg/virtual-lanes-logo.svg) center center no-repeat;
   justify-content: center;
   align-items: center;
 
   @media only screen and (max-width: 768px) {
     width: 90vw;
-    height: 30vw;
+    height: 90vw;
   }
 `;
 
-const SubTitle = styled.h2`
-  text-align: center;
-`;
 
 const Lanes = styled.span`
   align-self: flex-end;
@@ -37,24 +35,24 @@ const ButtonWrapper = styled.div`
 const About = ({ setupStore }) => (
   <Screen name="about" className="around">
     <Header className="flex">
-      <h1 className="flex column title--big">
+      <h1 className="hide">
+        About Virtual Lanes
+      </h1>
+      <h2 className="flex column title--big">
         <span>Virtual</span> {''}
         <Lanes className="flex">Lanes</Lanes>
-      </h1>
+      </h2>
     </Header>
     <article className="section__content flex column column-center about--content">
       <header>
-        <SubTitle className="title--sub about--sub">
-          A multiplayer virtual reality bowling game made by
-          <span className="stroke">
-            <a href="https://github.com/vgesteljasper"> @vgesteljasper</a>
-          </span>
-           &
-          <span>
-            <a href="https://github.com/FrencisAlreadyInUse"> @FrencisAlreadyInUse</a>
-          </span>
-        </SubTitle>
+        <h2 className="title--sub about--sub">
+          A multiplayer Virtual Reality Bowling Game made by
+          <a className="about--sub__link highlight" href="https://github.com/vgesteljasper" target="_blank"> @vgesteljasper</a> & <a className="about--sub__link highlight" href="https://github.com/FrencisAlreadyInUse"> @FrencisAlreadyInUse</a>
+        </h2>
       </header>
+      <p className="title--sub about--sub">
+        The game is made for the <a className="about--sub__link highlight" href="https://vr.google.com/cardboard/">Google Cardboard</a>. By <span className="highlight highlight--no-stroke">looking</span> at the <span className="highlight highlight--no-stroke">throw-button</span> and using your <span className="highlight highlight--no-stroke">Cardboard&apos;s button </span> you&apos;ll be able to throw the bal.
+      </p>
       <ButtonWrapper className="flex center">
         <button className="btn" onClick={() => setupStore.goToSection('start')}>
           Go Back

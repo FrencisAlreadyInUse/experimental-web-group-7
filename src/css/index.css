@@ -292,7 +292,25 @@ body,
 }
 
 .about--sub {
-  line-height: 130%;
+  line-height: 150%;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.highlight:link,
+.highlight:visited{
+  text-decoration: underline;
+  color: var(--color-purple-light);
+}
+
+.highlight--no-stroke {
+  color: var(--color-purple-light);
+  text-decoration: none;
+}
+
+.about--sub__link:hover {
+  text-decoration: none;
+  color: var(--color-purple-light);
 }
 
 .blobs,

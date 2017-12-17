@@ -41,6 +41,7 @@ export default class DataChannel extends EventTarget {
   }
 
   sendMessage = (label, message) => {
+    console.log('[sendMessage]', label, message);
     const peerKeys = Object.keys(this.peers);
 
     peerKeys.forEach(peerId => {
