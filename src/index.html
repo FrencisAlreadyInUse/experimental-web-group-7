@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-111276613-1"></script>
   <script>
@@ -51,19 +50,19 @@
   <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon/favicon-16x16.png">
   <link rel="manifest" href="assets/img/favicon/manifest.json">
 
-  <link href="css/index.css" type="text/css" rel="stylesheet"/>
+  <!-- this one is here for production builds (ignore browser 404) -->
+  <!-- development builds will server css from bundle.js -->
+  <link href="/css/index.css" type="text/css" rel="stylesheet"/>
 
   <script type="text/javascript" src="/js/vendors-channel.js"></script>
   <script type="text/javascript" data-src="/js/vendors-game.js" class="deferred-script"></script>
 
+  <script defer type="text/javascript" src="/js/bundle.js"></script>
   <script async src="https://www.google-analytics.com/analytics.js"></script>
 </head>
-
 <body>
   <audio id="cones-hit-sound" src="/assets/audio/cones-hit.mp3" preload='auto'></audio>
   <section class="setup-mount"></section>
   <a-scene class="game-mount" physics="iterations: 20; gravity: -3.5; friction: 0.1; restitution: 0.5;"></a-scene>
-  <script type="text/javascript" src="/js/bundle.js"></script>
 </body>
-
 </html>
