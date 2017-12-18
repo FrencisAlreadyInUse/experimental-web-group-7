@@ -132,16 +132,15 @@ export default class GameStore extends EventTarget {
     } else {
       // it's a friend
 
-      const { id, name, uri } = peerData;
+      const peerId = peerData.id;
 
-      if (!this.peers.has(id)) {
+      if (!this.peers.has(peerId)) {
         // generate peer
         this.addPeer(peerData);
       } else {
         // update peer
-        const peer = this.peers.get(id);
-        peer.setName(name);
-        peer.setUri(uri);
+        const peer = this.peers.get(peerId);
+        peer.complete(peerData.order, peerData.name, peerData.uri);
       }
     }
   };
@@ -153,25 +152,18 @@ export default class GameStore extends EventTarget {
 
   @action
   onRTCPeerBallThrow = (peerId, message) => {
-    // ID (PERSON) , POS (ball)
-
-    console.log('[onRTCPeerBallThrow]', message);
-
-    //  @observable renderPeerBall = false;
-
-    // message.position
-  }
+    console.log({ peerId, message });
+  };
 
   @action
   onRTCPeerScoreUpdate = (peerId, message) => {
-    // ID (PERSON) , POS (ball)
+    console.log({ peerId, message });
 
-    // gets the ID of the Map()
     const peer = this.peers.get(peerId);
     if (!peer) return;
 
     peer.setScore(message.score);
-  }
+  };
 
   @action
   onRTCPeerMessage = event => {
@@ -179,17 +171,16 @@ export default class GameStore extends EventTarget {
 
     if (data.label === 'peerBallThrow') this.onRTCPeerBallThrow(data.peerId, data.message);
     if (data.label === 'peerScoreUpdate') this.onRTCPeerScoreUpdate(data.peerId, data.message);
-  }
+  };
 
   @action
   addPeer = peerData => {
     const positions = this.peerPositions[this.peers.size];
     const { ball: ballPosition, score: scorePosition, crown: crownPosition } = positions;
 
-    const { id, name, uri } = peerData;
-    const peer = new Peer(id, name, uri, ballPosition, scorePosition, crownPosition);
+    const peer = new Peer(peerData.id, ballPosition, scorePosition, crownPosition);
 
-    this.peers.set(id, peer);
+    this.peers.set(peerData.id, peer);
   };
 
   @action
@@ -206,6 +197,8 @@ export default class GameStore extends EventTarget {
     }
 
     this.scores.total = this.scores.tempTotal + score;
+
+    this.me.setScore(this.scores.total);
 
     this.dataChannel.sendMessage('peerScoreUpdate', {
       score: this.scores.total,

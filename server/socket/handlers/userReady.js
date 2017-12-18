@@ -15,10 +15,12 @@ module.exports = function userReady(data) {
   console.log(userData);
   room.insertUserData(clientId, userData.name, userData.uri);
 
+  const updatedUserData = JSON.stringify(room.getUserData(clientId));
+
   // send user data to other user
   const otherUsers = room.otherUsers(clientId);
   otherUsers.forEach(peerId => {
-    this.ss.to(peerId, 'peerUpdate', clientId, data);
+    this.ss.to(peerId, 'peerUpdate', clientId, updatedUserData);
 
     // if the room is full and all users are ready tell peers that game can start
     if (room.isFull && room.allUsersReady) {

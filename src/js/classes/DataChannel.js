@@ -221,17 +221,18 @@ export default class DataChannel extends EventTarget {
   };
 
   onSSPeerUpdate = (peerId, data) => {
+    console.log('peerData', { peerId, data });
     /* the peer might not exists yet becaouse 'peerUpdate' can occure before 'peerOffer' */
     if (!this.peers[peerId]) {
       /* create the user */
       this.peers[peerId] = { ...this.newRTCPeerTemplate };
     }
 
-    const { name, uri } = JSON.parse(data);
+    const peerData = JSON.parse(data);
 
     this.dispatchEvent(
       new CustomEvent('ssPeerData', {
-        detail: { id: peerId, name, uri },
+        detail: { id: peerId, ...peerData },
       }),
     );
   };

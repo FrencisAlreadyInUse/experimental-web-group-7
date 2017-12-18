@@ -65,8 +65,6 @@ module.exports = class Room {
       order: this.amountUsers,
       ready: false,
     };
-
-    console.log('userOrder', this.users[userId].order);
   }
 
   insertUserData(userId, name = null, uri = null) {
