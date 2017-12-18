@@ -103,6 +103,14 @@ body,
   flex-shrink: 0;
 }
 
+.flex-inline {
+  display: inline-flex;
+}
+
+.row {
+  flex-direction: row;
+}
+
 .column {
   flex-direction: column;
 }
@@ -195,10 +203,6 @@ body,
 .input--stroke::placeholder {
   -webkit-text-stroke: .1rem var(--color-purple);
   color: transparent;
-}
-
-.input--number {
-  width: 3rem;
 }
 
 .input--bordered {
@@ -474,6 +478,11 @@ body,
     width: 80%;
     justify-content: center;
     transition: right .3s ease-in-out;
+  }
+
+  .input--button:hover {
+    -webkit-text-stroke: .1rem var(--color-purple);
+    color: transparent;
   }
 
 }

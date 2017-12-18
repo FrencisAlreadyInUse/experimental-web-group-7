@@ -25,10 +25,7 @@ const ScreenRoomCreate = ({ setupStore }) => {
         <h2 className="title">
           <span>You&#39;re about to create the </span>
           <span className="stroke blobs">{setupStore.room.name}</span>
-          <span> room for </span>
-          <span className="blob">
-            <RoomSize min={2} max={5} />
-          </span>
+          <span> room for <RoomSize min={2} max={5} /></span>
           <span>players</span>
         </h2>
       </div>

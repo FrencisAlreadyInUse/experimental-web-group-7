@@ -19,7 +19,7 @@ export default class SetupStore {
   sections = {
     start: { active: true, last: false },
     about: { active: false, last: false },
-    roomCreate: { active: true, last: false },
+    roomCreate: { active: false, last: false },
     roomCreated: { active: false, last: false },
     roomJoin: { active: false, last: false },
     roomJoined: { active: false, last: false },

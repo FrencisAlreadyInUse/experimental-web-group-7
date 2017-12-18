@@ -1,40 +1,47 @@
 import React from 'react';
 import { number, object } from 'prop-types';
 import { inject, observer } from 'mobx-react';
+import styled from 'styled-components';
+
+const Button = styled.button`
+  cursor: pointer;
+`;
 
 const RoomSize = ({ setupStore, min, max }) => {
   let currentSize = setupStore.room.size;
 
-  const handleCountDown = ({ keyCode }) => {
-    if (keyCode === 38) {
-      // UP
-      if (currentSize < max) {
-        currentSize += 1;
-        setupStore.updateRoomSize(currentSize);
-        console.log('[handleCountUp] — currentSize', currentSize);
-      } else {
-        setupStore.updateRoomSize(5);
-      }
-    } else if (keyCode === 40) {
-      // DOWN
-      if (currentSize > min) {
-        currentSize -= 1;
-        setupStore.updateRoomSize(currentSize);
-        console.log('[handleCountDown] — currentSize', currentSize);
-      } else {
-        setupStore.updateRoomSize(2);
-      }
+  const handleChangeRoomSizeUp = () => {
+    if (currentSize < max) {
+      currentSize += 1;
+      setupStore.updateRoomSize(currentSize);
+    } else {
+      setupStore.updateRoomSize(5);
+    }
+  };
+
+  const handleChangeRoomSizeDown = () => {
+    if (currentSize > min) {
+      currentSize -= 1;
+      setupStore.updateRoomSize(currentSize);
+    } else {
+      setupStore.updateRoomSize(2);
     }
   };
 
   return (
-    <input
-      type="text"
-      className="input stroke input--stroke input--number"
-      onKeyDown={handleCountDown}
-      onChange={setupStore.updateRoomSize}
-      value={setupStore.room.size}
-    />
+    <div className="flex-inline row input--number__wrapper">
+      <div
+        className="input stroke input--stroke blob"
+        role="button"
+        tabIndex={0}
+      >
+        {setupStore.room.size}
+      </div>
+      <div className="flex row input--button__wrapper">
+        <Button className="input input--button" onClick={handleChangeRoomSizeUp}>+</Button>
+        <Button className="input input--button" onClick={handleChangeRoomSizeDown}>-</Button>
+      </div>
+    </div>
   );
 };
 
