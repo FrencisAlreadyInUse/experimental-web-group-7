@@ -20,6 +20,7 @@ const Game = ({ gameStore }) => (
       <Arrow />
       <Scores />
       <Ball />
+      <Ball me={false} />
       <Peers />
       <Sky />
     </Fragment>
