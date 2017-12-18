@@ -12,7 +12,6 @@ module.exports = function userReady(data) {
   // add the user data to the user
   // and set user.ready to true
   const userData = JSON.parse(data);
-  console.log(userData);
   room.insertUserData(clientId, userData.name, userData.uri);
 
   const updatedUserData = JSON.stringify(room.getUserData(clientId));
@@ -27,6 +26,9 @@ module.exports = function userReady(data) {
       this.ss.to(peerId, 'roomUsersReady');
     }
   });
+
+  // also send the user data to the clientId itself
+  this.ss.to(clientId, 'peerUpdate', clientId, updatedUserData);
 
   // also send to clientId that game can start
   if (room.isFull && room.allUsersReady) {

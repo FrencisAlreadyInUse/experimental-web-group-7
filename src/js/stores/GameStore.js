@@ -36,8 +36,6 @@ export default class GameStore extends EventTarget {
     this.soundCanPlay = true;
     this.$conesHitSound = document.getElementById('cones-hit-sound');
 
-    this.me = new Peer('me');
-
     this.peers = new Map();
 
     this.scores = {
@@ -123,25 +121,22 @@ export default class GameStore extends EventTarget {
   @action
   onSSPeerData = event => {
     const peerData = event.detail;
+    const {
+      id, name, uri, order,
+    } = peerData;
 
     if (peerData.me) {
       // it's me
 
-      this.me.setName(peerData.name);
-      this.me.setUri(peerData.uri);
+      this.me = new Peer('me', name, uri, order);
     } else {
       // it's a friend
 
-      const peerId = peerData.id;
+      const positions = this.peerPositions[this.peers.size];
+      const { ball: ballPosition, score: scorePosition, crown: crownPosition } = positions;
 
-      if (!this.peers.has(peerId)) {
-        // generate peer
-        this.addPeer(peerData);
-      } else {
-        // update peer
-        const peer = this.peers.get(peerId);
-        peer.complete(peerData.order, peerData.name, peerData.uri);
-      }
+      const peer = new Peer(id, name, uri, order, ballPosition, scorePosition, crownPosition);
+      this.peers.set(id, peer);
     }
   };
 
@@ -171,16 +166,6 @@ export default class GameStore extends EventTarget {
 
     if (data.label === 'peerBallThrow') this.onRTCPeerBallThrow(data.peerId, data.message);
     if (data.label === 'peerScoreUpdate') this.onRTCPeerScoreUpdate(data.peerId, data.message);
-  };
-
-  @action
-  addPeer = peerData => {
-    const positions = this.peerPositions[this.peers.size];
-    const { ball: ballPosition, score: scorePosition, crown: crownPosition } = positions;
-
-    const peer = new Peer(peerData.id, ballPosition, scorePosition, crownPosition);
-
-    this.peers.set(peerData.id, peer);
   };
 
   @action

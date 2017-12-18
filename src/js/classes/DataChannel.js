@@ -83,12 +83,6 @@ export default class DataChannel extends EventTarget {
     if (!this.peers[peerId]) {
       // if there is no peer yet, create an empty one
       this.peers[peerId] = { ...this.newRTCPeerTemplate };
-
-      this.dispatchEvent(
-        new CustomEvent('ssPeerData', {
-          detail: { id: peerId },
-        }),
-      );
     } else if (this.peers[peerId].connection) {
       // else if the peer did exists
       // check if there is no connection yet
@@ -157,12 +151,6 @@ export default class DataChannel extends EventTarget {
     this.peers[peerId] = { ...this.newRTCPeerTemplate };
     const PEER = this.peers[peerId];
 
-    this.dispatchEvent(
-      new CustomEvent('ssPeerData', {
-        detail: { id: peerId },
-      }),
-    );
-
     /* create a new peer connection */
     PEER.connection = new RTCPeerConnection(this.RTCPeerConnectionOptions, null);
 
@@ -221,14 +209,13 @@ export default class DataChannel extends EventTarget {
   };
 
   onSSPeerUpdate = (peerId, data) => {
-    console.log('peerData', { peerId, data });
-    /* the peer might not exists yet becaouse 'peerUpdate' can occure before 'peerOffer' */
-    if (!this.peers[peerId]) {
-      /* create the user */
-      this.peers[peerId] = { ...this.newRTCPeerTemplate };
-    }
-
     const peerData = JSON.parse(data);
+
+    // if this is my data then add me = true so we
+    // know this in the gameStore
+    if (peerId === this.myId) {
+      peerData.me = true;
+    }
 
     this.dispatchEvent(
       new CustomEvent('ssPeerData', {
@@ -309,8 +296,6 @@ export default class DataChannel extends EventTarget {
   };
 
   userReady = (name, uri) => {
-    this.dispatchEvent(new CustomEvent('ssPeerData', { detail: { me: true, name, uri } }));
-
     this.signalingServer.emit('userReady', JSON.stringify({ name, uri }));
   };
 }
