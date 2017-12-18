@@ -124,8 +124,6 @@ export default class GameStore extends EventTarget {
   onSSPeerData = event => {
     const peerData = event.detail;
 
-    onSSPeerData]', peerData);
-
     if (peerData.me) {
       // it's me
 
@@ -156,7 +154,8 @@ export default class GameStore extends EventTarget {
   @action
   onRTCPeerBallThrow = (peerId, message) => {
     // ID (PERSON) , POS (ball)
-    onRTCPeerBallThrow]', message);
+
+    console.log('[onRTCPeerBallThrow]', message);
 
     //  @observable renderPeerBall = false;
 
@@ -166,7 +165,6 @@ export default class GameStore extends EventTarget {
   @action
   onRTCPeerScoreUpdate = (peerId, message) => {
     // ID (PERSON) , POS (ball)
-    onRTCPeerScoreUpdate]', message);
 
     // gets the ID of the Map()
     const peer = this.peers.get(peerId);
@@ -177,7 +175,6 @@ export default class GameStore extends EventTarget {
 
   @action
   onRTCPeerMessage = event => {
-    onRTCPeerMessage]', event);
     const data = event.detail;
 
     if (data.label === 'peerBallThrow') this.onRTCPeerBallThrow(data.peerId, data.message);

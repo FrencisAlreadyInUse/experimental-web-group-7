@@ -41,7 +41,6 @@ export default class DataChannel extends EventTarget {
   }
 
   sendMessage = (label, message) => {
-    sendMessage]', label, message);
     const peerKeys = Object.keys(this.peers);
 
     peerKeys.forEach(peerId => {
@@ -53,10 +52,7 @@ export default class DataChannel extends EventTarget {
   };
 
   onMessage = MessageEvent => {
-    onMessage]', MessageEvent);
     const data = JSON.parse(MessageEvent.data);
-
-    onMessage]', data);
 
     this.dispatchEvent(
       new CustomEvent('rtcPeerMessage', {
@@ -67,12 +63,10 @@ export default class DataChannel extends EventTarget {
 
   onSSConnect = () => {
     this.myId = this.signalingServer.id;
-    onSSConnect]', this.myId);
     this.dispatchEvent(new CustomEvent('dcSocketConnection'));
   };
 
   onSSPeerIce = (peerId, RTCIceCandidate) => {
-    onSSPeerIce]', peerId, RTCIceCandidate);
     if (!RTCIceCandidate.candidate) return;
     if (!this.peers[peerId]) return;
 
@@ -80,14 +74,12 @@ export default class DataChannel extends EventTarget {
   };
 
   onSSPeerAnswer = (peerId, RemoteRTCSessionDescription) => {
-    onSSPeerAnswer]', peerId, RemoteRTCSessionDescription);
     if (!this.peers[peerId]) return;
 
     this.peers[peerId].connection.setRemoteDescription(RemoteRTCSessionDescription);
   };
 
   onSSPeerOffer = (peerId, RemoteRTCSessionDescription) => {
-    onSSPeerOffer]', peerId, RemoteRTCSessionDescription);
     if (!this.peers[peerId]) {
       // if there is no peer yet, create an empty one
       this.peers[peerId] = { ...this.newRTCPeerTemplate };
@@ -107,7 +99,6 @@ export default class DataChannel extends EventTarget {
     }
 
     const PEER = this.peers[peerId];
-    PEER]', PEER);
 
     /* create a new peer connection */
     PEER.connection = new RTCPeerConnection(this.RTCPeerConnectionOptions, null);
@@ -161,7 +152,6 @@ export default class DataChannel extends EventTarget {
   };
 
   onSSPeerWantsCall = peerId => {
-    onSSPeerWantsCall]', peerId);
     if (this.peers[peerId]) return;
 
     this.peers[peerId] = { ...this.newRTCPeerTemplate };
@@ -231,7 +221,6 @@ export default class DataChannel extends EventTarget {
   };
 
   onSSPeerUpdate = (peerId, data) => {
-    onSSPeerUpdate]', peerId, data);
     /* the peer might not exists yet becaouse 'peerUpdate' can occure before 'peerOffer' */
     if (!this.peers[peerId]) {
       /* create the user */
@@ -248,7 +237,6 @@ export default class DataChannel extends EventTarget {
   };
 
   onSSPeerDisconnect = peerId => {
-    onSSPeerDisconnect]', peerId);
     if (!this.peers[peerId]) return;
 
     this.peers[peerId].channel.close();
@@ -263,7 +251,6 @@ export default class DataChannel extends EventTarget {
   };
 
   onSSRoomError = data => {
-    onSSRoomError]', data);
     this.dispatchEvent(
       new ErrorEvent('ssError', {
         message: data,
@@ -273,7 +260,6 @@ export default class DataChannel extends EventTarget {
   };
 
   onSSRoomCreated = room => {
-    onSSRoomCreated]', room);
     this.dispatchEvent(
       new CustomEvent('ssRoomCreated', {
         detail: room.name,
@@ -282,7 +268,6 @@ export default class DataChannel extends EventTarget {
   };
 
   onSSRoomJoined = room => {
-    onSSRoomJoined]', room);
     this.dispatchEvent(
       new CustomEvent('ssRoomJoined', {
         detail: room.name,
@@ -291,7 +276,6 @@ export default class DataChannel extends EventTarget {
   };
 
   onSSRoomOpened = room => {
-    onSSRoomOpened]', room);
     this.dispatchEvent(
       new CustomEvent('ssRoomOpened', {
         detail: room.name,
@@ -300,37 +284,30 @@ export default class DataChannel extends EventTarget {
   };
 
   onSSRoomFull = () => {
-    onSSRoomFull]');
     this.dispatchEvent(new Event('ssRoomFull'));
   };
 
   onSSRoomUsersReady = () => {
-    onSSRoomUsersReady]');
     this.dispatchEvent(new Event('ssRoomUsersReady'));
   };
 
   createRoom = () => {
-    createRoom] — emit createRoom');
     this.signalingServer.emit('createRoom');
   };
 
   joinRoom = roomName => {
-    joinRoom]', roomName);
     this.signalingServer.emit('joinRoom', roomName);
   };
 
   openRoom = (roomName, roomSize) => {
-    openRoom]', roomName, roomSize);
     this.signalingServer.emit('openRoom', roomName, roomSize);
   };
 
   roomFull = roomName => {
-    roomFull]', roomName);
     this.signalingServer.emit('roomFull', roomName);
   };
 
   userReady = (name, uri) => {
-    userReady]', name, uri);
     this.dispatchEvent(new CustomEvent('ssPeerData', { detail: { me: true, name, uri } }));
 
     this.signalingServer.emit('userReady', JSON.stringify({ name, uri }));
