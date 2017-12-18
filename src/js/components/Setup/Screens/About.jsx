@@ -22,14 +22,6 @@ const Lanes = styled.span`
   align-self: flex-end;
 `;
 
-const ButtonWrapper = styled.div`
-  width: 100%;
-
-  @media only screen and (max-width: 768px) {
-    flex-direction: column;
-  }
-`;
-
 const About = ({ setupStore }) => (
   <Screen name="about" className="around about--mobile">
     <button className="btn btn--about btn--back" onClick={() => setupStore.goToSection('start')}>
