@@ -71,7 +71,7 @@ const ScreenUserData = ({ setupStore }) => {
   }
 
   return (
-    <Screen name="userData" className="around">
+    <Screen name="userData" className="around about--mobile">
       <header className="hide">
         <h1>Player Setup</h1>
       </header>
