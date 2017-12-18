@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
-import Screen from './Screen.jsx';
+import Screen from './../Screen.jsx';
 
 const Header = styled.header`
   width: 54.5rem;

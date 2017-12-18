@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 
-import wait from './../../functions/wait.js';
+import wait from './../../../functions/wait.js';
 
-import Screen from './Screen.jsx';
-import RoomSize from './RoomSize.jsx';
+import Screen from './../Screen.jsx';
+import RoomSize from './../RoomSize.jsx';
 
 const ScreenRoomCreate = ({ setupStore }) => {
   let $input;

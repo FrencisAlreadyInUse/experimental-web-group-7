@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
-import Screen from './Screen.jsx';
+import Screen from './../Screen.jsx';
 
 const Waiting = styled.div`
   margin-top: 140px;

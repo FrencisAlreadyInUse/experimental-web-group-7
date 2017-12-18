@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
-import wait from './../../functions/wait.js';
-import Screen from './Screen.jsx';
-import thumbDataURI from './../../functions/thumbDataURI.js';
+import wait from './../../../functions/wait.js';
+import thumbDataURI from './../../../functions/thumbDataURI.js';
+import Screen from './../Screen.jsx';
 
 const Title = styled.h1`
   margin-bottom: 8rem;

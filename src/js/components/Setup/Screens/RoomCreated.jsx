@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 
-import Screen from './Screen.jsx';
+import Screen from './../Screen.jsx';
 
 const Share = styled.div`
   margin-top: 140px;

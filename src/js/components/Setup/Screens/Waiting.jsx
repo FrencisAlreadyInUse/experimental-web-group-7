@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Screen from './Screen.jsx';
+import Screen from './../Screen.jsx';
 
 const ScreenWaiting = () => (
   <Screen name="waiting" className="around">
