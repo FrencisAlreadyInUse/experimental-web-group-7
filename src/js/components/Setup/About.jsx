@@ -32,6 +32,9 @@ const ButtonWrapper = styled.div`
 
 const About = ({ setupStore }) => (
   <Screen name="about" className="around about--mobile">
+    <button className="btn btn--about btn--back" onClick={() => setupStore.goToSection('start')}>
+      &larr;
+    </button>
     <Header className="flex">
       <h1 className="hide">
         About Virtual Lanes
@@ -54,11 +57,6 @@ const About = ({ setupStore }) => (
         <span className="highlight highlight--no-stroke"> throw-button</span> and using your
         <span className="highlight highlight--no-stroke"> Cardboard&apos;s button </span>.
       </p>
-      <ButtonWrapper className="flex center">
-        <button className="btn" onClick={() => setupStore.goToSection('start')}>
-          Go Back
-        </button>
-      </ButtonWrapper>
     </article>
   </Screen>
 );
