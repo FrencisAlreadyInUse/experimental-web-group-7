@@ -18,7 +18,8 @@
     "eqeqeq": "warn",
     "no-restricted-globals": "off",
     "no-return-assign": "off",
-    "guard-for-in": "off"
+    "guard-for-in": "off",
+    "no-static-element-interactions": "off"
   },
   "globals": {
     "io": true,

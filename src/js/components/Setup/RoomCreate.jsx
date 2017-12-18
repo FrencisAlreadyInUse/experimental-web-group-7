@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import wait from './../../functions/wait.js';
 
 import Screen from './Screen.jsx';
+import RoomSize from './RoomSize.jsx';
 
 const ScreenRoomCreate = ({ setupStore }) => {
   let $input;
@@ -26,15 +27,7 @@ const ScreenRoomCreate = ({ setupStore }) => {
           <span className="stroke blobs">{setupStore.room.name}</span>
           <span> room for </span>
           <span className="blob">
-            <input
-              className="input stroke input--stroke"
-              type="number"
-              value={setupStore.room.size}
-              min="2"
-              max="5"
-              onChange={setupStore.updateRoomSize}
-              ref={el => ($input = el)}
-            />
+            <RoomSize min={2} max={5} />
           </span>
           <span>players</span>
         </h2>

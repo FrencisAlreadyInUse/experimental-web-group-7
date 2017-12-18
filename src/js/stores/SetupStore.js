@@ -17,9 +17,9 @@ export default class SetupStore {
 
   @observable
   sections = {
-    start: { active: true, last: false },
+    start: { active: false, last: false },
     about: { active: false, last: false },
-    roomCreate: { active: false, last: false },
+    roomCreate: { active: true, last: false },
     roomCreated: { active: false, last: false },
     roomJoin: { active: false, last: false },
     roomJoined: { active: false, last: false },
@@ -139,9 +139,9 @@ export default class SetupStore {
   };
 
   @action
-  updateRoomSize = event => {
-    if (event.target.value < 2 || event.target.value > 5) return;
-    this.room.size = event.target.value;
+  updateRoomSize = amount => {
+    // if (event.target.value < 2 || event.target.value > 5) return;
+    this.room.size = amount;
   };
 
   @action
