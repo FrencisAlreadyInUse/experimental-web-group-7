@@ -17,7 +17,7 @@ export default class SetupStore {
 
   @observable
   sections = {
-    start: { active: false, last: false },
+    start: { active: true, last: false },
     about: { active: false, last: false },
     roomCreate: { active: true, last: false },
     roomCreated: { active: false, last: false },

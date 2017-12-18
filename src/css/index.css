@@ -197,6 +197,10 @@ body,
   color: transparent;
 }
 
+.input--number {
+  width: 3rem;
+}
+
 .input--bordered {
   border: 2px solid var(--color-purple);
   height: 5.2rem;

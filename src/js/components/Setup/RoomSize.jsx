@@ -30,11 +30,10 @@ const RoomSize = ({ setupStore, min, max }) => {
   return (
     <input
       type="text"
-      className="input stroke input--stroke"
+      className="input stroke input--stroke input--number"
       onKeyDown={handleCountDown}
       onChange={setupStore.updateRoomSize}
       value={setupStore.room.size}
-      defaultValue={setupStore.room.size}
     />
   );
 };
