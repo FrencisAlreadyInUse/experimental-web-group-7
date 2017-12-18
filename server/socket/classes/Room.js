@@ -62,8 +62,11 @@ module.exports = class Room {
     this.users[userId] = {
       name,
       uri,
+      order: this.amountUsers,
       ready: false,
     };
+
+    console.log('userOrder', this.users[userId].order);
   }
 
   insertUserData(userId, name = null, uri = null) {
@@ -73,9 +76,11 @@ module.exports = class Room {
   }
 
   getUserData(userId) {
+    const user = this.users[userId];
     return {
-      name: this.users[userId].name,
-      uri: this.users[userId].uri,
+      name: user.name,
+      uri: user.uri,
+      order: user.order,
     };
   }
 
