@@ -301,12 +301,12 @@ export default class DataChannel extends EventTarget {
 
   onSSRoomFull = () => {
     console.log('[onSSRoomFull]');
-    this.dispatchEvent(new CustomEvent('ssRoomFull'));
+    this.dispatchEvent(new Event('ssRoomFull'));
   };
 
   onSSRoomUsersReady = () => {
     console.log('[onSSRoomUsersReady]');
-    this.dispatchEvent(new CustomEvent('ssRoomUsersReady'));
+    this.dispatchEvent(new Event('ssRoomUsersReady'));
   };
 
   createRoom = () => {

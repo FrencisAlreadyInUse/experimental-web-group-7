@@ -1,11 +1,9 @@
 export default class EventTarget {
   constructor() {
     this.listeners = {};
-    console.log('[EventTarget — constructor]', this.listeners);
   }
 
   addEventListener(type, callback) {
-    console.log('[addEventListener]', type, callback);
     if (!(type in this.listeners)) {
       this.listeners[type] = [];
     }
@@ -15,7 +13,6 @@ export default class EventTarget {
   }
 
   removeEventListener(type, callback) {
-    console.log('[removeEventListener]', type, callback);
     if (!(type in this.listeners)) return;
 
     const stack = this.listeners[type];
@@ -30,7 +27,6 @@ export default class EventTarget {
   }
 
   dispatchEvent(event) {
-    console.log('[dispatchEvent]', event);
     if (!(event.type in this.listeners)) return true;
 
     const stack = this.listeners[event.type];

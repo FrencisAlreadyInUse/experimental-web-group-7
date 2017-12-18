@@ -14,7 +14,7 @@ const { UglifyJsPlugin } = webpack.optimize;
 const { HotModuleReplacementPlugin } = webpack;
 const { ifProduction, ifDevelopment } = getIfUtils(process.env.NODE_ENV);
 
-const extractCss = new ExtractTextWebpackPlugin('css/style.css');
+const extractCss = new ExtractTextWebpackPlugin('css/bundle.css');
 
 /**
  * Returns a path joined to the current __dirname

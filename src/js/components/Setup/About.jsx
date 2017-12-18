@@ -24,7 +24,6 @@ const Lanes = styled.span`
 
 const ButtonWrapper = styled.div`
   width: 100%;
-  max-width: 40rem;
 
   @media only screen and (max-width: 768px) {
     flex-direction: column;
@@ -46,12 +45,11 @@ const About = ({ setupStore }) => (
       <header>
         <h2 className="title--sub about--sub">
           A multiplayer Virtual Reality Bowling Game made by
-          <a className="about--sub__link highlight" href="https://github.com/vgesteljasper" target="_blank"> @vgesteljasper</a> & <a className="about--sub__link highlight" href="https://github.com/FrencisAlreadyInUse"> @FrencisAlreadyInUse</a>
+          <a className="about--sub__link highlight" href="https://github.com/vgesteljasper" target="_blank" rel="noopener noreferrer"> @vgesteljasper</a> & <a className="about--sub__link highlight" href="https://github.com/FrencisAlreadyInUse" target="_blank" rel="noopener noreferrer"> @FrencisAlreadyInUse</a>
         </h2>
       </header>
       <p className="title--sub about--sub">
-        The game is made for the
-        <a className="about--sub__link highlight" href="https://vr.google.com/cardboard/">Google Cardboard</a>.
+        The game is made for the <a className="about--sub__link highlight" href="https://vr.google.com/cardboard/" target="_blank" rel="noopener noreferrer">Google Cardboard</a>.
         You throw the ball by <span className="highlight highlight--no-stroke">looking</span> at the
         <span className="highlight highlight--no-stroke"> throw-button</span> and using your
         <span className="highlight highlight--no-stroke"> Cardboard&apos;s button </span>.

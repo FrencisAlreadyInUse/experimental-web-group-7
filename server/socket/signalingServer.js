@@ -27,18 +27,6 @@ module.exports = (
     cs,
   });
 
-  const {
-    handleCreateRoom,
-    handleJoinRoom,
-    handleOpenRoom,
-    handleRoomFull,
-    handleUserReady,
-    handlePeerOffer,
-    handlePeerAnswer,
-    handlePeerIce,
-    handleDisconnect,
-  } = handlers;
-
   if (enableLogging) {
     log(
       `[${chalk.blue('SIGNALING-SERVER')}] ↓ received "${chalk.yellow(
@@ -49,15 +37,15 @@ module.exports = (
 
   // start listening to events */
 
-  cs.on('createRoom', handleCreateRoom);
-  cs.on('joinRoom', handleJoinRoom);
-  cs.on('openRoom', handleOpenRoom);
-  cs.on('roomFull', handleRoomFull);
-  cs.on('userReady', handleUserReady);
+  cs.on('createRoom', handlers.handleCreateRoom);
+  cs.on('joinRoom', handlers.handleJoinRoom);
+  cs.on('openRoom', handlers.handleOpenRoom);
+  cs.on('roomFull', handlers.handleRoomFull);
+  cs.on('userReady', handlers.handleUserReady);
 
-  cs.on('peerOffer', handlePeerOffer);
-  cs.on('peerAnswer', handlePeerAnswer);
-  cs.on('peerIce', handlePeerIce);
+  cs.on('peerOffer', handlers.handlePeerOffer);
+  cs.on('peerAnswer', handlers.handlePeerAnswer);
+  cs.on('peerIce', handlers.handlePeerIce);
 
-  cs.on('disconnect', handleDisconnect);
+  cs.on('disconnect', handlers.handleDisconnect);
 };

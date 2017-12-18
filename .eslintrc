@@ -18,8 +18,7 @@
     "eqeqeq": "warn",
     "no-restricted-globals": "off",
     "no-return-assign": "off",
-    "guard-for-in": "off",
-    "react/jsx-no-target-blank": "off"
+    "guard-for-in": "off"
   },
   "globals": {
     "io": true,
