@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import Screen from './Screen.jsx';
 
 const Header = styled.header`
-  width: 64.5rem;
-  height: 48.5rem;
+  width: 54.5rem;
+  height: 38.5rem;
   background: url(../assets/svg/virtual-lanes-logo.svg) center center no-repeat;
   justify-content: center;
   align-items: center;
@@ -18,14 +18,13 @@ const Header = styled.header`
   }
 `;
 
-
 const Lanes = styled.span`
   align-self: flex-end;
 `;
 
 const ButtonWrapper = styled.div`
   width: 100%;
-  max-width: 400px;
+  max-width: 40rem;
 
   @media only screen and (max-width: 768px) {
     flex-direction: column;
@@ -51,7 +50,11 @@ const About = ({ setupStore }) => (
         </h2>
       </header>
       <p className="title--sub about--sub">
-        The game is made for the <a className="about--sub__link highlight" href="https://vr.google.com/cardboard/">Google Cardboard</a>. By <span className="highlight highlight--no-stroke">looking</span> at the <span className="highlight highlight--no-stroke">throw-button</span> and using your <span className="highlight highlight--no-stroke">Cardboard&apos;s button </span> you&apos;ll be able to throw the bal.
+        The game is made for the
+        <a className="about--sub__link highlight" href="https://vr.google.com/cardboard/">Google Cardboard</a>.
+        You throw the ball by <span className="highlight highlight--no-stroke">looking</span> at the
+        <span className="highlight highlight--no-stroke"> throw-button</span> and using your
+        <span className="highlight highlight--no-stroke"> Cardboard&apos;s button </span>.
       </p>
       <ButtonWrapper className="flex center">
         <button className="btn" onClick={() => setupStore.goToSection('start')}>

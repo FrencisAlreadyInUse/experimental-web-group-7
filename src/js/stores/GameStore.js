@@ -124,7 +124,7 @@ export default class GameStore extends EventTarget {
   onSSPeerData = event => {
     const peerData = event.detail;
 
-    console.log(peerData);
+    console.log('[onSSPeerData]', peerData);
 
     if (peerData.me) {
       // it's me
@@ -177,6 +177,7 @@ export default class GameStore extends EventTarget {
 
   @action
   onRTCPeerMessage = event => {
+    console.log('[onRTCPeerMessage]', event);
     const data = event.detail;
 
     if (data.label === 'peerBallThrow') this.onRTCPeerBallThrow(data.peerId, data.message);

@@ -38,7 +38,7 @@ const ButtonWrapper = styled.div`
 const ScreenStart = ({ setupStore }) => (
   <Screen name="start" className="around">
     <button className="btn btn--about" onClick={() => setupStore.goToSection('about')}>
-      About
+      about
     </button>
     <Header className="flex">
       <h1 className="flex column title--big">
