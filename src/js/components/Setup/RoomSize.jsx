@@ -30,6 +30,7 @@ const RoomSize = ({ setupStore, min, max }) => {
 
   return (
     <div className="flex-inline row input--number__wrapper">
+      <Button className="input input--button" onClick={handleChangeRoomSizeUp}>+</Button>
       <div
         className="input stroke input--stroke blob"
         role="button"
@@ -37,10 +38,7 @@ const RoomSize = ({ setupStore, min, max }) => {
       >
         {setupStore.room.size}
       </div>
-      <div className="flex row input--button__wrapper">
-        <Button className="input input--button" onClick={handleChangeRoomSizeUp}>+</Button>
-        <Button className="input input--button" onClick={handleChangeRoomSizeDown}>-</Button>
-      </div>
+      <Button className="input input--button" onClick={handleChangeRoomSizeDown}>-</Button>
     </div>
   );
 };
