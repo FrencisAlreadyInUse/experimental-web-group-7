@@ -15,7 +15,7 @@ const Setup = ({ setupStore }) => (
   <Provider setupStore={setupStore}>
     <Fragment>
       <header className="main__header hide">
-        <h1 className="main-title">Virtual Lanes — VR Bowling Game</h1>
+        <h1 className="main-title">Virtual Lanes — Setup</h1>
       </header>
       <Start />
       <About />

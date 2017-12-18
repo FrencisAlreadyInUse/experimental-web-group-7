@@ -95,6 +95,7 @@ body,
 
 .flex {
   display: flex;
+  flex-shrink: 0;
 }
 
 .column {
@@ -295,6 +296,11 @@ body,
   line-height: 150%;
   font-size: 2rem;
   text-align: center;
+  padding: 1.5rem 0 1rem;
+}
+
+.about--sublast {
+  margin: 0 0 2rem;
 }
 
 .highlight:link,
@@ -524,6 +530,10 @@ body,
 
   .btn--about {
     font-size: var(--text--small);
+  }
+
+  .about--mobile {
+    justify-content: space-between;
   }
 
 }
