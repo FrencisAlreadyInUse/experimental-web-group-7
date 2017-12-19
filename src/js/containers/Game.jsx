@@ -8,6 +8,7 @@ import Alley from './../components/Game/Alley.jsx';
 import Arrow from './../components/Game/Arrow.jsx';
 import Scores from './../components/Game/Scores.jsx';
 import Ball from './../components/Game/Ball.jsx';
+import BallPeer from './../components/Game/BallPeer.jsx';
 import Peers from './../components/Game/Peers.jsx';
 import Sky from './../components/Game/Sky.jsx';
 
@@ -20,7 +21,7 @@ const Game = ({ gameStore }) => (
       <Arrow />
       <Scores />
       <Ball />
-      <Ball me={false} />
+      <BallPeer />
       <Peers />
       <Sky />
     </Fragment>

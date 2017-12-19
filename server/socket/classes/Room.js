@@ -62,7 +62,7 @@ module.exports = class Room {
     this.users[userId] = {
       name,
       uri,
-      order: this.amountUsers,
+      order: this.amountUsers + 1,
       ready: false,
     };
   }

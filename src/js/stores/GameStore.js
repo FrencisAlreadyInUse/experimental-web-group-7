@@ -20,6 +20,8 @@ export default class GameStore extends EventTarget {
   @observable scores;
   @observable peers;
 
+  @observable currentPlayingPeerNumber = 1;
+
   constructor(dataChannel) {
     super();
 
@@ -27,9 +29,9 @@ export default class GameStore extends EventTarget {
     this.dataChannel
       .on('ssPeerData', this.onSSPeerData)
       .on('rtcPeerDisconnect', this.onRTCPeerDisconnect)
-      .on('rtcPeerMessage', this.onRTCPeerMessage);
+      .on('rtcPeerMessage', this.onRTCPeerMessage)
+      .on('ssRoomUsersReady', this.onSSRoomUsersReady);
 
-    this.currentFrame = 1;
     this.currentShot = 1;
     this.hitCones = [];
 
@@ -78,6 +80,9 @@ export default class GameStore extends EventTarget {
       { ball: '5.3 .5 9', score: '5.3 2.5 9', crown: '5.3 1.2 9' },
       { ball: '5.3 .5 6.5', score: '5.3 2.5 6.5', crown: '5.3 1.2 6.5' },
     ];
+
+    this.roomSize = -1;
+    this.listenToCollisions = false;
   }
 
   @computed
@@ -93,17 +98,27 @@ export default class GameStore extends EventTarget {
   @computed
   get peersArray() {
     const array = [];
-    for (const [, value] of this.peers) {
-      array.push(value);
+    for (const [, peer] of this.peers) {
+      array.push(peer);
     }
     return array;
   }
 
   @computed
+  get currentPlayer() {
+    for (const [, peer] of this.peers) {
+      if (peer.order === this.currentPlayingPeerNumber) {
+        return peer;
+      }
+    }
+    return -1;
+  }
+
+  @computed
   get currentLeaders() {
     const peers = [];
-    for (const [, value] of this.peers) {
-      peers.push(value);
+    for (const [, peer] of this.peers) {
+      peers.push(peer);
     }
 
     peers.push(this.me);
@@ -117,6 +132,20 @@ export default class GameStore extends EventTarget {
     // return an array with all the id's of peers with the leaderScore (in case of multiple same scores)
     return peers.filter(peer => peer.score === leaderScore).map(peer => peer.id);
   }
+
+  onSSRoomUsersReady = event => {
+    this.roomSize = event.detail.roomSize;
+  }
+
+  getPeerIdByOrder = order => {
+    for (const [, peer] of this.peers) {
+      console.log(peer);
+      if (peer.order === order) {
+        return peer.id;
+      }
+    }
+    return null;
+  };
 
   @action
   onSSPeerData = event => {
@@ -146,26 +175,36 @@ export default class GameStore extends EventTarget {
   };
 
   @action
-  onRTCPeerBallThrow = (peerId, message) => {
-    console.log({ peerId, message });
+  onRTCPeerBallThrow = message => {
+    console.log('ball throw from ', message.peerId);
   };
 
   @action
-  onRTCPeerScoreUpdate = (peerId, message) => {
-    console.log({ peerId, message });
-
-    const peer = this.peers.get(peerId);
+  onRTCPeerScoreUpdate = message => {
+    const peer = this.peers.get(message.peerId);
     if (!peer) return;
 
-    peer.setScore(message.score);
+    peer.setScore(message.data.score);
   };
 
   @action
   onRTCPeerMessage = event => {
-    const data = event.detail;
+    const message = event.detail;
 
-    if (data.label === 'peerBallThrow') this.onRTCPeerBallThrow(data.peerId, data.message);
-    if (data.label === 'peerScoreUpdate') this.onRTCPeerScoreUpdate(data.peerId, data.message);
+    if (message.label === 'peerBallThrow') this.onRTCPeerBallThrow(message);
+    if (message.label === 'peerScoreUpdate') this.onRTCPeerScoreUpdate(message);
+    if (message.label === 'yournext') this.onRTCPeerYourNext();
+  };
+
+  @action
+  onRTCPeerYourNext = () => {
+    if (this.currentPlayingPeerNumber === this.roomSize) {
+      this.currentPlayingPeerNumber = 1;
+    } else {
+      this.currentPlayingPeerNumber += 1;
+    }
+
+    this.startFrame();
   };
 
   @action
@@ -197,6 +236,10 @@ export default class GameStore extends EventTarget {
 
   @action
   collisionHandler = event => {
+    if (!this.listenToCollisions) return;
+
+    console.log('colission');
+
     // if the hit id is a cone
     const hitConeId = parseInt(event.detail.body.el.id, 10);
     if (!hitConeId) return;
@@ -227,24 +270,15 @@ export default class GameStore extends EventTarget {
   };
 
   @action
-  resetCones = (showCones = false) => {
-    this.renderCones = showCones;
-
+  resetCones = () => {
     this.cones.forEach(cone => {
       cone.rendered = true;
     });
   };
 
   @action
-  endFrame = () => {
-    console.log('end frame');
-
-    this.resetCones(false);
-  };
-
-  @action
   throwComplete = () => {
-    this.dispatchEvent(new Event('removeCollisionDetection'));
+    this.listenToCollisions = false;
 
     this.renderBall = false;
     this.scores.tempTotal += this.scores.current;
@@ -279,21 +313,52 @@ export default class GameStore extends EventTarget {
     });
 
     this.playerCanThrow = false;
-    this.dispatchEvent(new Event('addCollisionDetection'));
 
+    wait(500, () => this.listenToCollisions = true);
     wait(4000, this.throwComplete);
   };
 
   @action
   startFrame = () => {
+    console.log('started frame');
+
+    this.currentShot = 1;
+
     this.renderCones = true;
+    this.cones.forEach(cone => cone.rendered = true);
+
     this.renderThrowButton = true;
     this.renderDirectionIndicator = true;
 
     this.playerCanThrow = true;
   };
 
+  @action
+  endFrame = () => {
+    console.log('end frame');
+
+    this.scores.current = 0;
+
+    this.renderCones = false;
+    this.cones.forEach(cone => cone.rendered = false);
+
+    if (this.currentPlayingPeerNumber === this.roomSize) {
+      this.currentPlayingPeerNumber = 1;
+    } else {
+      this.currentPlayingPeerNumber += 1;
+    }
+
+    const peerId = this.getPeerIdByOrder(this.currentPlayingPeerNumber);
+
+    this.dataChannel.sendMessageTo(peerId, 'yournext');
+  };
+
   init = () => {
-    this.startFrame();
+    // start frame if i'm the current player
+    if (this.currentPlayingPeerNumber === this.me.order) {
+      this.startFrame();
+    } else {
+      console.log('someone else has to start');
+    }
   };
 }

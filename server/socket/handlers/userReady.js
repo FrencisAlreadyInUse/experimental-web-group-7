@@ -6,24 +6,24 @@ module.exports = function userReady(data) {
   if (!roomName) return;
 
   // return if the room doesn't exist
-  const room = this.store.getRoom(roomName);
-  if (!room) return;
+  const roomInstance = this.store.getRoom(roomName);
+  if (!roomInstance) return;
 
   // add the user data to the user
   // and set user.ready to true
   const userData = JSON.parse(data);
-  room.insertUserData(clientId, userData.name, userData.uri);
+  roomInstance.insertUserData(clientId, userData.name, userData.uri);
 
-  const updatedUserData = JSON.stringify(room.getUserData(clientId));
+  const updatedUserData = JSON.stringify(roomInstance.getUserData(clientId));
 
   // send user data to other user
-  const otherUsers = room.otherUsers(clientId);
+  const otherUsers = roomInstance.otherUsers(clientId);
   otherUsers.forEach(peerId => {
     this.ss.to(peerId, 'peerUpdate', clientId, updatedUserData);
 
     // if the room is full and all users are ready tell peers that game can start
-    if (room.isFull && room.allUsersReady) {
-      this.ss.to(peerId, 'roomUsersReady');
+    if (roomInstance.isFull && roomInstance.allUsersReady) {
+      this.ss.to(peerId, 'roomUsersReady', roomInstance.maxUsers);
     }
   });
 
@@ -31,7 +31,7 @@ module.exports = function userReady(data) {
   this.ss.to(clientId, 'peerUpdate', clientId, updatedUserData);
 
   // also send to clientId that game can start
-  if (room.isFull && room.allUsersReady) {
-    this.ss.to(clientId, 'roomUsersReady');
+  if (roomInstance.isFull && roomInstance.allUsersReady) {
+    this.ss.to(clientId, 'roomUsersReady', roomInstance.maxUsers);
   }
 };

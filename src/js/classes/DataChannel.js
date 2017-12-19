@@ -40,23 +40,38 @@ export default class DataChannel extends EventTarget {
       .on('roomOpened', this.onSSRoomOpened);
   }
 
-  sendMessage = (label, message) => {
+  sendMessage = (label, data) => {
     const peerKeys = Object.keys(this.peers);
 
     peerKeys.forEach(peerId => {
       if (!this.peers[peerId].channel) return;
       if (this.peers[peerId].channel.readyState !== 'open') return;
 
-      this.peers[peerId].channel.send(JSON.stringify({ label, peerId: this.myId, message }));
+      const message = { label, peerId: this.myId };
+      if (data) {
+        message.data = data;
+      }
+      this.peers[peerId].channel.send(JSON.stringify(message));
     });
   };
 
+  sendMessageTo = (peerId, label, data) => {
+    const peer = this.peers[peerId];
+    if (!peer) return false;
+
+    const message = { label, peerId: this.myId };
+    if (data) {
+      message.data = data;
+    }
+    peer.channel.send(JSON.stringify(message));
+  };
+
   onMessage = MessageEvent => {
-    const data = JSON.parse(MessageEvent.data);
+    const message = JSON.parse(MessageEvent.data);
 
     this.dispatchEvent(
       new CustomEvent('rtcPeerMessage', {
-        detail: data,
+        detail: message,
       }),
     );
   };
@@ -275,8 +290,12 @@ export default class DataChannel extends EventTarget {
     this.dispatchEvent(new Event('ssRoomFull'));
   };
 
-  onSSRoomUsersReady = () => {
-    this.dispatchEvent(new Event('ssRoomUsersReady'));
+  onSSRoomUsersReady = roomSize => {
+    this.dispatchEvent(
+      new CustomEvent('ssRoomUsersReady', {
+        detail: { roomSize },
+      }),
+    );
   };
 
   createRoom = () => {

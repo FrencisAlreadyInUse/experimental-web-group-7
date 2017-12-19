@@ -5,29 +5,21 @@ import { inject, observer } from 'mobx-react';
 import wait from './../../functions/wait.js';
 
 class Cone extends Component {
-  //
-  constructor(props) {
-    super(props);
-
+  componentWillMount() {
     this.$node = null;
-    this.props.gameStore
-      .on('addCollisionDetection', this.addCollisionDetection)
-      .on('removeCollisionDetection', this.removeCollisionDetection);
   }
 
-  addCollisionDetection = () => {
-    wait(500, () => {
-      if (this.props.rendered) {
-        this.$node.addEventListener('collide', this.props.gameStore.collisionHandler);
-      }
-    });
-  };
+  componentDidMount() {
+    if (this.props.rendered) {
+      this.$node.addEventListener('collide', this.props.gameStore.collisionHandler);
+    }
+  }
 
-  removeCollisionDetection = () => {
+  componentWillUnmount() {
     if (this.props.rendered) {
       this.$node.removeEventListener('collide', this.props.gameStore.collisionHandler);
     }
-  };
+  }
 
   render() {
     return this.props.rendered ? (

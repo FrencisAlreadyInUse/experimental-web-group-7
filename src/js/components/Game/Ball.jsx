@@ -1,47 +1,43 @@
-import React from 'react';
+/* eslint-disable no-nested-ternary */
+
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 
-import wait from './../../functions/wait.js';
+class Ball extends Component {
+  componentWillMount() {
+    this.$node = null;
+  }
 
-const Ball = ({ gameStore, me }) => {
-  let $node = null;
+  componentDidMount() {
+    if (this.props.gameStore.renderBall) {
+      this.$node.addEventListener('collide', this.props.gameStore.collisionHandler);
+    }
+  }
 
-  const addCollisionDetection = () => {
-    wait(500, () => $node.addEventListener('collide', gameStore.collisionHandler));
-  };
+  componentWillUnmount() {
+    if (this.props.gameStore.renderBall) {
+      this.$node.removeEventListener('collide', this.props.gameStore.collisionHandler);
+    }
+  }
 
-  const removeCollisionDetection = () => {
-    $node.removeEventListener('collide', gameStore.collisionHandler);
-  };
-
-  gameStore
-    .on('addCollisionDetection', addCollisionDetection)
-    .on('removeCollisionDetection', removeCollisionDetection);
-
-  const ball = (
-    <a-sphere
-      id="bowlingBall"
-      radius=".75"
-      dynamic-body="shape: sphere; sphereRadius: .77; mass: 50;"
-      velocity="0 0 -35"
-      src={me ? '#bowling-ball-me' : gameStore.playingPeer.uri}
-      position={`${gameStore.ballDirection} -1.25 -6`}
-      ref={el => ($node = el)}
-    />
-  );
-
-  if (me) return gameStore.renderBall ? ball : null;
-  return gameStore.renderPeerBall ? ball : null;
-};
+  render() {
+    return this.props.gameStore.renderBall ? (
+      <a-sphere
+        id="bowlingBall"
+        radius=".75"
+        dynamic-body="shape: sphere; sphereRadius: .77; mass: 50;"
+        velocity="0 0 -35"
+        src="#bowling-ball-me"
+        position={`${this.props.gameStore.ballDirection} -1.25 -6`}
+        ref={el => (this.$node = el)}
+      />
+    ) : null;
+  }
+}
 
 Ball.propTypes = {
   gameStore: PropTypes.object.isRequired,
-  me: PropTypes.bool,
-};
-
-Ball.defaultProps = {
-  me: true,
 };
 
 export default inject('gameStore')(observer(Ball));
