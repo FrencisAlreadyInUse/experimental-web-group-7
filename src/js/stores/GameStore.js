@@ -11,7 +11,7 @@ export default class GameStore extends EventTarget {
   @observable renderPeerBall = false;
   @observable renderThrowButton = false;
   @observable renderDirectionIndicator = false;
-  @observable renderConeIndicators = false;
+  // @observable renderConeIndicators = false;
 
   @observable playerCanThrow = false;
   @observable currentPlayingPeerNumber = 1;
@@ -228,11 +228,24 @@ export default class GameStore extends EventTarget {
 
     if (message.label === 'peerBallThrow') this.onRTCMessagePeerBallThrow(message);
     if (message.label === 'peerScoreUpdate') this.onRTCMessagePeerScoreUpdate(message);
+    if (message.label === 'peerIndicatorUpdate') this.onRTCMessagePeerIndicatorUpdate(message);
     if (message.label === 'nextpeer') this.onRTCMessageNextPeer();
   };
 
   @action
-  onRTCMessageNextPeer() {
+  onRTCMessagePeerIndicatorUpdate = message => {
+    console.log('peer indicator update');
+    const hitConeId = message.data.coneId;
+
+    const indicator = this.coneIndicators.find(i => i.id === hitConeId);
+    if (!indicator.hit) {
+      indicator.hit = true;
+      this.hitCones.push(hitConeId);
+    }
+  };
+
+  @action
+  onRTCMessageNextPeer = () => {
     this.nextPeerNumber();
 
     // play frame if i'm the next player
@@ -241,7 +254,7 @@ export default class GameStore extends EventTarget {
     } else {
       this.resetConesAndIndicators();
     }
-  }
+  };
 
   @action
   updateScores = score => {
@@ -278,21 +291,23 @@ export default class GameStore extends EventTarget {
     const hitConeId = parseInt(event.detail.body.el.id, 10);
     if (!hitConeId) return;
 
-    const indicator = this.coneIndicators.find(i => i.id === hitConeId);
-    if (!indicator.hit) {
-      indicator.hit = true;
-      this.hitCones.push(hitConeId);
-    }
-
-    if (this.soundCanPlay) {
-      this.$conesHitSound.play();
-      this.soundCanPlay = false;
-    }
-
-    // update score if i'm the current player.
-    // not if it's an other peer playing
     if (this.imTheCurrentPlayer) {
       this.updateScores(this.hitCones.length);
+
+      if (this.soundCanPlay) {
+        this.$conesHitSound.play();
+        this.soundCanPlay = false;
+      }
+
+      const indicator = this.coneIndicators.find(i => i.id === hitConeId);
+      if (!indicator.hit) {
+        indicator.hit = true;
+        this.hitCones.push(hitConeId);
+
+        this.dataChannel.sendMessage('peerIndicatorUpdate', {
+          coneId: hitConeId,
+        });
+      }
     }
   };
 
@@ -319,7 +334,7 @@ export default class GameStore extends EventTarget {
   @action
   throwComplete = () => {
     this.listenToCollisions = false;
-    this.renderConeIndicators = false;
+    // this.renderConeIndicators = false;
     this.soundCanPlay = true;
     this.scores.tempTotal += this.scores.current;
 
@@ -335,7 +350,7 @@ export default class GameStore extends EventTarget {
       } else if (this.shotOne) {
         this.renderThrowButton = true;
         this.renderDirectionIndicator = true;
-        this.renderConeIndicators = true;
+        // this.renderConeIndicators = true;
 
         this.playerCanThrow = true;
         this.currentShot += 1;
@@ -347,10 +362,12 @@ export default class GameStore extends EventTarget {
       }
     } else {
       // if it's a peer who threw the ball
-
-      console.log('set render peer ball to false');
       this.currentPlayerId = null;
       this.renderPeerBall = false;
+
+      const remainingCones = this.renderedCones;
+      remainingCones.forEach(cone => (cone.rendered = false));
+      wait(500, () => remainingCones.forEach(cone => (cone.rendered = true)));
     }
   };
 
@@ -382,7 +399,7 @@ export default class GameStore extends EventTarget {
     this.currentPlayerId = this.currentPlayingPlayer.id;
     this.renderPeerBall = true;
 
-    this.renderConeIndicators = true;
+    // this.renderConeIndicators = true;
 
     this.peerBallDirection = direction;
 
@@ -399,7 +416,7 @@ export default class GameStore extends EventTarget {
 
     this.renderThrowButton = true;
     this.renderDirectionIndicator = true;
-    this.renderConeIndicators = true;
+    // this.renderConeIndicators = true;
 
     this.playerCanThrow = true;
 
@@ -427,7 +444,7 @@ export default class GameStore extends EventTarget {
     if (this.me.order === 1) {
       this.startFrame();
     } else {
-      console.log('someone else has to start');
+      this.resetConesAndIndicators();
     }
   };
 }
