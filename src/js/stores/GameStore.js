@@ -8,12 +8,14 @@ import wait from './../functions/wait.js';
 
 export default class GameStore extends EventTarget {
   @observable renderBall = false;
+  @observable renderPeerBall = false;
   @observable renderThrowButton = false;
   @observable renderDirectionIndicator = false;
   @observable renderConeIndicators = false;
 
   @observable playerCanThrow = false;
   @observable currentPlayingPeerNumber = 1;
+  @observable currentPlayerId = null;
 
   @observable ballDirection;
   @observable coneIndicators;
@@ -49,16 +51,16 @@ export default class GameStore extends EventTarget {
     };
 
     this.cones = [
-      { id: 1, position: '0 -2 -29', rendered: true },
-      { id: 2, position: '.5 -2 -32', rendered: true },
-      { id: 3, position: '-.5 -2 -32', rendered: true },
-      { id: 4, position: '1 -2 -35', rendered: true },
-      { id: 5, position: '0 -2 -35', rendered: true },
-      { id: 6, position: '-1 -2 -35', rendered: true },
-      { id: 7, position: '1.5 -2 -38', rendered: true },
-      { id: 8, position: '.5 -2 -38', rendered: true },
-      { id: 9, position: '-.5 -2 -38', rendered: true },
-      { id: 10, position: '-1.5 -2 -38', rendered: true },
+      { id: 1, position: '0 -2 -29', rendered: false },
+      { id: 2, position: '.5 -2 -32', rendered: false },
+      { id: 3, position: '-.5 -2 -32', rendered: false },
+      { id: 4, position: '1 -2 -35', rendered: false },
+      { id: 5, position: '0 -2 -35', rendered: false },
+      { id: 6, position: '-1 -2 -35', rendered: false },
+      { id: 7, position: '1.5 -2 -38', rendered: false },
+      { id: 8, position: '.5 -2 -38', rendered: false },
+      { id: 9, position: '-.5 -2 -38', rendered: false },
+      { id: 10, position: '-1.5 -2 -38', rendered: false },
     ];
 
     this.coneIndicators = [
@@ -138,6 +140,20 @@ export default class GameStore extends EventTarget {
     return this.cones.filter(cone => cone.rendered === true);
   }
 
+  @computed
+  get currentPlayingPlayer() {
+    for (const [, peer] of this.peers) {
+      if (peer.order === this.currentPlayingPeerNumber) {
+        return peer;
+      }
+    }
+    return null;
+  }
+
+  get imTheCurrentPlayer() {
+    return this.me.order === this.currentPlayingPeerNumber;
+  }
+
   onSSRoomUsersReady = event => {
     this.roomSize = event.detail.roomSize;
   };
@@ -154,7 +170,7 @@ export default class GameStore extends EventTarget {
   goToNextPlayer = () => {
     this.nextPeerNumber();
     this.dataChannel.sendMessage('nextpeer');
-  }
+  };
 
   nextPeerNumber = () => {
     if (this.currentPlayingPeerNumber < this.roomSize) {
@@ -162,7 +178,7 @@ export default class GameStore extends EventTarget {
     } else {
       this.currentPlayingPeerNumber = 1;
     }
-  }
+  };
 
   @action
   onSSPeerData = event => {
@@ -194,6 +210,7 @@ export default class GameStore extends EventTarget {
   @action
   onRTCMessagePeerBallThrow = message => {
     console.log('ball throw from ', message.peerId);
+    this.peerThrowBall(message.data.direction);
   };
 
   @action
@@ -269,7 +286,11 @@ export default class GameStore extends EventTarget {
       this.soundCanPlay = false;
     }
 
-    this.updateScores(this.hitCones.length);
+    // update score if i'm the current player.
+    // not if it's an other peer playing
+    if (this.imTheCurrentPlayer) {
+      this.updateScores(this.hitCones.length);
+    }
   };
 
   @action
@@ -293,26 +314,36 @@ export default class GameStore extends EventTarget {
   @action
   throwComplete = () => {
     this.listenToCollisions = false;
-
-    this.renderBall = false;
     this.renderConeIndicators = false;
-
-    this.scores.tempTotal += this.scores.current;
     this.soundCanPlay = true;
 
     this.removeHitCones();
 
-    if (this.strike) {
-      this.endFrame();
-    } else if (this.shotOne) {
-      this.renderThrowButton = true;
-      this.renderDirectionIndicator = true;
-      this.renderConeIndicators = true;
+    if (this.imTheCurrentPlayer) {
+      // if im the one who throw the ball
 
-      this.playerCanThrow = true;
-      this.currentShot += 1;
+      this.renderBall = false;
+
+      if (this.strike) {
+        this.endFrame();
+      } else if (this.shotOne) {
+        this.renderThrowButton = true;
+        this.renderDirectionIndicator = true;
+        this.renderConeIndicators = true;
+
+        this.scores.tempTotal += this.scores.current;
+
+        this.playerCanThrow = true;
+        this.currentShot += 1;
+      } else {
+        this.endFrame();
+      }
     } else {
-      this.endFrame();
+      // if it's a peer who threw the ball
+
+      console.log('set render peer ball to false');
+      this.currentPlayerId = null;
+      this.renderPeerBall = false;
     }
   };
 
@@ -337,6 +368,21 @@ export default class GameStore extends EventTarget {
   };
 
   @action
+  peerThrowBall = direction => {
+    console.log(`thow peer ball to ${direction}`);
+
+    this.currentPlayerId = this.currentPlayingPlayer.id;
+    this.renderPeerBall = true;
+
+    this.renderConeIndicators = true;
+
+    this.peerBallDirection = direction;
+
+    wait(500, () => (this.listenToCollisions = true));
+    wait(4000, this.throwComplete);
+  };
+
+  @action
   startFrame = () => {
     this.currentShot = 1;
 
@@ -355,6 +401,7 @@ export default class GameStore extends EventTarget {
   @action
   endFrame = () => {
     this.scores.current = 0;
+    this.playerCanThrow = false;
 
     this.cones.forEach(cone => (cone.rendered = false));
     this.coneIndicators.forEach(indicator => (indicator.hit = false));

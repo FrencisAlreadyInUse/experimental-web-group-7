@@ -1,43 +1,37 @@
-/* eslint-disable no-nested-ternary */
-
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 
-import wait from './../../functions/wait.js';
+class PeerBall extends Component {
+  componentWillMount() {
+    this.$node = null;
+  }
 
-const BallPeer = ({ gameStore }) => {
-  let $node = null;
+  componentDidMount() {
+    this.$node.addEventListener('collide', this.props.gameStore.collisionHandler);
+  }
 
-  const addCollisionDetection = () => {
-    if (!gameStore.renderPeerBall) return;
-    wait(500, () => $node.addEventListener('collide', gameStore.collisionHandler));
-  };
+  componentWillUnmount() {
+    this.$node.removeEventListener('collide', this.props.gameStore.collisionHandler);
+  }
 
-  const removeCollisionDetection = () => {
-    if (!gameStore.renderPeerBall) return;
-    $node.removeEventListener('collide', gameStore.collisionHandler);
-  };
+  render() {
+    return (
+      <a-sphere
+        id="bowlingBall"
+        radius=".75"
+        dynamic-body="shape: sphere; sphereRadius: .77; mass: 50;"
+        velocity="0 0 -35"
+        src={`#bowling-ball-peer-${this.props.gameStore.currentPlayerId}`}
+        position={`${this.props.gameStore.peerBallDirection} -1.25 -6`}
+        ref={el => (this.$node = el)}
+      />
+    );
+  }
+}
 
-  gameStore
-    .on('addCollisionDetection', addCollisionDetection)
-    .on('removeCollisionDetection', removeCollisionDetection);
-
-  return gameStore.renderPeerBall ? (
-    <a-sphere
-      id="bowlingBall"
-      radius=".75"
-      dynamic-body="shape: sphere; sphereRadius: .77; mass: 50;"
-      velocity="0 0 -35"
-      src={gameStore.currentPlayingPeer.uri}
-      position={`${gameStore.peerBallDirection} -1.25 -6`}
-      ref={el => ($node = el)}
-    />
-  ) : null;
-};
-
-BallPeer.propTypes = {
+PeerBall.propTypes = {
   gameStore: PropTypes.object.isRequired,
 };
 
-export default inject('gameStore')(observer(BallPeer));
+export default inject('gameStore')(observer(PeerBall));
