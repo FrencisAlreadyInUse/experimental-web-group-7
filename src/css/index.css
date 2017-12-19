@@ -71,7 +71,6 @@ body,
 .section {
   display: flex;
   flex-flow: column nowrap;
-  float: left;
   padding: 2.5rem 0;
   align-items: center;
   justify-content: center;

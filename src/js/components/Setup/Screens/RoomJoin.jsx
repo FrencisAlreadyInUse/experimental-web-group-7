@@ -22,6 +22,9 @@ const ScreenRoomJoin = ({ setupStore }) => {
 
   return (
     <Screen name="roomJoin" className="around">
+      <button className="btn btn--about btn--back" onClick={() => setupStore.goToSection('start')}>
+        &larr;
+      </button>
       <header className="hide">
         <h1>Joining Room</h1>
       </header>
