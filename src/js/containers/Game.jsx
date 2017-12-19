@@ -6,8 +6,8 @@ import Camera from './../components/Game/Camera.jsx';
 import Assets from './../components/Game/Assets.jsx';
 import Alley from './../components/Game/Alley.jsx';
 import Arrow from './../components/Game/Arrow.jsx';
-// import Scores from './../components/Game/Scores.jsx';
-import Winner from './../components/Game/Winner.jsx';
+import Scores from './../components/Game/Scores.jsx';
+// import Winner from './../components/Game/Winner.jsx';
 import WhosPlaying from './../components/Game/WhosPlaying.jsx';
 import Ball from './../components/Game/Ball.jsx';
 import BallPeer from './../components/Game/BallPeer.jsx';
@@ -21,8 +21,8 @@ const Game = ({ gameStore }) => (
       <Assets />
       <Alley />
       <Arrow />
-      {/* <Scores /> */}
-      <Winner />
+      <Scores />
+      {/* <Winner /> */}
       {gameStore.currentPlayingPeer.id !== 'me' ? <WhosPlaying /> : null}
       {gameStore.renderBall ? <Ball /> : null}
       {gameStore.renderPeerBall ? <BallPeer /> : null}
