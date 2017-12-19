@@ -245,8 +245,8 @@ export default class GameStore extends EventTarget {
     this.scores.current = score;
 
     if (this.strike) {
-      this.scores.one = score;
-      this.scores.two = 'X';
+      this.scores.one = 'X';
+      this.scores.two = score;
     } else if (this.currentShot === 1) {
       this.scores.one = score;
     } else {
@@ -316,6 +316,7 @@ export default class GameStore extends EventTarget {
     this.listenToCollisions = false;
     this.renderConeIndicators = false;
     this.soundCanPlay = true;
+    this.scores.tempTotal += this.scores.current;
 
     this.removeHitCones();
 
@@ -331,11 +332,12 @@ export default class GameStore extends EventTarget {
         this.renderDirectionIndicator = true;
         this.renderConeIndicators = true;
 
-        this.scores.tempTotal += this.scores.current;
-
         this.playerCanThrow = true;
         this.currentShot += 1;
+
+        if (this.scores.one === '-') this.scores.one = 0;
       } else {
+        if (this.scores.two === '-') this.scores.two = 0;
         this.endFrame();
       }
     } else {
@@ -354,6 +356,7 @@ export default class GameStore extends EventTarget {
     this.renderBall = true;
 
     this.ballDirection = map(this.diractionIndicatorPosition, -1.45, 1.22, -3.45, 3.22);
+
     this.renderThrowButton = false;
     this.renderDirectionIndicator = false;
 
@@ -401,6 +404,8 @@ export default class GameStore extends EventTarget {
   @action
   endFrame = () => {
     this.scores.current = 0;
+
+    this.currentShot = 1;
     this.playerCanThrow = false;
 
     this.cones.forEach(cone => (cone.rendered = false));
