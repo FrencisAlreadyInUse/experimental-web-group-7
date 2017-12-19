@@ -7,6 +7,7 @@ import Assets from './../components/Game/Assets.jsx';
 import Alley from './../components/Game/Alley.jsx';
 import Arrow from './../components/Game/Arrow.jsx';
 import Scores from './../components/Game/Scores.jsx';
+import WhosPlaying from './../components/Game/WhosPlaying.jsx';
 import Ball from './../components/Game/Ball.jsx';
 import BallPeer from './../components/Game/BallPeer.jsx';
 import Peers from './../components/Game/Peers.jsx';
@@ -20,6 +21,7 @@ const Game = ({ gameStore }) => (
       <Alley />
       <Arrow />
       <Scores />
+      <WhosPlaying />
       {gameStore.renderBall ? <Ball /> : null}
       {gameStore.renderPeerBall ? <BallPeer /> : null}
       <Peers />
