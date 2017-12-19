@@ -15,8 +15,6 @@ export default class GameStore extends EventTarget {
 
   @observable playerCanThrow = false;
   @observable currentPlayingPeerNumber = 1;
-  @observable currentPlayerId = null;
-  @observable currentPlayerName = 'Japser Best Dev';
 
   @observable ballDirection;
   @observable coneIndicators;
@@ -129,12 +127,11 @@ export default class GameStore extends EventTarget {
 
   @computed
   get currentPlayingPeer() {
+    const peers = [this.me];
     for (const [, peer] of this.peers) {
-      if (peer.id === this.currentPlayerId) {
-        return peer;
-      }
+      peers.push(peer);
     }
-    return null;
+    return peers.find(peer => peer.order === this.currentPlayingPeerNumber);
   }
 
   @computed
@@ -180,6 +177,7 @@ export default class GameStore extends EventTarget {
   @action
   onSSPeerData = event => {
     const peerData = event.detail;
+    console.log({ peerData });
     const {
       id, name, uri, order,
     } = peerData;
@@ -228,12 +226,10 @@ export default class GameStore extends EventTarget {
   };
 
   @action
-  onRTCMessageNextPeer = message => {
+  onRTCMessageNextPeer = () => {
     this.resetCones();
     this.resetIndicators();
     this.nextCurrentPlayingPeerNumber();
-
-    this.currentPlayerId = message.peerId;
 
     // play frame if i'm the next player
     if (this.currentPlayingPeerNumber === this.me.order) {
@@ -256,8 +252,10 @@ export default class GameStore extends EventTarget {
 
   @action
   updateScores = score => {
+    // set score globally for later
     this.scores.current = score;
-    console.log('score', this.scores.current);
+
+    console.log(this.scores.current);
 
     if (this.strike) {
       this.scores.one = 'X';
@@ -265,8 +263,7 @@ export default class GameStore extends EventTarget {
     } else if (this.currentTry === 1) {
       this.scores.one = score;
     } else {
-      const scoreTwo = score - this.scores.one;
-      this.scores.two = scoreTwo !== 0 ? scoreTwo : '-';
+      this.scores.two = score - this.scores.one;
     }
 
     this.scores.total = this.scores.tempTotal + score;
@@ -292,14 +289,13 @@ export default class GameStore extends EventTarget {
     if (!hitConeId) return;
 
     if (this.imTheCurrentPlayer) {
+      this.updateIndicatorAndAddConeToHitCones(hitConeId);
       this.updateScores(this.hitCones.size);
 
       if (this.soundCanPlay) {
         this.$conesHitSound.play();
         this.soundCanPlay = false;
       }
-
-      this.updateIndicatorAndAddConeToHitCones(hitConeId);
 
       this.dataChannel.sendMessage('peerIndicatorUpdate', {
         coneId: hitConeId,
@@ -309,8 +305,8 @@ export default class GameStore extends EventTarget {
 
   @action
   updateIndicatorAndAddConeToHitCones = hitConeId => {
-    this.coneIndicators.find(i => i.id === hitConeId).hit = true;
     this.hitCones.add(hitConeId);
+    this.coneIndicators.find(i => i.id === hitConeId).hit = true;
   };
 
   @action
@@ -339,7 +335,7 @@ export default class GameStore extends EventTarget {
       console.log('reloaded hit cone', hitConeId);
 
       this.cones.find(cone => cone.id === hitConeId).rendered = false;
-      wait(0, () => {
+      wait(100, () => {
         this.cones.find(cone => cone.id === hitConeId).rendered = true;
         this.hitCones.delete(hitConeId);
       });
@@ -381,11 +377,8 @@ export default class GameStore extends EventTarget {
   endThrow = () => {
     console.log('end throw');
 
-    this.endTry();
-
     this.listenToCollisions = false;
     this.soundCanPlay = true;
-    this.scores.tempTotal += this.scores.current;
 
     if (this.imTheCurrentPlayer) {
       this.renderBall = false;
@@ -401,9 +394,10 @@ export default class GameStore extends EventTarget {
         this.endFrame();
       }
     } else {
-      this.currentPlayerId = null;
       this.renderPeerBall = false;
     }
+
+    this.endTry();
   };
 
   @action
@@ -428,8 +422,6 @@ export default class GameStore extends EventTarget {
   startFrame = () => {
     console.log('start frame');
 
-    this.scores.current = 0;
-
     this.currentTry = 1;
     this.scores.one = '-';
     this.scores.two = '-';
@@ -441,7 +433,7 @@ export default class GameStore extends EventTarget {
   endFrame = () => {
     console.log('end frame');
 
-    this.scores.current = 0;
+    this.scores.tempTotal += this.scores.current;
 
     this.resetCones();
     this.resetIndicators();

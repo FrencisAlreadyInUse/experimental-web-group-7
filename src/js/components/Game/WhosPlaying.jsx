@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 const WhosPlaying = ({ gameStore }) => {
   const defaultBoxWidth = 1.5;
   const defaultCharLength = 6;
-  const boxWidth = (defaultBoxWidth / defaultCharLength) * gameStore.currentPlayerName.length;
+  const boxWidth = (defaultBoxWidth / defaultCharLength) * gameStore.currentPlayingPeer.name.length;
   return (
     <Fragment>
       <a-text
@@ -13,7 +13,7 @@ const WhosPlaying = ({ gameStore }) => {
         position="0.048 -0.793 -6.82"
         color="#3737DD"
         wrap-count="15"
-        text={`width:3; align:center; value: ${gameStore.currentPlayerName}`}
+        text={`width:3; align:center; value: ${gameStore.currentPlayingPeer.name}`}
         font="https://cdn.aframe.io/fonts/KelsonSans.fnt"
       />
       <a-box

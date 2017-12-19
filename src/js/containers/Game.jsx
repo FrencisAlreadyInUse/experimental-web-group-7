@@ -21,7 +21,7 @@ const Game = ({ gameStore }) => (
       <Alley />
       <Arrow />
       <Scores />
-      <WhosPlaying />
+      {gameStore.currentPlayingPeer.id !== 'me' ? <WhosPlaying /> : null}
       {gameStore.renderBall ? <Ball /> : null}
       {gameStore.renderPeerBall ? <BallPeer /> : null}
       <Peers />

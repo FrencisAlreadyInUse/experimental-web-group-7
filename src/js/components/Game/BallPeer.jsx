@@ -22,7 +22,7 @@ class PeerBall extends Component {
         radius=".75"
         dynamic-body="shape: sphere; sphereRadius: .77; mass: 50;"
         velocity="0 0 -35"
-        src={`#bowling-ball-peer-${this.props.gameStore.currentPlayerId}`}
+        src={`#bowling-ball-peer-${this.props.gameStore.currentPlayingPeer.id}`}
         position={`${this.props.gameStore.ballDirection} -1.25 -6`}
         ref={el => (this.$node = el)}
       />
