@@ -246,6 +246,7 @@ export default class GameStore extends EventTarget {
   @action
   updateScores = score => {
     this.scores.current = score;
+    console.log('score', this.scores.current);
 
     if (this.strike) {
       this.scores.one = 'X';
@@ -253,7 +254,8 @@ export default class GameStore extends EventTarget {
     } else if (this.currentTry === 1) {
       this.scores.one = score;
     } else {
-      this.scores.two = score;
+      const scoreTwo = score - this.scores.one;
+      this.scores.two = scoreTwo !== 0 ? scoreTwo : '-';
     }
 
     this.scores.total = this.scores.tempTotal + score;
@@ -414,6 +416,8 @@ export default class GameStore extends EventTarget {
   @action
   startFrame = () => {
     console.log('start frame');
+
+    this.scores.current = 0;
 
     this.currentTry = 1;
     this.scores.one = '-';
