@@ -170,6 +170,7 @@ export default class GameStore extends EventTarget {
   goToNextPlayer = () => {
     this.nextPeerNumber();
     this.dataChannel.sendMessage('nextpeer');
+    this.resetConesAndIndicators();
   };
 
   nextPeerNumber = () => {
@@ -237,6 +238,8 @@ export default class GameStore extends EventTarget {
     // play frame if i'm the next player
     if (this.currentPlayingPeerNumber === this.me.order) {
       this.startFrame();
+    } else {
+      this.resetConesAndIndicators();
     }
   }
 
@@ -295,19 +298,21 @@ export default class GameStore extends EventTarget {
 
   @action
   removeHitCones = () => {
+    console.log('remove hit cones');
+
     this.hitCones.forEach(id => {
-      const cone = this.cones.find(c => c.id === id);
-      if (cone) {
-        cone.rendered = false;
-      }
+      this.cones.find(c => c.id === id).rendered = false;
     });
     this.hitCones = [];
   };
 
   @action
-  resetCones = () => {
-    this.cones.forEach(cone => {
-      cone.rendered = true;
+  resetConesAndIndicators = () => {
+    console.log('reset cones and indicators');
+
+    wait(500, () => {
+      this.cones.forEach(cone => (cone.rendered = true));
+      this.coneIndicators.forEach(indicator => (indicator.hit = false));
     });
   };
 
@@ -390,6 +395,7 @@ export default class GameStore extends EventTarget {
     this.currentShot = 1;
 
     this.cones.forEach(cone => (cone.rendered = true));
+    this.coneIndicators.forEach(indicator => (indicator.hit = false));
 
     this.renderThrowButton = true;
     this.renderDirectionIndicator = true;
@@ -397,14 +403,16 @@ export default class GameStore extends EventTarget {
 
     this.playerCanThrow = true;
 
+    // reset scores
     this.scores.one = '-';
     this.scores.two = '-';
   };
 
   @action
   endFrame = () => {
-    this.scores.current = 0;
+    console.log('end frame');
 
+    this.scores.current = 0;
     this.currentShot = 1;
     this.playerCanThrow = false;
 
