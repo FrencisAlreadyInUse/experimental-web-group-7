@@ -127,6 +127,16 @@ export default class GameStore extends EventTarget {
   }
 
   @computed
+  get currentPlayingPeer() {
+    for (const [, peer] of this.peers) {
+      if (peer.id === this.currentPlayerId) {
+        return peer;
+      }
+    }
+    return null;
+  }
+
+  @computed
   get renderedCones() {
     return this.cones.filter(cone => cone.rendered === true);
   }
@@ -197,8 +207,6 @@ export default class GameStore extends EventTarget {
   onRTCMessagePeerBallThrow = message => {
     console.log('ball throw from ', message.peerId);
 
-    this.currentPlayerId = message.peerId;
-    console.log(this.currentPlayerId);
     this.startThrow(message.data.direction);
   };
 
@@ -211,16 +219,6 @@ export default class GameStore extends EventTarget {
   };
 
   @action
-  onRTCPeerMessage = event => {
-    const message = event.detail;
-
-    if (message.label === 'peerBallThrow') this.onRTCMessagePeerBallThrow(message);
-    if (message.label === 'peerScoreUpdate') this.onRTCMessagePeerScoreUpdate(message);
-    if (message.label === 'peerIndicatorUpdate') this.onRTCMessagePeerIndicatorUpdate(message);
-    if (message.label === 'nextpeer') this.onRTCMessageNextPeer();
-  };
-
-  @action
   onRTCMessagePeerIndicatorUpdate = message => {
     console.log('peer indicator update');
     const hitConeId = message.data.coneId;
@@ -229,10 +227,12 @@ export default class GameStore extends EventTarget {
   };
 
   @action
-  onRTCMessageNextPeer = () => {
+  onRTCMessageNextPeer = message => {
     this.resetCones();
     this.resetIndicators();
     this.nextCurrentPlayingPeerNumber();
+
+    this.currentPlayerId = message.peerId;
 
     // play frame if i'm the next player
     if (this.currentPlayingPeerNumber === this.me.order) {
@@ -241,6 +241,16 @@ export default class GameStore extends EventTarget {
     } else {
       console.log('next player');
     }
+  };
+
+  @action
+  onRTCPeerMessage = event => {
+    const message = event.detail;
+
+    if (message.label === 'peerBallThrow') this.onRTCMessagePeerBallThrow(message);
+    if (message.label === 'peerScoreUpdate') this.onRTCMessagePeerScoreUpdate(message);
+    if (message.label === 'peerIndicatorUpdate') this.onRTCMessagePeerIndicatorUpdate(message);
+    if (message.label === 'nextpeer') this.onRTCMessageNextPeer();
   };
 
   @action
