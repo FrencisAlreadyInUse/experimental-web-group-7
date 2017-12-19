@@ -199,6 +199,9 @@ export default class GameStore extends EventTarget {
 
   @action
   onRTCPeerDisconnect = event => {
+    if (this.peers.size === 1) {
+      this.currentPlayingPeerNumber = this.me.order;
+    }
     this.peers.delete(event.detail.id);
   };
 

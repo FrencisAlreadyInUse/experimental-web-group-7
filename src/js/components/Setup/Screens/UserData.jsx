@@ -45,6 +45,7 @@ const Note = styled.div`
 const ScreenUserData = ({ setupStore }) => {
   let $fileInputWrapper = null;
   let $fileInput = null;
+  let $input = null;
 
   const handleFileInputChange = () => {
     const imageFile = $fileInput.files[0];
@@ -56,17 +57,14 @@ const ScreenUserData = ({ setupStore }) => {
   const handleUserReady = event => {
     event.preventDefault();
 
-    // const imageFile = $fileInput.files[0];
-    // if (!imageFile) return;
+    const imageFile = $fileInput.files[0];
+    if (!imageFile || setupStore.user.name === '') return;
 
-    setupStore.userReady();
-
-    // thumbDataURI(imageFile)
-    //   .then(uri => setupStore.userReady(uri))
-    //   .catch(console.error);
+    thumbDataURI(imageFile)
+      .then(setupStore.updateUserUri)
+      .then(setupStore.userReady)
+      .catch(console.error);
   };
-
-  let $input;
 
   if (setupStore.sections.userData.active) {
     wait(500, () => $input.focus());
@@ -93,7 +91,7 @@ const ScreenUserData = ({ setupStore }) => {
               onChange={setupStore.updateUserName}
               autoCorrect="off"
               autoCapitalize="off"
-              ref={el => $input = el}
+              ref={el => ($input = el)}
             />
           </FormRow>
           <FormRow>
