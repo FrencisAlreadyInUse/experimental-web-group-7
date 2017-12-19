@@ -4,10 +4,9 @@ import { inject, observer } from 'mobx-react';
 
 import Cone from './Cone.jsx';
 
-const Cones = ({ gameStore }) =>
-  (gameStore.renderCones ? (
-    <Fragment>{gameStore.cones.map(cone => <Cone key={cone.id} {...cone} />)}</Fragment>
-  ) : null);
+const Cones = ({ gameStore }) => (
+  <Fragment>{gameStore.renderedCones.map(cone => <Cone key={cone.id} {...cone} />)}</Fragment>
+);
 
 Cones.propTypes = {
   gameStore: PropTypes.object.isRequired,

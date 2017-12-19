@@ -10,19 +10,15 @@ class Ball extends Component {
   }
 
   componentDidMount() {
-    if (this.props.gameStore.renderBall) {
-      this.$node.addEventListener('collide', this.props.gameStore.collisionHandler);
-    }
+    this.$node.addEventListener('collide', this.props.gameStore.collisionHandler);
   }
 
   componentWillUnmount() {
-    if (this.props.gameStore.renderBall) {
-      this.$node.removeEventListener('collide', this.props.gameStore.collisionHandler);
-    }
+    this.$node.removeEventListener('collide', this.props.gameStore.collisionHandler);
   }
 
   render() {
-    return this.props.gameStore.renderBall ? (
+    return (
       <a-sphere
         id="bowlingBall"
         radius=".75"
@@ -32,7 +28,7 @@ class Ball extends Component {
         position={`${this.props.gameStore.ballDirection} -1.25 -6`}
         ref={el => (this.$node = el)}
       />
-    ) : null;
+    );
   }
 }
 

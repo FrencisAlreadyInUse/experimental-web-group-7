@@ -20,7 +20,7 @@ const Game = ({ gameStore }) => (
       <Alley />
       <Arrow />
       <Scores />
-      <Ball />
+      {gameStore.renderBall ? <Ball /> : null}
       <BallPeer />
       <Peers />
       <Sky />

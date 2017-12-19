@@ -8,10 +8,12 @@ import wait from './../functions/wait.js';
 
 export default class GameStore extends EventTarget {
   @observable renderBall = false;
-  @observable renderCones = false;
   @observable renderThrowButton = false;
   @observable renderDirectionIndicator = false;
+  @observable renderConeIndicators = false;
+
   @observable playerCanThrow = false;
+  @observable currentPlayingPeerNumber = 1;
 
   @observable ballDirection;
   @observable coneIndicators;
@@ -19,8 +21,6 @@ export default class GameStore extends EventTarget {
   @observable me;
   @observable scores;
   @observable peers;
-
-  @observable currentPlayingPeerNumber = 1;
 
   constructor(dataChannel) {
     super();
@@ -133,19 +133,36 @@ export default class GameStore extends EventTarget {
     return peers.filter(peer => peer.score === leaderScore).map(peer => peer.id);
   }
 
+  @computed
+  get renderedCones() {
+    return this.cones.filter(cone => cone.rendered === true);
+  }
+
   onSSRoomUsersReady = event => {
     this.roomSize = event.detail.roomSize;
-  }
+  };
 
   getPeerIdByOrder = order => {
     for (const [, peer] of this.peers) {
-      console.log(peer);
       if (peer.order === order) {
         return peer.id;
       }
     }
     return null;
   };
+
+  goToNextPlayer = () => {
+    this.nextPeerNumber();
+    this.dataChannel.sendMessage('nextpeer');
+  }
+
+  nextPeerNumber = () => {
+    if (this.currentPlayingPeerNumber < this.roomSize) {
+      this.currentPlayingPeerNumber += 1;
+    } else {
+      this.currentPlayingPeerNumber = 1;
+    }
+  }
 
   @action
   onSSPeerData = event => {
@@ -175,12 +192,12 @@ export default class GameStore extends EventTarget {
   };
 
   @action
-  onRTCPeerBallThrow = message => {
+  onRTCMessagePeerBallThrow = message => {
     console.log('ball throw from ', message.peerId);
   };
 
   @action
-  onRTCPeerScoreUpdate = message => {
+  onRTCMessagePeerScoreUpdate = message => {
     const peer = this.peers.get(message.peerId);
     if (!peer) return;
 
@@ -191,21 +208,20 @@ export default class GameStore extends EventTarget {
   onRTCPeerMessage = event => {
     const message = event.detail;
 
-    if (message.label === 'peerBallThrow') this.onRTCPeerBallThrow(message);
-    if (message.label === 'peerScoreUpdate') this.onRTCPeerScoreUpdate(message);
-    if (message.label === 'yournext') this.onRTCPeerYourNext();
+    if (message.label === 'peerBallThrow') this.onRTCMessagePeerBallThrow(message);
+    if (message.label === 'peerScoreUpdate') this.onRTCMessagePeerScoreUpdate(message);
+    if (message.label === 'nextpeer') this.onRTCMessageNextPeer();
   };
 
   @action
-  onRTCPeerYourNext = () => {
-    if (this.currentPlayingPeerNumber === this.roomSize) {
-      this.currentPlayingPeerNumber = 1;
-    } else {
-      this.currentPlayingPeerNumber += 1;
-    }
+  onRTCMessageNextPeer() {
+    this.nextPeerNumber();
 
-    this.startFrame();
-  };
+    // play frame if i'm the next player
+    if (this.currentPlayingPeerNumber === this.me.order) {
+      this.startFrame();
+    }
+  }
 
   @action
   updateScores = score => {
@@ -238,8 +254,6 @@ export default class GameStore extends EventTarget {
   collisionHandler = event => {
     if (!this.listenToCollisions) return;
 
-    console.log('colission');
-
     // if the hit id is a cone
     const hitConeId = parseInt(event.detail.body.el.id, 10);
     if (!hitConeId) return;
@@ -262,7 +276,7 @@ export default class GameStore extends EventTarget {
   removeHitCones = () => {
     this.hitCones.forEach(id => {
       const cone = this.cones.find(c => c.id === id);
-      if (cone && cone.rendered) {
+      if (cone) {
         cone.rendered = false;
       }
     });
@@ -281,6 +295,8 @@ export default class GameStore extends EventTarget {
     this.listenToCollisions = false;
 
     this.renderBall = false;
+    this.renderConeIndicators = false;
+
     this.scores.tempTotal += this.scores.current;
     this.soundCanPlay = true;
 
@@ -291,6 +307,8 @@ export default class GameStore extends EventTarget {
     } else if (this.shotOne) {
       this.renderThrowButton = true;
       this.renderDirectionIndicator = true;
+      this.renderConeIndicators = true;
+
       this.playerCanThrow = true;
       this.currentShot += 1;
     } else {
@@ -314,48 +332,39 @@ export default class GameStore extends EventTarget {
 
     this.playerCanThrow = false;
 
-    wait(500, () => this.listenToCollisions = true);
+    wait(500, () => (this.listenToCollisions = true));
     wait(4000, this.throwComplete);
   };
 
   @action
   startFrame = () => {
-    console.log('started frame');
-
     this.currentShot = 1;
 
-    this.renderCones = true;
-    this.cones.forEach(cone => cone.rendered = true);
+    this.cones.forEach(cone => (cone.rendered = true));
 
     this.renderThrowButton = true;
     this.renderDirectionIndicator = true;
+    this.renderConeIndicators = true;
 
     this.playerCanThrow = true;
+
+    this.scores.one = '-';
+    this.scores.two = '-';
   };
 
   @action
   endFrame = () => {
-    console.log('end frame');
-
     this.scores.current = 0;
 
-    this.renderCones = false;
-    this.cones.forEach(cone => cone.rendered = false);
+    this.cones.forEach(cone => (cone.rendered = false));
+    this.coneIndicators.forEach(indicator => (indicator.hit = false));
 
-    if (this.currentPlayingPeerNumber === this.roomSize) {
-      this.currentPlayingPeerNumber = 1;
-    } else {
-      this.currentPlayingPeerNumber += 1;
-    }
-
-    const peerId = this.getPeerIdByOrder(this.currentPlayingPeerNumber);
-
-    this.dataChannel.sendMessageTo(peerId, 'yournext');
+    this.goToNextPlayer();
   };
 
   init = () => {
     // start frame if i'm the current player
-    if (this.currentPlayingPeerNumber === this.me.order) {
+    if (this.me.order === 1) {
       this.startFrame();
     } else {
       console.log('someone else has to start');

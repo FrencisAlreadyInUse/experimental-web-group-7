@@ -56,12 +56,14 @@ const ScreenUserData = ({ setupStore }) => {
   const handleUserReady = event => {
     event.preventDefault();
 
-    const imageFile = $fileInput.files[0];
-    if (!imageFile) return;
+    // const imageFile = $fileInput.files[0];
+    // if (!imageFile) return;
 
-    thumbDataURI(imageFile)
-      .then(uri => setupStore.userReady(uri))
-      .catch(console.error);
+    setupStore.userReady();
+
+    // thumbDataURI(imageFile)
+    //   .then(uri => setupStore.userReady(uri))
+    //   .catch(console.error);
   };
 
   let $input;
