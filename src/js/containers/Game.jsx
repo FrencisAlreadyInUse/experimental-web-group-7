@@ -21,7 +21,7 @@ const Game = ({ gameStore }) => (
       <Arrow />
       <Scores />
       {gameStore.renderBall ? <Ball /> : null}
-      {gameStore.renderPeerBall && gameStore.currentPlayerId ? <BallPeer /> : null}
+      {gameStore.renderPeerBall ? <BallPeer /> : null}
       <Peers />
       <Sky />
     </Fragment>

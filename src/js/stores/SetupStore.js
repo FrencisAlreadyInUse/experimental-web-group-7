@@ -31,7 +31,7 @@ export default class SetupStore {
   constructor(dataChannel) {
     this.dataChannel = dataChannel;
     this.roomCanSwitch = true;
-    this.minimumRoomVisible = 1000;
+    this.minimumRoomVisible = 1;
 
     this.dataChannel
       .on('ssRoomCreated', this.onSSRoomCreated)

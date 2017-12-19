@@ -1,4 +1,2 @@
-export default (duration, callback) => {
-  window.setTimeout(callback, duration);
-};
+export default (duration, callback) => window.setTimeout(callback, duration);
 

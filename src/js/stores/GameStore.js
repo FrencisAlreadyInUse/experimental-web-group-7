@@ -34,8 +34,8 @@ export default class GameStore extends EventTarget {
       .on('rtcPeerMessage', this.onRTCPeerMessage)
       .on('ssRoomUsersReady', this.onSSRoomUsersReady);
 
-    this.currentShot = 1;
-    this.hitCones = [];
+    this.currentTry = 1;
+    this.hitCones = new Set();
 
     this.soundCanPlay = true;
     this.$conesHitSound = document.getElementById('cones-hit-sound');
@@ -51,16 +51,16 @@ export default class GameStore extends EventTarget {
     };
 
     this.cones = [
-      { id: 1, position: '0 -2 -29', rendered: false },
-      { id: 2, position: '.5 -2 -32', rendered: false },
-      { id: 3, position: '-.5 -2 -32', rendered: false },
-      { id: 4, position: '1 -2 -35', rendered: false },
-      { id: 5, position: '0 -2 -35', rendered: false },
-      { id: 6, position: '-1 -2 -35', rendered: false },
-      { id: 7, position: '1.5 -2 -38', rendered: false },
-      { id: 8, position: '.5 -2 -38', rendered: false },
-      { id: 9, position: '-.5 -2 -38', rendered: false },
-      { id: 10, position: '-1.5 -2 -38', rendered: false },
+      { id: 1, position: '0 -2 -29', rendered: true },
+      { id: 2, position: '.5 -2 -32', rendered: true },
+      { id: 3, position: '-.5 -2 -32', rendered: true },
+      { id: 4, position: '1 -2 -35', rendered: true },
+      { id: 5, position: '0 -2 -35', rendered: true },
+      { id: 6, position: '-1 -2 -35', rendered: true },
+      { id: 7, position: '1.5 -2 -38', rendered: true },
+      { id: 8, position: '.5 -2 -38', rendered: true },
+      { id: 9, position: '-.5 -2 -38', rendered: true },
+      { id: 10, position: '-1.5 -2 -38', rendered: true },
     ];
 
     this.coneIndicators = [
@@ -88,13 +88,13 @@ export default class GameStore extends EventTarget {
   }
 
   @computed
-  get shotOne() {
-    return this.currentShot === 1;
+  get tryOne() {
+    return this.currentTry === 1;
   }
 
   @computed
   get strike() {
-    return this.shotOne && this.scores.current === 10;
+    return this.tryOne && this.scores.current === 10;
   }
 
   @computed
@@ -129,6 +129,7 @@ export default class GameStore extends EventTarget {
       (prev, current) => (prev.score > current.score ? prev : current),
     );
 
+    // return empty array if top score is 0
     if (leaderScore === 0) return [];
 
     // return an array with all the id's of peers with the leaderScore (in case of multiple same scores)
@@ -154,10 +155,12 @@ export default class GameStore extends EventTarget {
     return this.me.order === this.currentPlayingPeerNumber;
   }
 
+  @action
   onSSRoomUsersReady = event => {
     this.roomSize = event.detail.roomSize;
   };
 
+  @action
   getPeerIdByOrder = order => {
     for (const [, peer] of this.peers) {
       if (peer.order === order) {
@@ -167,13 +170,14 @@ export default class GameStore extends EventTarget {
     return null;
   };
 
+  @action
   goToNextPlayer = () => {
-    this.nextPeerNumber();
+    this.nextCurrentPlayingPeerNumber();
     this.dataChannel.sendMessage('nextpeer');
-    this.resetConesAndIndicators();
   };
 
-  nextPeerNumber = () => {
+  @action
+  nextCurrentPlayingPeerNumber = () => {
     if (this.currentPlayingPeerNumber < this.roomSize) {
       this.currentPlayingPeerNumber += 1;
     } else {
@@ -211,7 +215,10 @@ export default class GameStore extends EventTarget {
   @action
   onRTCMessagePeerBallThrow = message => {
     console.log('ball throw from ', message.peerId);
-    this.peerThrowBall(message.data.direction);
+
+    this.currentPlayerId = message.peerId;
+    console.log(this.currentPlayerId);
+    this.startThrow(message.data.direction);
   };
 
   @action
@@ -237,21 +244,22 @@ export default class GameStore extends EventTarget {
     console.log('peer indicator update');
     const hitConeId = message.data.coneId;
 
-    const indicator = this.coneIndicators.find(i => i.id === hitConeId);
-    if (!indicator.hit) {
-      indicator.hit = true;
-      this.hitCones.push(hitConeId);
-    }
+    this.updateIndicatorAndAddConeToHitCones(hitConeId);
   };
 
   @action
   onRTCMessageNextPeer = () => {
-    this.nextPeerNumber();
+    this.resetConesAndIndicators();
+    this.nextCurrentPlayingPeerNumber();
 
     // play frame if i'm the next player
     if (this.currentPlayingPeerNumber === this.me.order) {
+      console.log('next plater, its me!');
+
       this.startFrame();
     } else {
+      console.log('next player');
+
       this.resetConesAndIndicators();
     }
   };
@@ -263,7 +271,7 @@ export default class GameStore extends EventTarget {
     if (this.strike) {
       this.scores.one = 'X';
       this.scores.two = score;
-    } else if (this.currentShot === 1) {
+    } else if (this.currentTry === 1) {
       this.scores.one = score;
     } else {
       this.scores.two = score;
@@ -292,137 +300,135 @@ export default class GameStore extends EventTarget {
     if (!hitConeId) return;
 
     if (this.imTheCurrentPlayer) {
-      this.updateScores(this.hitCones.length);
+      this.updateScores(this.hitCones.size);
 
       if (this.soundCanPlay) {
         this.$conesHitSound.play();
         this.soundCanPlay = false;
       }
 
-      const indicator = this.coneIndicators.find(i => i.id === hitConeId);
-      if (!indicator.hit) {
-        indicator.hit = true;
-        this.hitCones.push(hitConeId);
+      this.updateIndicatorAndAddConeToHitCones(hitConeId);
 
-        this.dataChannel.sendMessage('peerIndicatorUpdate', {
-          coneId: hitConeId,
-        });
-      }
+      this.dataChannel.sendMessage('peerIndicatorUpdate', {
+        coneId: hitConeId,
+      });
     }
+  };
+
+  @action
+  updateIndicatorAndAddConeToHitCones = hitConeId => {
+    const indicator = this.coneIndicators.find(i => i.id === hitConeId);
+    indicator.hit = true;
+    this.hitCones.add(hitConeId);
   };
 
   @action
   removeHitCones = () => {
     console.log('remove hit cones');
 
-    this.hitCones.forEach(id => {
-      this.cones.find(c => c.id === id).rendered = false;
-    });
-    this.hitCones = [];
+    for (const hitConeId of this.hitCones) {
+      console.log('remove cone', hitConeId);
+      this.cones.find(c => c.id === hitConeId).rendered = false;
+    }
+    this.hitCones.clear();
   };
 
   @action
   resetConesAndIndicators = () => {
     console.log('reset cones and indicators');
 
-    wait(500, () => {
+    wait(0, () => {
       this.cones.forEach(cone => (cone.rendered = true));
       this.coneIndicators.forEach(indicator => (indicator.hit = false));
     });
   };
 
   @action
-  throwComplete = () => {
-    this.listenToCollisions = false;
-    // this.renderConeIndicators = false;
-    this.soundCanPlay = true;
-    this.scores.tempTotal += this.scores.current;
+  startThrow = (direction = null) => {
+    if (this.imTheCurrentPlayer && !this.playerCanThrow) return;
 
-    this.removeHitCones();
+    this.playerCanThrow = false;
+
+    console.log('start throw', direction);
+
+    wait(500, () => (this.listenToCollisions = true));
+    wait(4000, this.endThrow);
+
+    this.ballDirection =
+      direction || map(this.diractionIndicatorPosition, -1.45, 1.22, -3.45, 3.22);
 
     if (this.imTheCurrentPlayer) {
-      // if im the one who throw the ball
+      console.log('i threw the ball');
 
-      this.renderBall = false;
+      this.renderBall = true;
+      this.renderThrowButton = false;
+      this.renderDirectionIndicator = false;
 
-      if (this.strike) {
-        this.endFrame();
-      } else if (this.shotOne) {
-        this.renderThrowButton = true;
-        this.renderDirectionIndicator = true;
-        // this.renderConeIndicators = true;
-
-        this.playerCanThrow = true;
-        this.currentShot += 1;
-
-        if (this.scores.one === '-') this.scores.one = 0;
-      } else {
-        if (this.scores.two === '-') this.scores.two = 0;
-        this.endFrame();
-      }
+      // notify peers i threw my ball (sorry for the dirty sentence)
+      this.dataChannel.sendMessage('peerBallThrow', {
+        direction: this.ballDirection,
+      });
     } else {
-      // if it's a peer who threw the ball
-      this.currentPlayerId = null;
-      this.renderPeerBall = false;
-
-      const remainingCones = this.renderedCones;
-      remainingCones.forEach(cone => (cone.rendered = false));
-      wait(500, () => remainingCones.forEach(cone => (cone.rendered = true)));
+      console.log('a peer threw the ball');
+      this.renderPeerBall = true;
     }
   };
 
   @action
-  throwBall = () => {
-    if (!this.playerCanThrow) return;
+  endThrow = () => {
+    console.log('end throw');
 
-    this.renderBall = true;
+    this.endTry();
 
-    this.ballDirection = map(this.diractionIndicatorPosition, -1.45, 1.22, -3.45, 3.22);
+    this.listenToCollisions = false;
+    this.soundCanPlay = true;
+    this.scores.tempTotal += this.scores.current;
 
-    this.renderThrowButton = false;
-    this.renderDirectionIndicator = false;
+    if (this.imTheCurrentPlayer) {
+      this.renderBall = false;
 
-    this.dataChannel.sendMessage('peerBallThrow', {
-      direction: this.ballDirection,
-    });
-
-    this.playerCanThrow = false;
-
-    wait(500, () => (this.listenToCollisions = true));
-    wait(4000, this.throwComplete);
+      if (this.strike) {
+        this.endFrame();
+      } else if (this.tryOne) {
+        this.currentTry = 2;
+        this.startTry();
+      } else {
+        this.endFrame();
+      }
+    } else {
+      this.currentPlayerId = null;
+      this.renderPeerBall = false;
+    }
   };
 
   @action
-  peerThrowBall = direction => {
-    console.log(`thow peer ball to ${direction}`);
+  startTry = () => {
+    console.log('start try');
 
-    this.currentPlayerId = this.currentPlayingPlayer.id;
-    this.renderPeerBall = true;
+    this.renderThrowButton = true;
+    this.renderDirectionIndicator = true;
+    this.playerCanThrow = true;
+  };
 
-    // this.renderConeIndicators = true;
+  @action
+  endTry = () => {
+    console.log('end try');
 
-    this.peerBallDirection = direction;
-
-    wait(500, () => (this.listenToCollisions = true));
-    wait(4000, this.throwComplete);
+    for (const hitConeId of this.hitCones) {
+      this.cones.find(cone => cone.id === hitConeId).rendered = false;
+      this.hitCones.delete(hitConeId);
+    }
   };
 
   @action
   startFrame = () => {
-    this.currentShot = 1;
+    console.log('start frame');
 
-    this.cones.forEach(cone => (cone.rendered = true));
-    this.coneIndicators.forEach(indicator => (indicator.hit = false));
-
-    this.renderThrowButton = true;
-    this.renderDirectionIndicator = true;
-    // this.renderConeIndicators = true;
-
-    this.playerCanThrow = true;
-
-    // reset scores
+    this.currentTry = 1;
     this.scores.one = '-';
     this.scores.two = '-';
+
+    this.startTry();
   };
 
   @action
@@ -430,21 +436,17 @@ export default class GameStore extends EventTarget {
     console.log('end frame');
 
     this.scores.current = 0;
-    this.currentShot = 1;
-    this.playerCanThrow = false;
 
-    this.cones.forEach(cone => (cone.rendered = false));
-    this.coneIndicators.forEach(indicator => (indicator.hit = false));
-
+    this.resetConesAndIndicators();
     this.goToNextPlayer();
   };
 
   init = () => {
+    console.log('init');
+
     // start frame if i'm the current player
-    if (this.me.order === 1) {
+    if (this.imTheCurrentPlayer) {
       this.startFrame();
-    } else {
-      this.resetConesAndIndicators();
     }
   };
 }
