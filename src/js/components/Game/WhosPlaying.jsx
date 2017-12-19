@@ -19,7 +19,7 @@ const WhosPlaying = ({ gameStore }) => {
       <a-box
         id="player-currently-playing--box"
         position="0 -0.891 -7.098"
-        width={`${boxWidth}`}
+        width={boxWidth}
         height="0.65"
         depth="0.05"
         color="#FFD9B7"
