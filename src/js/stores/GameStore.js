@@ -107,16 +107,6 @@ export default class GameStore extends EventTarget {
   }
 
   @computed
-  get currentPlayer() {
-    for (const [, peer] of this.peers) {
-      if (peer.order === this.currentPlayingPeerNumber) {
-        return peer;
-      }
-    }
-    return -1;
-  }
-
-  @computed
   get currentLeaders() {
     const peers = [];
     for (const [, peer] of this.peers) {
@@ -142,15 +132,6 @@ export default class GameStore extends EventTarget {
   }
 
   @computed
-  get currentPlayingPlayer() {
-    for (const [, peer] of this.peers) {
-      if (peer.order === this.currentPlayingPeerNumber) {
-        return peer;
-      }
-    }
-    return null;
-  }
-
   get imTheCurrentPlayer() {
     return this.me.order === this.currentPlayingPeerNumber;
   }
@@ -249,18 +230,16 @@ export default class GameStore extends EventTarget {
 
   @action
   onRTCMessageNextPeer = () => {
-    this.resetConesAndIndicators();
+    this.resetCones();
+    this.resetIndicators();
     this.nextCurrentPlayingPeerNumber();
 
     // play frame if i'm the next player
     if (this.currentPlayingPeerNumber === this.me.order) {
       console.log('next plater, its me!');
-
       this.startFrame();
     } else {
       console.log('next player');
-
-      this.resetConesAndIndicators();
     }
   };
 
@@ -317,8 +296,7 @@ export default class GameStore extends EventTarget {
 
   @action
   updateIndicatorAndAddConeToHitCones = hitConeId => {
-    const indicator = this.coneIndicators.find(i => i.id === hitConeId);
-    indicator.hit = true;
+    this.coneIndicators.find(i => i.id === hitConeId).hit = true;
     this.hitCones.add(hitConeId);
   };
 
@@ -334,13 +312,25 @@ export default class GameStore extends EventTarget {
   };
 
   @action
-  resetConesAndIndicators = () => {
-    console.log('reset cones and indicators');
+  resetIndicators = () => {
+    console.log('reset indicators');
 
-    wait(0, () => {
-      this.cones.forEach(cone => (cone.rendered = true));
-      this.coneIndicators.forEach(indicator => (indicator.hit = false));
-    });
+    this.coneIndicators.forEach(indicator => (indicator.hit = false));
+  };
+
+  @action
+  resetCones = () => {
+    console.log('reset cones');
+
+    for (const hitConeId of this.hitCones) {
+      console.log('reloaded hit cone', hitConeId);
+
+      this.cones.find(cone => cone.id === hitConeId).rendered = false;
+      wait(0, () => {
+        this.cones.find(cone => cone.id === hitConeId).rendered = true;
+        this.hitCones.delete(hitConeId);
+      });
+    }
   };
 
   @action
@@ -391,8 +381,10 @@ export default class GameStore extends EventTarget {
         this.endFrame();
       } else if (this.tryOne) {
         this.currentTry = 2;
+        if (this.scores.one === '-') this.scores.one = 0;
         this.startTry();
       } else {
+        if (this.scores.two === '-') this.scores.two = 0;
         this.endFrame();
       }
     } else {
@@ -416,7 +408,6 @@ export default class GameStore extends EventTarget {
 
     for (const hitConeId of this.hitCones) {
       this.cones.find(cone => cone.id === hitConeId).rendered = false;
-      this.hitCones.delete(hitConeId);
     }
   };
 
@@ -437,7 +428,8 @@ export default class GameStore extends EventTarget {
 
     this.scores.current = 0;
 
-    this.resetConesAndIndicators();
+    this.resetCones();
+    this.resetIndicators();
     this.goToNextPlayer();
   };
 
