@@ -16,7 +16,7 @@ export default class GameStore extends EventTarget {
   @observable playerCanThrow = false;
   @observable currentPlayingPeerNumber = 1;
   @observable currentPlayerId = null;
-  @observable currentPlayerName = 'Japser';
+  @observable currentPlayerName = 'Japser Best Dev';
 
   @observable ballDirection;
   @observable coneIndicators;
