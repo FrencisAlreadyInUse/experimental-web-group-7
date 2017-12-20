@@ -10,6 +10,7 @@ export default class GameStore extends EventTarget {
   @observable renderBall = false;
   @observable renderPeerBall = false;
   @observable renderThrowButton = false;
+  @observable renderScore = true;
   @observable renderDirectionIndicator = false;
   // @observable renderConeIndicators = false;
 
@@ -35,6 +36,7 @@ export default class GameStore extends EventTarget {
 
     this.currentTry = 1;
     this.hitCones = new Set();
+    this.currentFrame = 2;
 
     this.soundCanPlay = true;
     this.$conesHitSound = document.getElementById('cones-hit-sound');
@@ -388,6 +390,7 @@ export default class GameStore extends EventTarget {
 
       if (this.strike) {
         this.endFrame();
+        this.updateAmountOfFrames();
       } else if (this.tryOne) {
         this.currentTry = 2;
         if (this.scores.one === '-') this.scores.one = 0;
@@ -432,12 +435,34 @@ export default class GameStore extends EventTarget {
     this.startTry();
   };
 
+  @computed
+  get leaderName() {
+    const leaders = this.currentLeaders;
+    if (!leaders) return null;
+
+    const peerId = leaders[0];
+    const { name: peerName } = this.peers.get(peerId);
+
+    return peerName;
+  }
+
+  @action
+  updateAmountOfFrames = () => {
+    if (this.currentFrame === 3) {
+      this.currentFrame = 3;
+      this.renderScore = false;
+    } else {
+      this.currentFrame += 1;
+    }
+  };
+
   @action
   endFrame = () => {
     console.log('end frame');
 
     this.scores.tempTotal += this.scores.current;
 
+    this.updateAmountOfFrames();
     this.resetCones();
     this.resetIndicators();
     this.goToNextPlayer();

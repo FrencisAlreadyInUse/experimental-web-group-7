@@ -5,8 +5,7 @@ import { inject, observer } from 'mobx-react';
 import Crown from './Crown.jsx';
 
 const Winner = ({ gameStore }) => {
-  console.log('[Winner]', gameStore.currentLeaders);
-
+  console.log('[Winner]', gameStore.leaderName);
   return (
     <Fragment>
       <Crown position="-0.118 3.908 -7.022" />
@@ -16,7 +15,7 @@ const Winner = ({ gameStore }) => {
         position="0.024 3.2 -7"
         color="#3737DD"
         wrap-count="15"
-        text="width:6; align:center; value: Japser"
+        text={`width:6; align:center; value: ${gameStore.leaderName ? gameStore.leaderName : 'Winner'}`}
         font="https://cdn.aframe.io/fonts/KelsonSans.fnt"
       />
 
